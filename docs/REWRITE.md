@@ -105,6 +105,16 @@ The JavaScript stays. This fork does not delete upstream's engine — it is the
 reference implementation that the goldens come from and that regressions are
 measured against, permanently.
 
+### Attribution in the ported code
+
+A translation of someone's algorithm is still their algorithm. Every file in
+`csrc/` carries the MIT notice and `Copyright (c) 2026 Tony Gies` alongside any
+notice for work added here, and names the JavaScript file it was translated
+from — the `From` column of the table above is that record, and it belongs in
+the file header too, not only in this document. The same applies to anything
+lifted from a neighbouring synthesizer: `ttv.c` arrives with its own history
+intact and a header saying where it came from and what was removed.
+
 ## The numeric hazards, written down before they bite
 
 Each of these is a place where a mechanical translation is wrong.

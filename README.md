@@ -14,10 +14,13 @@
 > [`docs/REWRITE.md`](docs/REWRITE.md), [`docs/NVDA-ADDON.md`](docs/NVDA-ADDON.md)
 > and [`docs/GENERATOR.md`](docs/GENERATOR.md).
 >
-> This repository is the top of the tree for that work — not a staging area for
-> patches headed back upstream. The JavaScript engine below is inherited from
-> `tgies/klattsch` at 0.8.0 and is kept frozen as the reference implementation
-> the C port is verified against. The rest of this README documents it.
+> **This is a fork and it stays one.** klattsch is Tony Gies's work; altering it
+> fundamentally changes nothing about that. The MIT license and copyright below
+> are his and travel with everything this repository produces, the C rewrite
+> included. Development does not flow back upstream — no pull requests are
+> planned — and the JavaScript engine below is kept frozen at 0.8.0 as the
+> reference implementation the C port is verified against. The rest of this
+> README is upstream's and documents that engine.
 
 A primitive parallel-formant speech synthesizer in the browser. Late-70s / early-80s tier (Votrax, SAM).
 

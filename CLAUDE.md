@@ -42,18 +42,27 @@ Four pieces of work, in order, each finishable before the next begins:
   is disproved, correct it in place and say what the measurement was. A plan
   with its mistakes edited out teaches nothing.
 
-## This repository is the authority
+## This is a fork, and it stays one
 
-`dengopaiv/klattsch-NVDA` is the top of the tree for this line of work. It is
-not a staging area for patches headed somewhere else.
+klattsch is Tony Gies's work. This fork alters it fundamentally, and that
+changes nothing about whose work it is.
 
+- **Attribution is paramount.** The fork relationship on GitHub stays. The
+  `LICENSE` stays as it is — MIT, Copyright (c) 2026 Tony Gies — and upstream's
+  copyright notice travels with every artifact this repository produces,
+  including the C rewrite, the NVDA add-on and the GUI. A port of someone's
+  algorithm is still their algorithm.
+- **Say what came from where.** The C engine is a translation of upstream's
+  JavaScript, and the documents here name the file each translation unit comes
+  from. Anything borrowed from a neighbouring synthesizer is credited the same
+  way. Where a phoneme bank is somebody's published data, its `source` field is
+  part of the data and is not dropped.
 - **No upstreaming.** Nothing here is written with a pull request to
-  `tgies/klattsch` in mind. If the upstream author ever wants any of it, he can
-  pull it from here; that is his decision to make and not a goal that shapes
-  anything in these documents.
-- **No merges back from upstream either**, unless a specific change is wanted
-  for a specific reason. The JavaScript engine is kept as a frozen reference
-  implementation for the goldens, not as a branch to track.
+  `tgies/klattsch` in mind. If the author ever wants any of it he can pull it
+  from here; that is his decision and not a goal that shapes these documents.
+- **No tracking upstream either.** The JavaScript engine is kept frozen as the
+  reference implementation the goldens come from, not as a branch to merge
+  from. A specific upstream change can be taken for a specific reason.
 - **The baseline is fixed and recorded.** The inherited history ends at
   `43189e6` (`chore(release): 0.8.0`, 2026-07-26); the DSP and compiler were
   last touched 2026-07-06. Forked 2026-09-11. The goldens in
