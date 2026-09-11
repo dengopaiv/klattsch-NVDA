@@ -1,5 +1,24 @@
 # klattsch
 
+> **About this fork.** This is `dengopaiv/klattsch-NVDA`, a fork of
+> [tgies/klattsch](https://github.com/tgies/klattsch) with a different goal: to
+> take this engine native. The DSP and the compiler rewritten in C, packaged as
+> an NVDA screen-reader add-on with no Python dependencies and no data files,
+> and as a GUI sample generator exposing every parameter the engine has —
+> including the ones frozen as constants today.
+>
+> The plan is written down in [`docs/ROADMAP.md`](docs/ROADMAP.md), with the
+> engine study in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), a comparison
+> against twelve other synthesizers in [`docs/COMPARISON.md`](docs/COMPARISON.md),
+> and the C rewrite, add-on and generator plans in
+> [`docs/REWRITE.md`](docs/REWRITE.md), [`docs/NVDA-ADDON.md`](docs/NVDA-ADDON.md)
+> and [`docs/GENERATOR.md`](docs/GENERATOR.md).
+>
+> This repository is the top of the tree for that work — not a staging area for
+> patches headed back upstream. The JavaScript engine below is inherited from
+> `tgies/klattsch` at 0.8.0 and is kept frozen as the reference implementation
+> the C port is verified against. The rest of this README documents it.
+
 A primitive parallel-formant speech synthesizer in the browser. Late-70s / early-80s tier (Votrax, SAM).
 
 The name is a portmanteau of *Klatt* (Dennis Klatt, the formant-synth pioneer) and *Klatsch* (German for gossip / casual chat).
