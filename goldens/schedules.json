@@ -1070,6 +1070,421 @@
       }
     ]
   ],
+  "rate/1/glide": [
+    [
+      {
+        "atMs": 0,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 100,
+          "BW2": 70,
+          "BW3": 200,
+          "F0": 120,
+          "F1": 660,
+          "F2": 1200,
+          "F3": 2550,
+          "aspiration": 0,
+          "effort": 0.5,
+          "glideTo": {
+            "F1": 400,
+            "F2": 1880,
+            "F3": 2500
+          },
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 0.25
+      },
+      {
+        "atMs": 0.25,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 100,
+          "BW2": 70,
+          "BW3": 200,
+          "F0": 120,
+          "F1": 400,
+          "F2": 1880,
+          "F3": 2500,
+          "aspiration": 0,
+          "effort": 0.5,
+          "glideTo": {
+            "F1": 400,
+            "F2": 1880,
+            "F3": 2500
+          },
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 0.5
+      },
+      {
+        "atMs": 1,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 120,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 0.4
+      },
+      {
+        "atMs": 2,
+        "target": {
+          "A1": 0,
+          "A2": 0,
+          "A3": 0,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5
+        },
+        "transitionMs": 100
+      }
+    ]
+  ],
+  "rate/1/pitch-move": [
+    [
+      {
+        "atMs": 0,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 120,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 0.25
+      },
+      {
+        "atMs": 0.25,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 140,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 0.6
+      },
+      {
+        "atMs": 1,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 140,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 0.4
+      },
+      {
+        "atMs": 2,
+        "target": {
+          "A1": 0,
+          "A2": 0,
+          "A3": 0,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5
+        },
+        "transitionMs": 100
+      }
+    ]
+  ],
+  "rate/1/steady": [
+    [
+      {
+        "atMs": 0,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 120,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 0.4
+      },
+      {
+        "atMs": 1,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 120,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 0.4
+      },
+      {
+        "atMs": 2,
+        "target": {
+          "A1": 0,
+          "A2": 0,
+          "A3": 0,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5
+        },
+        "transitionMs": 100
+      }
+    ]
+  ],
+  "rate/1/stop": [
+    [
+      {
+        "atMs": 0,
+        "target": {
+          "A1": 0,
+          "A2": 0,
+          "A3": 0,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5
+        },
+        "transitionMs": 0.27999999999999997
+      },
+      {
+        "atMs": 0.7,
+        "target": {
+          "A1": 0.1,
+          "A2": 0.2,
+          "A3": 0.25,
+          "BW1": 300,
+          "BW2": 150,
+          "BW3": 220,
+          "F0": 120,
+          "F1": 400,
+          "F2": 1100,
+          "F3": 2150,
+          "aspiration": 0,
+          "effort": 0.5,
+          "isStop": true,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 0
+        },
+        "transitionMs": 0.06
+      },
+      {
+        "atMs": 1,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 120,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 0.4
+      },
+      {
+        "atMs": 2,
+        "target": {
+          "A1": 0,
+          "A2": 0,
+          "A3": 0,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5
+        },
+        "transitionMs": 100
+      }
+    ]
+  ],
+  "rate/1/stressed": [
+    [
+      {
+        "atMs": 0,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 128,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 0.6000000000000001
+      },
+      {
+        "atMs": 1.5,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 120,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 0.4
+      },
+      {
+        "atMs": 2.5,
+        "target": {
+          "A1": 0,
+          "A2": 0,
+          "A3": 0,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5
+        },
+        "transitionMs": 100
+      }
+    ]
+  ],
   "rate/10/glide": [
     [
       {
@@ -2299,6 +2714,421 @@
       },
       {
         "atMs": 275,
+        "target": {
+          "A1": 0,
+          "A2": 0,
+          "A3": 0,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5
+        },
+        "transitionMs": 100
+      }
+    ]
+  ],
+  "rate/2/glide": [
+    [
+      {
+        "atMs": 0,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 100,
+          "BW2": 70,
+          "BW3": 200,
+          "F0": 120,
+          "F1": 660,
+          "F2": 1200,
+          "F3": 2550,
+          "aspiration": 0,
+          "effort": 0.5,
+          "glideTo": {
+            "F1": 400,
+            "F2": 1880,
+            "F3": 2500
+          },
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 0.5
+      },
+      {
+        "atMs": 0.5,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 100,
+          "BW2": 70,
+          "BW3": 200,
+          "F0": 120,
+          "F1": 400,
+          "F2": 1880,
+          "F3": 2500,
+          "aspiration": 0,
+          "effort": 0.5,
+          "glideTo": {
+            "F1": 400,
+            "F2": 1880,
+            "F3": 2500
+          },
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 1
+      },
+      {
+        "atMs": 2,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 120,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 0.8
+      },
+      {
+        "atMs": 4,
+        "target": {
+          "A1": 0,
+          "A2": 0,
+          "A3": 0,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5
+        },
+        "transitionMs": 100
+      }
+    ]
+  ],
+  "rate/2/pitch-move": [
+    [
+      {
+        "atMs": 0,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 120,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 0.5
+      },
+      {
+        "atMs": 0.5,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 140,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 1.2
+      },
+      {
+        "atMs": 2,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 140,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 0.8
+      },
+      {
+        "atMs": 4,
+        "target": {
+          "A1": 0,
+          "A2": 0,
+          "A3": 0,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5
+        },
+        "transitionMs": 100
+      }
+    ]
+  ],
+  "rate/2/steady": [
+    [
+      {
+        "atMs": 0,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 120,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 0.8
+      },
+      {
+        "atMs": 2,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 120,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 0.8
+      },
+      {
+        "atMs": 4,
+        "target": {
+          "A1": 0,
+          "A2": 0,
+          "A3": 0,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5
+        },
+        "transitionMs": 100
+      }
+    ]
+  ],
+  "rate/2/stop": [
+    [
+      {
+        "atMs": 0,
+        "target": {
+          "A1": 0,
+          "A2": 0,
+          "A3": 0,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5
+        },
+        "transitionMs": 0.5599999999999999
+      },
+      {
+        "atMs": 1.4,
+        "target": {
+          "A1": 0.1,
+          "A2": 0.2,
+          "A3": 0.25,
+          "BW1": 300,
+          "BW2": 150,
+          "BW3": 220,
+          "F0": 120,
+          "F1": 400,
+          "F2": 1100,
+          "F3": 2150,
+          "aspiration": 0,
+          "effort": 0.5,
+          "isStop": true,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 0
+        },
+        "transitionMs": 0.12
+      },
+      {
+        "atMs": 2,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 120,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 0.8
+      },
+      {
+        "atMs": 4,
+        "target": {
+          "A1": 0,
+          "A2": 0,
+          "A3": 0,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5
+        },
+        "transitionMs": 100
+      }
+    ]
+  ],
+  "rate/2/stressed": [
+    [
+      {
+        "atMs": 0,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 128,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 1.2000000000000002
+      },
+      {
+        "atMs": 3,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 120,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 0.8
+      },
+      {
+        "atMs": 5,
         "target": {
           "A1": 0,
           "A2": 0,
@@ -3959,6 +4789,421 @@
       },
       {
         "atMs": 1000,
+        "target": {
+          "A1": 0,
+          "A2": 0,
+          "A3": 0,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5
+        },
+        "transitionMs": 100
+      }
+    ]
+  ],
+  "rate/5/glide": [
+    [
+      {
+        "atMs": 0,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 100,
+          "BW2": 70,
+          "BW3": 200,
+          "F0": 120,
+          "F1": 660,
+          "F2": 1200,
+          "F3": 2550,
+          "aspiration": 0,
+          "effort": 0.5,
+          "glideTo": {
+            "F1": 400,
+            "F2": 1880,
+            "F3": 2500
+          },
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 1.25
+      },
+      {
+        "atMs": 1.25,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 100,
+          "BW2": 70,
+          "BW3": 200,
+          "F0": 120,
+          "F1": 400,
+          "F2": 1880,
+          "F3": 2500,
+          "aspiration": 0,
+          "effort": 0.5,
+          "glideTo": {
+            "F1": 400,
+            "F2": 1880,
+            "F3": 2500
+          },
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 2.5
+      },
+      {
+        "atMs": 5,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 120,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 2
+      },
+      {
+        "atMs": 10,
+        "target": {
+          "A1": 0,
+          "A2": 0,
+          "A3": 0,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5
+        },
+        "transitionMs": 100
+      }
+    ]
+  ],
+  "rate/5/pitch-move": [
+    [
+      {
+        "atMs": 0,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 120,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 1.25
+      },
+      {
+        "atMs": 1.25,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 140,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 3
+      },
+      {
+        "atMs": 5,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 140,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 2
+      },
+      {
+        "atMs": 10,
+        "target": {
+          "A1": 0,
+          "A2": 0,
+          "A3": 0,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5
+        },
+        "transitionMs": 100
+      }
+    ]
+  ],
+  "rate/5/steady": [
+    [
+      {
+        "atMs": 0,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 120,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 2
+      },
+      {
+        "atMs": 5,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 120,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 2
+      },
+      {
+        "atMs": 10,
+        "target": {
+          "A1": 0,
+          "A2": 0,
+          "A3": 0,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5
+        },
+        "transitionMs": 100
+      }
+    ]
+  ],
+  "rate/5/stop": [
+    [
+      {
+        "atMs": 0,
+        "target": {
+          "A1": 0,
+          "A2": 0,
+          "A3": 0,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5
+        },
+        "transitionMs": 1.4000000000000001
+      },
+      {
+        "atMs": 3.5,
+        "target": {
+          "A1": 0.1,
+          "A2": 0.2,
+          "A3": 0.25,
+          "BW1": 300,
+          "BW2": 150,
+          "BW3": 220,
+          "F0": 120,
+          "F1": 400,
+          "F2": 1100,
+          "F3": 2150,
+          "aspiration": 0,
+          "effort": 0.5,
+          "isStop": true,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 0
+        },
+        "transitionMs": 0.30000000000000004
+      },
+      {
+        "atMs": 5,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 120,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 2
+      },
+      {
+        "atMs": 10,
+        "target": {
+          "A1": 0,
+          "A2": 0,
+          "A3": 0,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5
+        },
+        "transitionMs": 100
+      }
+    ]
+  ],
+  "rate/5/stressed": [
+    [
+      {
+        "atMs": 0,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 128,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 3
+      },
+      {
+        "atMs": 7.5,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 120,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 2
+      },
+      {
+        "atMs": 12.5,
         "target": {
           "A1": 0,
           "A2": 0,
@@ -12678,6 +13923,118 @@
           "tremoloDepth": 0,
           "tremoloRate": 5,
           "vibratoDepth": 60,
+          "vibratoRate": 3
+        },
+        "transitionMs": 100
+      }
+    ]
+  ],
+  "vq/vibrato-exceeds-f0": [
+    [
+      {
+        "atMs": 0,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 80,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 200,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 35
+      },
+      {
+        "atMs": 110,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 80,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 200,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 35
+      },
+      {
+        "atMs": 220,
+        "target": {
+          "A1": 0,
+          "A2": 0,
+          "A3": 0,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 200,
+          "vibratoRate": 5
+        },
+        "transitionMs": 100
+      }
+    ]
+  ],
+  "vq/vibrato-far-exceeds-f0": [
+    [
+      {
+        "atMs": 0,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 60,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 400,
+          "vibratoRate": 3,
+          "voicing": 1
+        },
+        "transitionMs": 35
+      },
+      {
+        "atMs": 110,
+        "target": {
+          "A1": 0,
+          "A2": 0,
+          "A3": 0,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 400,
           "vibratoRate": 3
         },
         "transitionMs": 100

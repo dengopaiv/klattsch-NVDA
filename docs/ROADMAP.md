@@ -289,7 +289,7 @@ CMakeLists.txt  the product build: library, CLI, tests
 | 0 — Study | ✅ done |
 | 1 — Compare | ✅ done |
 | 1 — Screen-reader requirements | ✅ done |
-| 2 — Rewrite (stages 0–6) | ◐ **stages 0–2 ✅**, stages 3–6 not started |
+| 2 — Rewrite (stages 0–6) | ◐ **stages 0–3 ✅**, stages 4–6 not started |
 | 3 — Extend + measure | ○ not started |
 | 4 — Generator | ○ not started |
 | 5 — Add-on | ○ not started |
@@ -299,12 +299,11 @@ are the record of what was actually measured.
 
 ## The next three things
 
-1. **`kl_synth.c`** — stage 3, driven by `goldens/schedules.json` so the
-   sample loop is verified before the C compiler exists. The first stage where
-   Tier 2 applies to whole rendered utterances rather than a grid of one
-   function, and the first where the 16-bit "zero differing samples" half of
-   the criterion is tested at all.
-2. **`kl_token.c`** — stage 4, exact classification of every corpus token.
+1. **`kl_token.c`** — stage 4, exact classification of every corpus token,
+   including the malformed ones. Back to Tier 1: no arithmetic, no tolerance.
+2. **`kl_compile.c`** — stage 5, the only high-risk stage in the plan. The
+   largest translation, and the one where a difference is a logic difference
+   rather than a numeric one.
 3. **Keep the four-toolchain matrix green** as each stage lands.
    `tools/build-matrix.ps1` covers MSVC, clang-cl, WinLibs gcc and WSL's
    Debian gcc — two C runtimes, two operating systems. The glibc leg is the

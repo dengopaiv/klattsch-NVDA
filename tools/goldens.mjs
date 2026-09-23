@@ -283,7 +283,13 @@ function buildCorpus() {
   // 12. Rate, chosen either side of every min() cap in renderPhoneme. At a low
   //     rate the caps bind and the shape is cap-dominated; at a high rate they
   //     do not and it is fraction-dominated. Both paths need covering.
-  for (const r of [10, 20, 40, 50, 60, 80, 110, 200, 400, 1000]) {
+  //
+  //     Rates 1 and 2 are here for one reason found in stage 3: they are the
+  //     only ones that drive a transition below a single sample at 8 kHz, so
+  //     they are the only ones that make the `Math.max(1, ...)` floor in the
+  //     schedule conversion bind. At rate 10, the corpus's previous minimum,
+  //     the shortest transition is still 4.8 samples.
+  for (const r of [1, 2, 5, 10, 20, 40, 50, 60, 80, 110, 200, 400, 1000]) {
     add('rate', `rate/${r}/steady`, `r${r} AA AA`);
     add('rate', `rate/${r}/stop`, `r${r} P AA`);
     add('rate', `rate/${r}/glide`, `r${r} AY AA`);
@@ -361,6 +367,12 @@ function buildCorpus() {
   add('voice-quality', 'vq/aspiration-on-unvoiced', 'h0.7 S F');
   add('voice-quality', 'vq/gain-low', 'AA', { gain: 0.5 });
   add('voice-quality', 'vq/all', 'h0.5 m0.4 n5 v15 w6 t0.3 g0.8 AA AA');
+  //     Vibrato deeper than the base pitch, so the effective F0 goes negative
+  //     and the glottal phase runs backwards. Found in stage 3: it is the only
+  //     way to tell `floor` from truncation in the phase wrap, and nothing
+  //     else in the corpus reaches it.
+  add('voice-quality', 'vq/vibrato-exceeds-f0', 'b80 v200 w5 AA AA');
+  add('voice-quality', 'vq/vibrato-far-exceeds-f0', 'b60 v400 w3 AA');
 
   return cases;
 }

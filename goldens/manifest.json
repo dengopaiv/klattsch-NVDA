@@ -31,15 +31,15 @@
       "phoneme": 129,
       "phoneme-frame": 129,
       "pitch": 9,
-      "rate": 50,
+      "rate": 65,
       "stress": 6,
       "syllable": 10,
       "unknown": 5,
       "utterance": 13,
       "voice": 7,
-      "voice-quality": 18
+      "voice-quality": 20
     },
-    "cases": 694
+    "cases": 711
   },
   "engine": "0.8.0",
   "excludedTargetKeys": [
