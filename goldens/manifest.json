@@ -1,0 +1,71 @@
+{
+  "audioGroups": [
+    "pitch",
+    "rate",
+    "syllable",
+    "utterance",
+    "voice",
+    "voice-quality"
+  ],
+  "audioRates": [
+    48000,
+    22050,
+    8000
+  ],
+  "banks": [
+    "ja-hecko-2026",
+    "ja-mokhtari-2000",
+    "klatt1980-en"
+  ],
+  "counts": {
+    "byGroup": {
+      "bank": 4,
+      "comment": 8,
+      "directive": 43,
+      "edge": 5,
+      "engine": 4,
+      "extras": 7,
+      "normalize": 8,
+      "note": 233,
+      "pause": 6,
+      "phoneme": 129,
+      "phoneme-frame": 129,
+      "pitch": 9,
+      "rate": 50,
+      "stress": 6,
+      "syllable": 10,
+      "unknown": 5,
+      "utterance": 13,
+      "voice": 7,
+      "voice-quality": 18
+    },
+    "cases": 694
+  },
+  "engine": "0.8.0",
+  "excludedTargetKeys": [
+    "glideTo",
+    "isStop"
+  ],
+  "params": [
+    "F0",
+    "voicing",
+    "F1",
+    "BW1",
+    "A1",
+    "F2",
+    "BW2",
+    "A2",
+    "F3",
+    "BW3",
+    "A3",
+    "gain",
+    "vibratoDepth",
+    "vibratoRate",
+    "tremoloDepth",
+    "tremoloRate",
+    "aspiration",
+    "tilt",
+    "effort"
+  ],
+  "schemaVersion": 1
+}
