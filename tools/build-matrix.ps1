@@ -27,7 +27,16 @@ param(
 
 $ErrorActionPreference = "Stop"
 $repo = Split-Path $PSScriptRoot -Parent
-$sections = @("lfsr", "softclip", "pulse", "biquad", "cache")
+# Per stage: the dump tool, its verifier, and the sections it emits.
+$stages = @(
+  @{ Stage = 1; Tool = "kl_dsp_dump";   Verify = "verify-stage1.mjs";
+     Sections = @("lfsr", "softclip", "pulse", "biquad", "cache") },
+  @{ Stage = 2; Tool = "kl_banks_dump"; Verify = "verify-stage2.mjs";
+     Sections = @("banks", "probe") }
+)
+# The cross-compiler comparison walks stage 1's sections: they are the ones
+# that can legitimately differ between libms. Stage 2 is pure table data.
+$sections = $stages[0].Sections
 $results = @()
 
 function Add-Result($name, $status, $detail) {
@@ -90,10 +99,12 @@ $results | Format-Table -AutoSize | Out-String | Write-Host
 
 Write-Host "Stage verifiers`n"
 foreach ($b in @("build-msvc", "build-clang", "build-gcc")) {
-  $exe = Join-Path $repo "$b\kl_dsp_dump.exe"
-  if (Test-Path $exe) {
-    Write-Host "--- $b ---"
-    & node (Join-Path $repo "tools\verify-stage1.mjs") $exe | Select-Object -Last 4 | Write-Host
+  foreach ($st in $stages) {
+    $exe = Join-Path $repo "$b\$($st.Tool).exe"
+    if (Test-Path $exe) {
+      Write-Host "--- $b, stage $($st.Stage) ---"
+      & node (Join-Path $repo "tools\$($st.Verify)") $exe | Select-Object -Last 3 | Write-Host
+    }
   }
 }
 

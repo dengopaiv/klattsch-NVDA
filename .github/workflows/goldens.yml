@@ -35,7 +35,7 @@ jobs:
         run: bash tools/golden-mutations.sh
 
   stage1:
-    name: Stage 1 -- kl_dsp.c against the JavaScript
+    name: Stages -- the C against the JavaScript
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -55,5 +55,11 @@ jobs:
           cmake -B build -DCMAKE_BUILD_TYPE=Release
           cmake --build build
 
-      - name: stage 1 exit test
+      - name: stage exit tests
         run: ctest --test-dir build --output-on-failure
+
+      # A comparison that has never been seen to fail is one nobody should
+      # trust. Both mutation suites corrupt the thing under test and require
+      # the check to notice.
+      - name: the bank comparison can fail
+        run: bash tools/stage2-mutations.sh build

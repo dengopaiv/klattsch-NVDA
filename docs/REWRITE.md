@@ -229,7 +229,7 @@ Status key: ✅ done and verified · ◐ partly done, not verified · ○ not st
 |---|---|---|---|---|---|
 | 0 | **Baseline.** `tools/goldens.mjs` against the JS engine, the corpus above, goldens and their generator checked in | The generator re-run twice produces identical goldens; the corpus covers every item in the list above, and a deliberately broken JS engine is caught by it | medium | low | ✅ |
 | 1 | **`kl_dsp.c`** — biquad, pulse, LFSR, soft clip | 1,000,000 LFSR states exact; biquad coefficients across the (f, bw) grid and the pulse across phase × effort within 1e-12 of the JS | small | low | ✅ |
-| 2 | **`kl_banks.c`** + `tools/build-banks-c.mjs` | All three banks, field by field, identical to the resolved JS banks, with `extends` and `null` deletion exercised | small | low | ○ |
+| 2 | **`kl_banks.c`** + `tools/build-banks-c.mjs` | All three banks, field by field, identical to the resolved JS banks, with `extends` and `null` deletion exercised | small | low | ✅ |
 | 3 | **`kl_synth.c`** — the sample loop, driven by a golden schedule from JSON so the compiler is not yet involved | Tier 2 on every schedule in the corpus: peak difference ≤ 1e-9, zero differing samples after 16-bit quantization | medium | medium | ○ |
 | 4 | **`kl_token.c`** | Every corpus token classified identically, exact, including the malformed ones | small | low | ○ |
 | 5 | **`kl_compile.c`** — the four shapes, directives, syllables, voices, banks, extras, warnings | Tier 1 on the whole corpus: event count, `atMs`, `transitionMs` and every target field exact as IEEE-754 doubles; warning strings identical | medium | **high** | ○ |
@@ -323,3 +323,26 @@ four builds. Same one-ULP magnitude, different set of points. Had the rule been
 "byte-identical or it is a bug", stage 1 would have passed on Windows and
 failed on Linux for a reason that is not a bug. The split criterion is doing
 the job it was written for.
+
+**2. `kl_banks.c`** ✅ — [docs/14-stage2-banks.md](14-stage2-banks.md). The
+banks, generated from the same JSON as `bundled.js` by
+`tools/build-banks-c.mjs` and emitted **already resolved**, so `extends` lives
+in exactly one implementation (the JS registry) and the C carries flat tables.
+
+Exit test: **2115 fields across 132 phonemes**, compared individually rather
+than by digest so a failure names the bank, the phoneme and the field. All four
+toolchains **byte-identical** — no transcendental, no divergence, the expected
+contrast with stage 1. Lookup is exercised too: every code in every bank found
+by binary search, absent codes missing, NULL arguments returning NULL.
+
+Two things worth carrying forward. **No shipped bank uses `null` deletion**, so
+that resolver path has no coverage in the data and is tested by fixture
+instead. And a bug was found before the verifier existed: the generator copied
+`phonemes.js`'s `_`-prefix filter, which is a *listing* convention for a UI and
+not a data one — `_` is a real silence entry. It changes no behaviour (the
+tokenizer cannot reach it) but would have stopped the tables mirroring the
+bank. Every key is carried.
+
+`tools/stage2-mutations.sh` corrupts the table one field at a time: **6 of 6
+caught**, including a dropped `source` string, which is a licensing problem
+rather than a cosmetic one.
