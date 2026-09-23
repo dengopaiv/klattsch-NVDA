@@ -227,7 +227,7 @@ Status key: ✅ done and verified · ◐ partly done, not verified · ○ not st
 
 | # | Stage | Exit test | Size | Risk | Status |
 |---|---|---|---|---|---|
-| 0 | **Baseline.** `tools/goldens.mjs` against the JS engine, the corpus above, goldens and their generator checked in | The generator re-run twice produces identical goldens; the corpus covers every item in the list above, and a deliberately broken JS engine is caught by it | medium | low | ○ |
+| 0 | **Baseline.** `tools/goldens.mjs` against the JS engine, the corpus above, goldens and their generator checked in | The generator re-run twice produces identical goldens; the corpus covers every item in the list above, and a deliberately broken JS engine is caught by it | medium | low | ✅ |
 | 1 | **`kl_dsp.c`** — biquad, pulse, LFSR, soft clip | 1,000,000 LFSR states exact; biquad coefficients across the (f, bw) grid and the pulse across phase × effort within 1e-12 of the JS | small | low | ○ |
 | 2 | **`kl_banks.c`** + `tools/build-banks-c.mjs` | All three banks, field by field, identical to the resolved JS banks, with `extends` and `null` deletion exercised | small | low | ○ |
 | 3 | **`kl_synth.c`** — the sample loop, driven by a golden schedule from JSON so the compiler is not yet involved | Tier 2 on every schedule in the corpus: peak difference ≤ 1e-9, zero differing samples after 16-bit quantization | medium | medium | ○ |
@@ -268,4 +268,27 @@ already known good when the compiler is under test.
 
 Kept short on purpose: what changed, and what proved it.
 
-*(empty — step 0 has not started)*
+**0. Baseline** ✅ — [docs/12-stage0-goldens.md](12-stage0-goldens.md).
+694 cases over 19 groups, captured in 3.4 s to 900 KB of JSON, plus the
+primitives tested directly: a million xorshift states, `glottalPulse` over a
+101×1000 phase-by-effort grid, biquad coefficients across the (f, bw, sr) grid
+including both clamp regions, `softClip` either side of the knee.
+
+Exit test in three parts, all passing: `--check` re-captures identically;
+every item of the corpus list above has a group; and
+`tools/golden-mutations.sh` mutates 34 engine constants one at a time and
+**all 34 are caught**.
+
+The mutation run failed first time — 29 of 33 — and that is what it was for.
+Three were real holes: `voicedGain`, the aspiration noise level and the
+tremolo modulator could all be changed with no golden moving, because **not
+one rendered case set `aspiration` or `tremoloDepth` above zero**, so those
+constants multiplied out of the expression and became unobservable. The
+`directive/h` and `directive/m` cases did set them, but `directive` renders no
+audio, so only the (correct) schedule was compared. Fixed with the
+`voice-quality` group, 18 rendered cases.
+
+The fourth was a wrong expectation rather than a hole: editing
+`klatt1980-en.json` moves no golden because **the engine imports `bundled.js`,
+not the JSON**. That is `build-banks.js --check`'s job. The mutation now
+asserts the division of labour in both directions instead of being deleted.

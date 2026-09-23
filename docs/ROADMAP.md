@@ -287,7 +287,7 @@ CMakeLists.txt  the product build: library, CLI, tests
 | 0 — Study | ✅ done |
 | 1 — Compare | ✅ done |
 | 1 — Screen-reader requirements | ✅ done |
-| 2 — Rewrite (stages 0–6) | ○ not started · **prerequisites all settled** |
+| 2 — Rewrite (stages 0–6) | ◐ **stage 0 ✅**, stages 1–6 not started |
 | 3 — Extend + measure | ○ not started |
 | 4 — Generator | ○ not started |
 | 5 — Add-on | ○ not started |
@@ -297,11 +297,11 @@ are the record of what was actually measured.
 
 ## The next three things
 
-1. **Write `tools/goldens.mjs` and capture the baseline** — stage 0. This is
-   the first test this codebase has ever had, so the corpus list in
-   [REWRITE.md](REWRITE.md) is worth reviewing before it is captured rather
-   than after. The goldens land LF-pinned, which is now true by default.
-2. **`kl_dsp.c`** — stage 1. The smallest and least risky translation, and the
-   one that proves the harness works end to end.
-3. **`kl_banks.c`** — stage 2, generated from the same JSON as `bundled.js`,
-   now with a CI check standing guard over the shared source of truth.
+1. **`kl_dsp.c`** — stage 1. The smallest and least risky translation, and the
+   one that proves the harness works end to end. Its exit test is already
+   captured: a million xorshift states, the pulse grid, the coefficient grid
+   and the soft-clip curve are in `goldens/primitives.json`.
+2. **`kl_banks.c`** — stage 2, generated from the same JSON as `bundled.js`,
+   with a CI check standing guard over the shared source of truth.
+3. **`kl_synth.c`** — stage 3, driven by `goldens/schedules.json` so the
+   sample loop is verified before the C compiler exists.
