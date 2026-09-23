@@ -6,7 +6,7 @@ The survey in `..\speech synths overview.md` recommends modern C++ for a new
 synthesis project. This is not a new project, and the argument that decided
 `votraxxion` applies here unchanged:
 
-1. **One toolchain.** Plain C11 builds under MSVC, MinGW, clang and gcc with no
+1. **One toolchain.** Plain C17 builds under MSVC, MinGW, clang and gcc with no
    C++ ABI questions. The add-on needs an x64 Windows library, and a Linux
    build the day a Linux screen reader wants it. Everything here is 64-bit
    only, per house rule §4 of `..\CLAUDE.md`.
@@ -23,6 +23,59 @@ wanted a class in JavaScript and neither will want one in C.
 
 The one place C++ would genuinely help is the GUI, and the GUI is a separate
 binary that can be whatever it likes. See [GENERATOR.md](GENERATOR.md).
+
+## Which C — measured, 2026-09-23
+
+C17, not C11 and not C23. C11 was inherited from `votraxxion` without being
+re-examined; C17 is the same language with its defect reports fixed and no new
+features, so it is strictly better at no cost. Every compiler this project
+targets has it.
+
+C23 is the interesting question, and the answer is a toolchain fact rather
+than a preference. **MSVC 19.51 (VS 18 Community, the toolset used here) has
+no `/std:c23` at all** — `cl /?` advertises exactly `/std:<c11|c17|clatest>`.
+`clatest` is a moving target, and what it actually implements was tested one
+feature at a time:
+
+| C23 feature | `/std:c17` | `/std:clatest` |
+|---|---|---|
+| `constexpr` objects | ✗ | ✗ |
+| `nullptr` | ✗ | ✗ |
+| `bool`/`true`/`false` as keywords | ✗ | ✗ |
+| `#embed` | ✗ | ✗ |
+| `typeof` | ✗ | ✓ |
+| `[[nodiscard]]`, `[[maybe_unused]]` | ✗ | ✓ |
+| binary literals `0b1010` | ✓ | ✓ |
+| digit separators `1'000'000` | ✓ | ✓ |
+| one-argument `static_assert` | ✓ | ✓ |
+
+The three features that would actually earn their keep here — `constexpr` for
+the compiled-in bank tables, `nullptr`, and `bool` without `<stdbool.h>` — are
+exactly the three missing. `#embed` fails outright in every mode
+(`fatal error C1021: invalid preprocessor command 'embed'`), and it would have
+been the one genuine win: embedding tables and goldens without a generator.
+As it is, `tools/build-banks-c.mjs` generates C source from the JSON anyway,
+so `#embed` would not have been used even if it worked.
+
+Against that, the cost of C23 is the exit test itself. Stage 6 requires MSVC,
+clang-cl and gcc to produce identical samples; a dialect MSVC cannot compile
+cannot be exit-tested, and the exit test is the spine of this plan. Choosing
+C for toolchain reach and then picking the least portable C dialect would also
+undo the argument that chose C in the first place.
+
+**The forward path:** write C17 that is also valid C23. Avoid what C23 removed
+— K&R function declarations, which this codebase would not contain anyway —
+and revisit when MSVC ships a real `/std:c23`. Nothing in the plan depends on
+a C23 feature, so that revisit is free whenever it happens.
+
+### One trap the same test exposed
+
+MSVC accepted **binary literals and digit separators under `/std:c17`**, where
+they are not C17 features at all. MSVC's C mode is lenient, so C23-isms can
+enter the codebase and compile cleanly on Windows while `gcc -std=c17
+-pedantic` rejects them. That is a concrete reason for the rule below that all
+three compilers run from stage 1 rather than at the end: MSVC alone will not
+tell you your C17 is not C17.
 
 ## The acceptance criterion
 
@@ -87,7 +140,7 @@ things a rewrite actually breaks:
 
 ## The shape
 
-`csrc/`, C11, one translation unit per concern, each with a header:
+`csrc/`, C17, one translation unit per concern, each with a header:
 
 | File | From | Notes |
 |---|---|---|

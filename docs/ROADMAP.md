@@ -119,7 +119,7 @@ left to phase 5: **latency** (§3) and **parameter audibility** (§5).
 
 ## Phase 2 — The C rewrite ○
 
-[REWRITE.md](REWRITE.md), stages 0–6. C11, no allocation on the speech path,
+[REWRITE.md](REWRITE.md), stages 0–6. C17, no allocation on the speech path,
 seven translation units, CMake from stage 1, goldens captured from the
 JavaScript before the first line of C.
 
@@ -248,7 +248,15 @@ places that can drift.
 **Built by more than one compiler, on more than one OS.** MSVC and clang-cl on
 Windows, gcc on Linux, producing the same samples. A port verified on one
 compiler is verified against that compiler's arithmetic, not against the
-reference.
+reference. Measured 2026-09-23: MSVC accepts C23 binary literals and digit
+separators in `/std:c17` mode, so MSVC alone will not tell you your C17 is not
+C17 — which is why all three run from stage 1, not at the end.
+
+**C17, not C11 and not C23.** C11 was inherited without re-examination; C17 is
+the same language with its defects fixed. C23 is out because MSVC 19.51 has no
+`/std:c23` and its `clatest` lacks `constexpr`, `nullptr`, the `bool` keyword
+and `#embed` — the features that would have been worth having. Measurement and
+the forward path are in [REWRITE.md](REWRITE.md).
 
 **The JavaScript engine stays**, frozen at 0.8.0, as the reference the goldens
 come from. It is not a branch to track.
