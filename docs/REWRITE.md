@@ -106,15 +106,26 @@ declared exception and is compared to within 1e-9 Hz.
 **Tier 2 — bounded, and the bound is tight.** Rendered audio, compared against
 the JS reference:
 
-- peak absolute sample difference `<= 1e-9` on a 30-second corpus, in float64
-  before quantization,
-- after 16-bit quantization, **zero differing samples**. A 1e-9 float
-  difference cannot move a 16-bit sample unless it sits exactly on a rounding
-  boundary; if any sample differs, that is investigated, not waived.
+- every differing sample must be **under one float32 ULP** — a rounding
+  boundary being tipped, not accumulation,
+- the number of differing samples is reported rather than bounded, because it
+  depends on the libm,
+- after 16-bit quantization, **zero differing samples**. If any sample differs
+  there, that is investigated, not waived.
 
-If Tier 2 cannot be met, the cause is a logic difference, not libm. Every time
-this has been tested on a formant synth the transcendental error has stayed
-five orders of magnitude below the 16-bit LSB.
+If Tier 2 cannot be met, the cause is a logic difference, not libm.
+
+> **Corrected 2026-09-24, in stage 3.** This first read "peak absolute sample
+> difference ≤ 1e-9 … in float64 before quantization", which is not
+> measurable. The JavaScript renders into a `Float32Array`, so rounding to
+> single precision is part of the algorithm rather than a step after it, and
+> **neither side ever produces a float64 sample**. The bound was also tighter
+> than the representation: one float32 ULP at a sample of magnitude 0.15 is
+> ~1.8e-8, so any single-ULP disagreement — the smallest that can exist —
+> would have failed a 1e-9 test. The replacement is stricter where it counts:
+> sub-ULP is a statement about mechanism, since accumulation through the
+> recursive biquads would grow past a ULP and be caught. See
+> [15-stage3-synth.md](15-stage3-synth.md) §15.2.
 
 **Goldens are captured from the JS before the first line of C is written**, by
 `tools/goldens.mjs`, and checked in. The corpus has to be adversarial about the
@@ -230,7 +241,7 @@ Status key: ✅ done and verified · ◐ partly done, not verified · ○ not st
 | 0 | **Baseline.** `tools/goldens.mjs` against the JS engine, the corpus above, goldens and their generator checked in | The generator re-run twice produces identical goldens; the corpus covers every item in the list above, and a deliberately broken JS engine is caught by it | medium | low | ✅ |
 | 1 | **`kl_dsp.c`** — biquad, pulse, LFSR, soft clip | 1,000,000 LFSR states exact; biquad coefficients across the (f, bw) grid and the pulse across phase × effort within 1e-12 of the JS | small | low | ✅ |
 | 2 | **`kl_banks.c`** + `tools/build-banks-c.mjs` | All three banks, field by field, identical to the resolved JS banks, with `extends` and `null` deletion exercised | small | low | ✅ |
-| 3 | **`kl_synth.c`** — the sample loop, driven by a golden schedule from JSON so the compiler is not yet involved | Tier 2 on every schedule in the corpus: peak difference ≤ 1e-9, zero differing samples after 16-bit quantization | medium | medium | ○ |
+| 3 | **`kl_synth.c`** — the sample loop, driven by a golden schedule so the compiler is not yet involved | Tier 2 on every schedule in the corpus, at all three sample rates: every differing sample sub-ULP, zero differing samples after 16-bit quantization | medium | medium | ✅ |
 | 4 | **`kl_token.c`** | Every corpus token classified identically, exact, including the malformed ones | small | low | ○ |
 | 5 | **`kl_compile.c`** — the four shapes, directives, syllables, voices, banks, extras, warnings | Tier 1 on the whole corpus: event count, `atMs`, `transitionMs` and every target field exact as IEEE-754 doubles; warning strings identical | medium | **high** | ○ |
 | 6 | **`kl_wav.c`** + `bin/klattsch_cli.c` | The CLI renders the whole corpus and every WAV is byte-identical to the JS CLI's, on MSVC, clang-cl and gcc | small | low | ○ |

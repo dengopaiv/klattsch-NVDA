@@ -19534,6 +19534,816 @@
   {
     "audio": {
       "8000": {
+        "f64": "517bfbe151d5fe8e87bc09115d3569e96beb8e94c1d9486095c984e369912ea9",
+        "i16": "0dd623fa4a9486cca4084f4687ea120d23012fa936de78607e28965ef6a76f44",
+        "peak": 0.6316334009170532,
+        "rms": 0.10189788108376609,
+        "samples": 1216
+      },
+      "22050": {
+        "f64": "f7b6ef604b4178b5ab0fc06fb47415bf4a2dd0a59794c4012a943b9109576408",
+        "i16": "f0bdb1428ffad237efcdf4c5bdbf8766a23de16201e25f0c9529b0afaf24a797",
+        "peak": 0.6610578894615173,
+        "rms": 0.10398896360699492,
+        "samples": 3352
+      },
+      "48000": {
+        "f64": "62daf5cf7b734a6db0df549e6484561e35bbf3e969813c09fb1cd8aea2acc726",
+        "i16": "754ce18e77350bbb8667a9619579950ef0a9061dd0f6b4ae3724fc7018973c5d",
+        "peak": 0.6738218069076538,
+        "rms": 0.10408997079219695,
+        "samples": 7296
+      }
+    },
+    "compile": {
+      "engine": null,
+      "events": 3,
+      "phrasesDigest": "eef6395a8210a74a4971cfb59257d150bb5452e52c52e946bad4caf33dcf8e3a",
+      "scheduleDigest": "52b3aea8bc6818ffb05fb5063e869769fcec889104bbaac112e2a38b7914cb03",
+      "totalMs": 152,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 3,
+          "scheduleDigest": "52b3aea8bc6818ffb05fb5063e869769fcec889104bbaac112e2a38b7914cb03",
+          "totalMs": 152
+        }
+      ],
+      "warnings": []
+    },
+    "group": "rate",
+    "id": "rate/1/steady",
+    "text": "r1 AA AA",
+    "tokens": {
+      "count": 3,
+      "digest": "4c21e5d1adc110ec802035b56f1ffa0f501d0a9f7b849da421271d73d43a8fb0",
+      "types": [
+        "directive",
+        "phoneme",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "audio": {
+      "8000": {
+        "f64": "192319f3b2464e14c1e17794ad0d3f52ce5fcd3ac9619f172088ed6374fcbaa5",
+        "i16": "eadf151b856738c4f63483fb332ea067314674fd0afe738c378df0e927f37461",
+        "peak": 0.6780964732170105,
+        "rms": 0.1023358865462575,
+        "samples": 1216
+      },
+      "22050": {
+        "f64": "c1fb393bb61d1bbe016ed3f55eef155c46ed8d761e560ff1f9857667e096145b",
+        "i16": "c23d5ee5f35e977a6ff06f375657ac6203c38f638ba2db2ffb0af6b5d2755e89",
+        "peak": 0.623367190361023,
+        "rms": 0.10715839353087654,
+        "samples": 3352
+      },
+      "48000": {
+        "f64": "29cb2e635ddf352ce5ab5a182175e1b03d568b2e10709ce73b478ad9216b9036",
+        "i16": "1b7e32ec785289f767e3a27a4d0b192ab6516007a8fd21b2793882f9a210131e",
+        "peak": 0.6783304214477539,
+        "rms": 0.10489678655752738,
+        "samples": 7296
+      }
+    },
+    "compile": {
+      "engine": null,
+      "events": 4,
+      "phrasesDigest": "905841be878deae21ad7b188aedc26bef3f79c08edde8fa998515a166c800360",
+      "scheduleDigest": "5394e2c2850c84c735d8ced3c043ab45e9e9b0250620af7471fa5b7933414143",
+      "totalMs": 152,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 4,
+          "scheduleDigest": "5394e2c2850c84c735d8ced3c043ab45e9e9b0250620af7471fa5b7933414143",
+          "totalMs": 152
+        }
+      ],
+      "warnings": []
+    },
+    "group": "rate",
+    "id": "rate/1/stop",
+    "text": "r1 P AA",
+    "tokens": {
+      "count": 3,
+      "digest": "4eff0ece55d93b38a7e28409fbd3f3d50f8685dea971c9c3834d9e2342d39a72",
+      "types": [
+        "directive",
+        "phoneme",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "audio": {
+      "8000": {
+        "f64": "a8207ee0e66fe4b081923980c1ed70444b886d1f14c657c22c63cbce2814a986",
+        "i16": "571bd93738b7f2a208acadf384203a67acf33b1e405452f13f4324924015e437",
+        "peak": 0.6272908449172974,
+        "rms": 0.10221241439857286,
+        "samples": 1216
+      },
+      "22050": {
+        "f64": "f4fb8a420b8e9d0885e7a73e7aea669ac10839a35aa5a27a81812cffe7aac253",
+        "i16": "f92c463060b79019544f4d86ffb1cfc0aa04d4ac64847cb26fcf7f8abf1fa512",
+        "peak": 0.6464967131614685,
+        "rms": 0.10411179755210535,
+        "samples": 3352
+      },
+      "48000": {
+        "f64": "ee0394de53bebe59c468060f8a1afcac3ed4352ff15a61979fdc81a4273e59eb",
+        "i16": "016dcc2d8aac4d41145438cec770ba2835b041eb84a8a99f7f00591bbf404137",
+        "peak": 0.6605052947998047,
+        "rms": 0.10395207927902998,
+        "samples": 7296
+      }
+    },
+    "compile": {
+      "engine": null,
+      "events": 4,
+      "phrasesDigest": "97c4c1d326e853bd90532b3e2252fea29470e5b2e40d10ccec26677e138e35d7",
+      "scheduleDigest": "994e6e166cbe7fec36b7cce788e508f481d8bd33dffc86d7e2f10f992494b92a",
+      "totalMs": 152,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 4,
+          "scheduleDigest": "994e6e166cbe7fec36b7cce788e508f481d8bd33dffc86d7e2f10f992494b92a",
+          "totalMs": 152
+        }
+      ],
+      "warnings": []
+    },
+    "group": "rate",
+    "id": "rate/1/glide",
+    "text": "r1 AY AA",
+    "tokens": {
+      "count": 3,
+      "digest": "6146065a22e7ac7abfc4908ff7692d83a66ef722c81bf0df02970277f215e322",
+      "types": [
+        "directive",
+        "phoneme",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "audio": {
+      "8000": {
+        "f64": "21184fc2ddedbd8d0716c59c85ec4cb768907de84ca5edc44e8369cd3f2ac42d",
+        "i16": "4a36d1d301a57eb9f25d314b0a8c73be53a8bcb0f4242e8b3e20e0528393cc10",
+        "peak": 0.6546254754066467,
+        "rms": 0.11788391507167466,
+        "samples": 1216
+      },
+      "22050": {
+        "f64": "65d3c6ffddd5b84f0918d5ff8f399291c5298a7da44969482072f36e8f66aea7",
+        "i16": "8288ce395cf58f476432f3b8913a3e6cefd3d9d64cfbfcfd4c928e325d62ba93",
+        "peak": 0.6754778623580933,
+        "rms": 0.1208847927022445,
+        "samples": 3352
+      },
+      "48000": {
+        "f64": "8e5e4d7b4409d649d51cb0eeb0486772986c3dea4e92b2ec32beb5cb6727c617",
+        "i16": "d5bedf3b21d14907c291548b790b57247a60ba3d1efd91221de0df0af643a350",
+        "peak": 0.6766471266746521,
+        "rms": 0.12124962819003474,
+        "samples": 7296
+      }
+    },
+    "compile": {
+      "engine": null,
+      "events": 4,
+      "phrasesDigest": "a591b68ebba896d2860d406c17b3db9bdc5b59f02fcaf38db7dd68dbdc36a7d3",
+      "scheduleDigest": "00ccda82310c21148e7b80a3c82ae6d7b1cc26e71f4f620b0f03bd73990e8120",
+      "totalMs": 152,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 4,
+          "scheduleDigest": "00ccda82310c21148e7b80a3c82ae6d7b1cc26e71f4f620b0f03bd73990e8120",
+          "totalMs": 152
+        }
+      ],
+      "warnings": []
+    },
+    "group": "rate",
+    "id": "rate/1/pitch-move",
+    "text": "r1 AA+20 AA",
+    "tokens": {
+      "count": 3,
+      "digest": "5f1c30053b9e263b1274aa2a6199d69671561b6ee56a449a136cca3c74b5009c",
+      "types": [
+        "directive",
+        "phoneme",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "audio": {
+      "8000": {
+        "f64": "e949ab591ed0b67cf78dda9f9b9af6d2892adf9fd24085d0d56067e43d8244ae",
+        "i16": "eb8773607418fcb858224d1182997bb72e501dbb77941dae42432290858c6c90",
+        "peak": 0.6371556520462036,
+        "rms": 0.10249328385212743,
+        "samples": 1220
+      },
+      "22050": {
+        "f64": "c6b3e3bc11c77f7398974e2eeaf8bdafdfea5a333ead4d1069a3be155a0edf1d",
+        "i16": "117188a516bbd6ff3e9b37483b1fbc87e487edfe8a963e79f10b03b2a0deb9c5",
+        "peak": 0.6586524844169617,
+        "rms": 0.10448470850519523,
+        "samples": 3363
+      },
+      "48000": {
+        "f64": "f3d9294919a884f99bbf68b98798b072011ec317955046d728d3d35ddb889dc7",
+        "i16": "512914f028a83b37ea2c7a56a45b463d325e6c211d98f581021f53915f6c32e6",
+        "peak": 0.6854173541069031,
+        "rms": 0.10521852537368452,
+        "samples": 7320
+      }
+    },
+    "compile": {
+      "engine": null,
+      "events": 3,
+      "phrasesDigest": "6611f9b82450f75ce1d1ff2834cc5765e70d944898add13241fadb22fafa0ade",
+      "scheduleDigest": "0b549bbe31e9aacf137578d1b47a2ba8613b68399ca8895059a0ffdcf79c1fd5",
+      "totalMs": 152.5,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 3,
+          "scheduleDigest": "0b549bbe31e9aacf137578d1b47a2ba8613b68399ca8895059a0ffdcf79c1fd5",
+          "totalMs": 152.5
+        }
+      ],
+      "warnings": []
+    },
+    "group": "rate",
+    "id": "rate/1/stressed",
+    "text": "r1 AA' AA",
+    "tokens": {
+      "count": 3,
+      "digest": "1a5f5a12cfa1ffde4bb800c102f9c441c4f01a2636af5cac5209d2882a2996ce",
+      "types": [
+        "directive",
+        "phoneme",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "audio": {
+      "8000": {
+        "f64": "a80b98a0fa5017a1cf858ac61b18329c1a9071d316640ea6fec8a8c641d59f2c",
+        "i16": "69bd544c2e7c32bf1f153beb5fd66e5ffe32100f0fc1e7fa3723403a258a8b3d",
+        "peak": 0.6426687240600586,
+        "rms": 0.10449296893525975,
+        "samples": 1232
+      },
+      "22050": {
+        "f64": "46de30eac4991c50feef089b9e2426e499d651e53372d5004ee2fbfc62138f53",
+        "i16": "710e8cb2620f15da72b3de805f522d0719cb34cf3441e1982f20b0a34f8ac98d",
+        "peak": 0.6676048636436462,
+        "rms": 0.10631978047532069,
+        "samples": 3396
+      },
+      "48000": {
+        "f64": "32490b06ec56954b22de6e335ab83b49c1452d6ddfc4853d16d50f00fa2deab7",
+        "i16": "ec11fd535c5c4607b2ac5974874556bf3e030ccc812871667bf7074eb05bda2b",
+        "peak": 0.6867859959602356,
+        "rms": 0.10659661290272161,
+        "samples": 7392
+      }
+    },
+    "compile": {
+      "engine": null,
+      "events": 3,
+      "phrasesDigest": "6bcbb22bd639df4386cf75c55f31b18524f83293d76cead1d83fc63604ecc0a4",
+      "scheduleDigest": "121bce1e338841c842dea02ba28b2c960cfb20a9f6194dbb0a8f4c96a49e17fa",
+      "totalMs": 154,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 3,
+          "scheduleDigest": "121bce1e338841c842dea02ba28b2c960cfb20a9f6194dbb0a8f4c96a49e17fa",
+          "totalMs": 154
+        }
+      ],
+      "warnings": []
+    },
+    "group": "rate",
+    "id": "rate/2/steady",
+    "text": "r2 AA AA",
+    "tokens": {
+      "count": 3,
+      "digest": "779f957a5070f6ebd9b898c0c1784494c57559aa200f2cd309842dc6f171b35e",
+      "types": [
+        "directive",
+        "phoneme",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "audio": {
+      "8000": {
+        "f64": "c972685503c656c1b9ea5c986b73b60070d0dc584755e8c0ac635fbe82dd2904",
+        "i16": "c24b965ad53044d8e54699ad0229e501360bb1fc30b1035f532446f7e4ca5eb8",
+        "peak": 0.58707195520401,
+        "rms": 0.10470384769545367,
+        "samples": 1232
+      },
+      "22050": {
+        "f64": "c27bc77c9771a042bc4b8b9af0332bcba65599bd75a2c33019adbbf0b29fbf77",
+        "i16": "edbc0d6387cc1d69a825c67d2aebec4ea7cbf7d6ca0ebca8bf60275157e84da2",
+        "peak": 0.7408119440078735,
+        "rms": 0.10879655435787024,
+        "samples": 3396
+      },
+      "48000": {
+        "f64": "c1a38294fbb9c72fc049d266f67ee0b78bb6f07bcd8841b6c3439879ed777e71",
+        "i16": "1090644f3a4d50bc8dafcc2aa39d789ae81e60dc7ccea67b2034fe70e738293b",
+        "peak": 0.6440917253494263,
+        "rms": 0.10572129785516375,
+        "samples": 7392
+      }
+    },
+    "compile": {
+      "engine": null,
+      "events": 4,
+      "phrasesDigest": "50803d6950fe4d72235fba733547fb9376b5ceeb4fd5867e2d62cafe539bd360",
+      "scheduleDigest": "4c0cc6d0573e2bc126747e58309fb9edbe2064666f9cb0f017e9002de7be6fd6",
+      "totalMs": 154,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 4,
+          "scheduleDigest": "4c0cc6d0573e2bc126747e58309fb9edbe2064666f9cb0f017e9002de7be6fd6",
+          "totalMs": 154
+        }
+      ],
+      "warnings": []
+    },
+    "group": "rate",
+    "id": "rate/2/stop",
+    "text": "r2 P AA",
+    "tokens": {
+      "count": 3,
+      "digest": "8a4cc2b26a3c3da386652b372321eb8163d1b781120062bb5f4bc66e4f38617c",
+      "types": [
+        "directive",
+        "phoneme",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "audio": {
+      "8000": {
+        "f64": "59091d338561954729db7b10ddf91e41f0c85fa578520c13355ca40d74ee40a7",
+        "i16": "fe48ce16b33d35285e7c460b47c01c3c4b84239c3e77055781a99c0650916a0b",
+        "peak": 0.6365390419960022,
+        "rms": 0.10379611323831384,
+        "samples": 1232
+      },
+      "22050": {
+        "f64": "5f98d5f58097fe564aed99877e4fda955ea0f26aefa7e6b594ba83bb1c80b639",
+        "i16": "74b411796586115af7f4f0069aae9893387364748dbc179c65a42a6efb59a309",
+        "peak": 0.6762572526931763,
+        "rms": 0.10617207525545275,
+        "samples": 3396
+      },
+      "48000": {
+        "f64": "43f78a7f3c35c2005dca1926b99bc3336ef90182d1535642e6c5d6b17088791b",
+        "i16": "4d2aa12e5012c082aadbdaf39b344a547a0b4a7bb3ce5878488f1a10de9a9a7a",
+        "peak": 0.6969871520996094,
+        "rms": 0.1065749910467962,
+        "samples": 7392
+      }
+    },
+    "compile": {
+      "engine": null,
+      "events": 4,
+      "phrasesDigest": "feee27a9913d3153b1eaf294e4ce36a9d68999ba7876270d815495cb1d49ce12",
+      "scheduleDigest": "27f78709a1657430f6e5e8bfa3182d0b9e1153ecc82f41d3cfaa104302ff34c4",
+      "totalMs": 154,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 4,
+          "scheduleDigest": "27f78709a1657430f6e5e8bfa3182d0b9e1153ecc82f41d3cfaa104302ff34c4",
+          "totalMs": 154
+        }
+      ],
+      "warnings": []
+    },
+    "group": "rate",
+    "id": "rate/2/glide",
+    "text": "r2 AY AA",
+    "tokens": {
+      "count": 3,
+      "digest": "c57c5a681a99ffa61e16e3915a6ffc5c7a6fe753ea0a225603306fb0e4eefb42",
+      "types": [
+        "directive",
+        "phoneme",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "audio": {
+      "8000": {
+        "f64": "f4d70ebc4e3d2d4524df8b975ea145b6895033f0f6a7fe94c0b88b650e373931",
+        "i16": "a5d614e25d07593d3b90931344053fe710e6dd69ef676e90c8a882987c4b7cd7",
+        "peak": 0.6815612316131592,
+        "rms": 0.12068353584254946,
+        "samples": 1232
+      },
+      "22050": {
+        "f64": "ae8e2ced2939c7e5cff5a4ab90ec564edbef6f996d3e47c7ce9d2563bfd864de",
+        "i16": "61941f905f2212276dce801572127a4eb3749cebd38c5bda35dccc47e6d7c731",
+        "peak": 0.6889343857765198,
+        "rms": 0.1235669978958312,
+        "samples": 3396
+      },
+      "48000": {
+        "f64": "655dd598334c74d57885c45b9e7ec78b40a7fe6f71d97c709034f5d1b97c17f1",
+        "i16": "33f97d2a748b972593ec61bba9f1728b961aee27e88d305eb6a4781c3bbea816",
+        "peak": 0.6883746385574341,
+        "rms": 0.12365153818156642,
+        "samples": 7392
+      }
+    },
+    "compile": {
+      "engine": null,
+      "events": 4,
+      "phrasesDigest": "044c73f930ba820562a0682924e7bdbf15ee3a6b2d2e3ba00ed6cbeec76e7eaa",
+      "scheduleDigest": "42d0039d3bebf90c440be396e4256407e999d018e0c1fceaf71a6787e1255646",
+      "totalMs": 154,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 4,
+          "scheduleDigest": "42d0039d3bebf90c440be396e4256407e999d018e0c1fceaf71a6787e1255646",
+          "totalMs": 154
+        }
+      ],
+      "warnings": []
+    },
+    "group": "rate",
+    "id": "rate/2/pitch-move",
+    "text": "r2 AA+20 AA",
+    "tokens": {
+      "count": 3,
+      "digest": "00a8f270566ab61ded878ed76c5a448e06c17bf65c8b33d2a5b414c4d3ee45e9",
+      "types": [
+        "directive",
+        "phoneme",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "audio": {
+      "8000": {
+        "f64": "55fcda2ac9bdc108830f85c83cade5fc5b106c096b8728d4b149d40a7edb3c6a",
+        "i16": "080f1c5c5be99c74bfdea9a27939f4172f47bb0eb8caa04a42b862946ed3f1fe",
+        "peak": 0.6626293063163757,
+        "rms": 0.10482330922533242,
+        "samples": 1240
+      },
+      "22050": {
+        "f64": "a38c45bc19ba573c7d9555871b95d24daaca4fd5cd0d1a4158958b50aeb2dfac",
+        "i16": "bc3e5fe43d3ffeaf672a2913944f86c4ef83d7a84a070659dc731f38abeeaa53",
+        "peak": 0.6414909958839417,
+        "rms": 0.10691403718411545,
+        "samples": 3418
+      },
+      "48000": {
+        "f64": "808f4c4ac6d6acc923c26ed40051e0b0d3214c028d911e46083593cde9e70bd7",
+        "i16": "8207edc32fe36d2422282001ed1d455f02096d5e32c1c8beed192f552de5cf7b",
+        "peak": 0.6938188672065735,
+        "rms": 0.1075976734918315,
+        "samples": 7440
+      }
+    },
+    "compile": {
+      "engine": null,
+      "events": 3,
+      "phrasesDigest": "0cd8c34ab67ff83d968f7dcc2eb07023c7377023dc65fae565deb118a3ef83e8",
+      "scheduleDigest": "53a0309fe21417a3f1c7ffc39a767e114a7f9857ea53877fda3b6f222794b7cf",
+      "totalMs": 155,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 3,
+          "scheduleDigest": "53a0309fe21417a3f1c7ffc39a767e114a7f9857ea53877fda3b6f222794b7cf",
+          "totalMs": 155
+        }
+      ],
+      "warnings": []
+    },
+    "group": "rate",
+    "id": "rate/2/stressed",
+    "text": "r2 AA' AA",
+    "tokens": {
+      "count": 3,
+      "digest": "e233b46d100aa40a6dd3ffab35fa676e08e7e1318e50daa60c3c54f86393861f",
+      "types": [
+        "directive",
+        "phoneme",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "audio": {
+      "8000": {
+        "f64": "e4a4d749064eb4be804824dc77b9926ae3296116952e9dff9d3827a9d9aa3a25",
+        "i16": "e228a08e6f7b2cf7c4c2975389d0e0e60b5cd0942898fc84762b1a70a0f0a429",
+        "peak": 0.6503388285636902,
+        "rms": 0.11093311206453052,
+        "samples": 1280
+      },
+      "22050": {
+        "f64": "7ce0e37b59092afce909157e4e904ee2272a810bde5a52f947b21ac7d597a05d",
+        "i16": "284b7c6123c7b0640205030cc7fe2e71a801f143e6b31d2da0315bc8789cd371",
+        "peak": 0.7139284610748291,
+        "rms": 0.11345060807946067,
+        "samples": 3528
+      },
+      "48000": {
+        "f64": "a881b8b111831ce022bd59b53256d8719ce0f7a4b5dd6291f98348710363311b",
+        "i16": "945ce40d540d84827f8839f84bf05e85f84c98d07389e7d8a6140836f2495bf7",
+        "peak": 0.6851685643196106,
+        "rms": 0.11236285613588838,
+        "samples": 7680
+      }
+    },
+    "compile": {
+      "engine": null,
+      "events": 3,
+      "phrasesDigest": "6ccab76f571b31a888cee0dcf2e8e504a986e4db30330554b095b795ad95c54a",
+      "scheduleDigest": "78f60f750fc4611f809bf5e485f235141aeb5a8c75f1737b85c2cf705a3220f5",
+      "totalMs": 160,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 3,
+          "scheduleDigest": "78f60f750fc4611f809bf5e485f235141aeb5a8c75f1737b85c2cf705a3220f5",
+          "totalMs": 160
+        }
+      ],
+      "warnings": []
+    },
+    "group": "rate",
+    "id": "rate/5/steady",
+    "text": "r5 AA AA",
+    "tokens": {
+      "count": 3,
+      "digest": "3f1a07ac8dc3de745eed87ca11436cf759cf014d5bb3ed5b90172f6c80d2df52",
+      "types": [
+        "directive",
+        "phoneme",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "audio": {
+      "8000": {
+        "f64": "7f7e8a016e3f213fc2e5ae253456f07d317b8275f6a9a72625a2dbc12281d5a4",
+        "i16": "9df4300343e6583b6024953526b0e45a7789e312cf818c0babfb4fa0bcf60b07",
+        "peak": 0.6487857699394226,
+        "rms": 0.10126704485108551,
+        "samples": 1280
+      },
+      "22050": {
+        "f64": "a7854ba9e825bef3bc837c027c164a88ed2fd6f8470d3a1acaceab439fa56e87",
+        "i16": "13d55d7ac99a9d3d4e8c2e490d2caab553c65ca16f6d8ed52b63154eec5031fc",
+        "peak": 0.6564907431602478,
+        "rms": 0.10107107089408923,
+        "samples": 3528
+      },
+      "48000": {
+        "f64": "85bd6f1d94bcf32eacdd0baf0eecb3c6be303eb242eb3373e1a3c76b8f270a80",
+        "i16": "a2fe8353377bf4939b3f5e8d87f12dac62cc805fbcf52724e99e5bea973bff5e",
+        "peak": 0.6624279022216797,
+        "rms": 0.10100011740319809,
+        "samples": 7680
+      }
+    },
+    "compile": {
+      "engine": null,
+      "events": 4,
+      "phrasesDigest": "9206040e897ba3ecb0b000bf5cf09c2055b9b51773da8a8d99b82ad89f9c46f1",
+      "scheduleDigest": "f9dd0b019808c33c686726a67250dad88d15df06dfd916227378ede68a36f539",
+      "totalMs": 160,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 4,
+          "scheduleDigest": "f9dd0b019808c33c686726a67250dad88d15df06dfd916227378ede68a36f539",
+          "totalMs": 160
+        }
+      ],
+      "warnings": []
+    },
+    "group": "rate",
+    "id": "rate/5/stop",
+    "text": "r5 P AA",
+    "tokens": {
+      "count": 3,
+      "digest": "fd1bf051872726d383f5bf38f24105f4b816e73ca2d6262b0702f6707fa6e709",
+      "types": [
+        "directive",
+        "phoneme",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "audio": {
+      "8000": {
+        "f64": "f1124bd60b384a58f9f7bbf6cdfba73ad433e79a1762647116640bd3bf720dd8",
+        "i16": "6b1ed1dab12e008689936026aa3b1ca59aa11fc3c08cee96e403b5342e2704a5",
+        "peak": 0.8528369665145874,
+        "rms": 0.12100111766398283,
+        "samples": 1280
+      },
+      "22050": {
+        "f64": "8631d5fdda8bc0fcaf1fc53f29960d4b6c888c2dfd3b10d1993bf91924db008d",
+        "i16": "37a9e1218799e9006570cb03ff48ac6d4f2537313c4c4669a7600487d130feb9",
+        "peak": 0.8642330765724182,
+        "rms": 0.12411536713923499,
+        "samples": 3528
+      },
+      "48000": {
+        "f64": "bebe85b4fbfae79a2d2d7663f89f435b13e3e812e34718207c8ad6040ff322a8",
+        "i16": "63f6afec2e154cbacb03ef100cd354a97c143c37c231ddd7ecb721da6d58bff4",
+        "peak": 0.8637519478797913,
+        "rms": 0.1250276362099211,
+        "samples": 7680
+      }
+    },
+    "compile": {
+      "engine": null,
+      "events": 4,
+      "phrasesDigest": "cd89ec04dc7e0f948aa8a97cd08240f82777dd43bc976a7a1d889be6a5a3e58e",
+      "scheduleDigest": "e4b4ed998d82a4120f8369012893674346343340df03762d972b6fb8192ec593",
+      "totalMs": 160,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 4,
+          "scheduleDigest": "e4b4ed998d82a4120f8369012893674346343340df03762d972b6fb8192ec593",
+          "totalMs": 160
+        }
+      ],
+      "warnings": []
+    },
+    "group": "rate",
+    "id": "rate/5/glide",
+    "text": "r5 AY AA",
+    "tokens": {
+      "count": 3,
+      "digest": "a408ad074a5a29ee4e9ffa70adefbf4f76e2a3555f852d8ad567d6d0bdc18162",
+      "types": [
+        "directive",
+        "phoneme",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "audio": {
+      "8000": {
+        "f64": "caa59ad298969630895200667aa31e5b06b6dfad136ca47164f9819eeaae4e8f",
+        "i16": "6e05b4afba1bbd5269d4ce7d3c349dbad67ba1ccfc20b7282d7cd2ae75793129",
+        "peak": 0.723522424697876,
+        "rms": 0.12771131576623443,
+        "samples": 1280
+      },
+      "22050": {
+        "f64": "9d8529c5bb96ec678e8152e8242401e349a323f702088c56fb4a93b94f4883ce",
+        "i16": "6e6df040b8a2a274ed69fcb300f26fdc94216d1e5ee92a17c7eeb999065dabf4",
+        "peak": 0.7290700078010559,
+        "rms": 0.1300194528681268,
+        "samples": 3528
+      },
+      "48000": {
+        "f64": "4fcf04a4c13a34784c43e34a0ac8b341587448ca2853739ef9e46def9c382342",
+        "i16": "d69a5885239d81a504ac28b1a9861dd958f5161f2e9546cbdab0fa7540ca07ae",
+        "peak": 0.7344366908073425,
+        "rms": 0.1308154897333311,
+        "samples": 7680
+      }
+    },
+    "compile": {
+      "engine": null,
+      "events": 4,
+      "phrasesDigest": "d3c13f4111b615fb8fd4fa7350b9f54acb19d47e4bfaece469a94511fb878319",
+      "scheduleDigest": "04e8d5fc9ef28f7514c8264af7d7fccd0c3acdd454cf232a05199c867ac4f934",
+      "totalMs": 160,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 4,
+          "scheduleDigest": "04e8d5fc9ef28f7514c8264af7d7fccd0c3acdd454cf232a05199c867ac4f934",
+          "totalMs": 160
+        }
+      ],
+      "warnings": []
+    },
+    "group": "rate",
+    "id": "rate/5/pitch-move",
+    "text": "r5 AA+20 AA",
+    "tokens": {
+      "count": 3,
+      "digest": "c8b8c3e8a0bf19e078ef72a836aef600d0f2d09b29ee421d06d324ba3677884b",
+      "types": [
+        "directive",
+        "phoneme",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "audio": {
+      "8000": {
+        "f64": "a31ed5604be63cfd1ceccab742f3723b7c38201b4e7dc159307753fec29ebaa4",
+        "i16": "eb88ffbb4be1152ac3aa37b84e3764b598ac8cfd213c7416924e5d2892e480e6",
+        "peak": 0.6327954530715942,
+        "rms": 0.11134446424921618,
+        "samples": 1300
+      },
+      "22050": {
+        "f64": "8db71c1e81653bb8b73c5f7bac2b4add61aeb50618adb70c44bf058b0b4c0dd2",
+        "i16": "3e8591e0212b4e522aec1c1ea46b95885cbf0f48c49f56030622b3cf9a167be4",
+        "peak": 0.7251105904579163,
+        "rms": 0.11652524416363814,
+        "samples": 3584
+      },
+      "48000": {
+        "f64": "97de3db179fc487730a0f3420eef575c623d06f674cdeaa62ec9c185a1eb8117",
+        "i16": "f23ae9f316d51e0e4d37048d41b7d591234a116929677c42997e6cb65a5b0895",
+        "peak": 0.7155054211616516,
+        "rms": 0.11570953104658334,
+        "samples": 7800
+      }
+    },
+    "compile": {
+      "engine": null,
+      "events": 3,
+      "phrasesDigest": "1d48d1a9cbb1566983a11dbd1319f4bf807da1dff7ead5e410db9b86c34936d1",
+      "scheduleDigest": "0373cf8aadc558843e1a90d62fef3966ecdb8f281d60bf3a42e2d7f003892d08",
+      "totalMs": 162.5,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 3,
+          "scheduleDigest": "0373cf8aadc558843e1a90d62fef3966ecdb8f281d60bf3a42e2d7f003892d08",
+          "totalMs": 162.5
+        }
+      ],
+      "warnings": []
+    },
+    "group": "rate",
+    "id": "rate/5/stressed",
+    "text": "r5 AA' AA",
+    "tokens": {
+      "count": 3,
+      "digest": "470a94edb9496c29d51b0322d30b8af2fcc78135648d663d6bbb7f3372196b74",
+      "types": [
+        "directive",
+        "phoneme",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "audio": {
+      "8000": {
         "f64": "d6174a7d649226eacf87fdcd27faea14481cb058a6446f575a8e8bbc08ab8680",
         "i16": "246ef4098eb9640ab20bed353f91b84bde5bd67d08b69f81eb7bf13e2b4c0181",
         "peak": 0.6903707385063171,
@@ -24634,6 +25444,117 @@
         "directive",
         "directive",
         "phoneme",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "audio": {
+      "8000": {
+        "f64": "10d5a297296ab2f179a2222b3920ec411b8409b966d961e47e078d3a2c214757",
+        "i16": "485a9e61c15694855efd25118543e9aa279968233b260838d18f40bec471eb5a",
+        "peak": 0.8508569002151489,
+        "rms": 0.1887267128737134,
+        "samples": 2960
+      },
+      "22050": {
+        "f64": "a7d10ff543c608c5975538118ca45ff56e810a3d99a625dfb596729fa1733c48",
+        "i16": "bd0af59c40d0b49a7cde4fb7484523272598df04649acc460f0a156b1b97076b",
+        "peak": 0.8483834862709045,
+        "rms": 0.1933648586488623,
+        "samples": 8159
+      },
+      "48000": {
+        "f64": "5adb44344b7a37352c8bd9693e70ee1c3da5146f1f0bd9a3001edc84e508f005",
+        "i16": "336c13e8f292bdf00338a4a2006098f6f4932afece9d29d1895e5efa0fe62764",
+        "peak": 0.8499000072479248,
+        "rms": 0.19394289745091697,
+        "samples": 17760
+      }
+    },
+    "compile": {
+      "engine": null,
+      "events": 3,
+      "phrasesDigest": "479cd9186acb91a50e11a002180bd195d8b4e43945b542338c6316e2d38ca02c",
+      "scheduleDigest": "595087e60874c3f3842e584a58781fd604cc7e39e298164e8444081d99134731",
+      "totalMs": 370,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 3,
+          "scheduleDigest": "595087e60874c3f3842e584a58781fd604cc7e39e298164e8444081d99134731",
+          "totalMs": 370
+        }
+      ],
+      "warnings": []
+    },
+    "group": "voice-quality",
+    "id": "vq/vibrato-exceeds-f0",
+    "text": "b80 v200 w5 AA AA",
+    "tokens": {
+      "count": 5,
+      "digest": "957bee8a9b4a6461452b75e33192fdaf3d57a016145e0326d5e1330e79e80dd5",
+      "types": [
+        "directive",
+        "directive",
+        "directive",
+        "phoneme",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "audio": {
+      "8000": {
+        "f64": "d30e378aed69bed0e27dcf0623c099b0e56d991a0126e12e4226aeab5a896a0e",
+        "i16": "a1eece0eaa9f11aaaa57c888184d6af2bb8406f40d5bda0122d9b82bb0f79b64",
+        "peak": 0.8786563873291016,
+        "rms": 0.2469403367402805,
+        "samples": 2080
+      },
+      "22050": {
+        "f64": "12b60951b8b57df05fe40c0a56f66dc766b358bd54a07d6592dd99ebc8226600",
+        "i16": "1b4654566ff4ddd6bc6c82fbb3c388082e1b5fc3dc81e17d4f8eddbb30e2fab2",
+        "peak": 0.8829687833786011,
+        "rms": 0.25348418727462674,
+        "samples": 5733
+      },
+      "48000": {
+        "f64": "6e62c6c35ab1bb96d8ca7bc1df44972c2e4851a11c5bf9cae90f554f3ab6c89d",
+        "i16": "740e8f81ad243d5fb7a121827129336f1b18723f797434468977332ffa4a817a",
+        "peak": 0.882024884223938,
+        "rms": 0.2533913234080763,
+        "samples": 12480
+      }
+    },
+    "compile": {
+      "engine": null,
+      "events": 2,
+      "phrasesDigest": "34fe3b6af4791d5b6744fbd664e875485dcd279792d419b54345799b8bbd7590",
+      "scheduleDigest": "755c0a65423bf88c96cd17ef030dc2b2e9f1569986c2c073ee18589958665ef8",
+      "totalMs": 260,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 2,
+          "scheduleDigest": "755c0a65423bf88c96cd17ef030dc2b2e9f1569986c2c073ee18589958665ef8",
+          "totalMs": 260
+        }
+      ],
+      "warnings": []
+    },
+    "group": "voice-quality",
+    "id": "vq/vibrato-far-exceeds-f0",
+    "text": "b60 v400 w3 AA",
+    "tokens": {
+      "count": 4,
+      "digest": "1c1ce62446e0c168d50e6f8d3165f9fa9cdef3e440dbac6c9c73e66bcc579945",
+      "types": [
+        "directive",
+        "directive",
+        "directive",
         "phoneme"
       ]
     }

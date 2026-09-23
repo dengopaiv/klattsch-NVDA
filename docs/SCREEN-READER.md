@@ -141,6 +141,11 @@ degrades. A C port will improve it, but improving a number that is already
 sufficient is not a justification — the reasons for the port are the ones in
 [REWRITE.md](REWRITE.md), none of which is speed.
 
+> **Confirmed in stage 3, 2026-09-24.** Rendering in 137-sample chunks
+> produces output byte-identical to rendering whole — the synth's state
+> genuinely survives a call boundary — so the design below costs nothing in
+> fidelity. Registered as its own test (`stage3-chunked`) so it stays true.
+
 **Time to first audio is a real problem, and it is architectural rather than
 linguistic.** Rendering the paragraph whole costs **1.02 seconds before the
 first sound**. Chunked, it is **1.9 ms** — the compile plus one 20 ms chunk.
