@@ -15,7 +15,9 @@ Four pieces of work, in order, each finishable before the next begins:
 1. **Study the engine.** Written down in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 2. **Compare it to the other synthesizers** in `C:\git\speech synthesis\`, to
    know what it has, what it lacks, and what is worth borrowing.
-   [docs/COMPARISON.md](docs/COMPARISON.md).
+   [docs/COMPARISON.md](docs/COMPARISON.md), and
+   [docs/SCREEN-READER.md](docs/SCREEN-READER.md) for what a screen reader
+   needs that a WAV renderer does not.
 3. **Rewrite the engine in C.** [docs/REWRITE.md](docs/REWRITE.md).
 4. **Ship it**: an NVDA add-on ([docs/NVDA-ADDON.md](docs/NVDA-ADDON.md)) and a
    GUI sample generator ([docs/GENERATOR.md](docs/GENERATOR.md)).
@@ -32,12 +34,23 @@ Four pieces of work, in order, each finishable before the next begins:
   a numeric acceptance criterion in [docs/REWRITE.md](docs/REWRITE.md), and
   goldens captured from the JS before the first line of C is written.
 - **No runtime dependencies in the shipped artifacts.** The pattern to follow is
-  `votraxxion`: one native library per architecture, one Python shim, nothing
-  else. Not 40 MB of vendored wheels.
+  `votraxxion`: one native library, one Python shim, nothing else. Not 40 MB
+  of vendored wheels.
+- **64-bit only, everywhere.** No x86 library, no 32-bit executable, no
+  architecture switch. NVDA add-ons target 64-bit NVDA 2026.1 and later. House
+  rule §4 of `..\CLAUDE.md`.
 - **Klatt is the reference, not the constraint.** klattsch is a deliberately
   primitive three-formant parallel synth. Where the C port grows past that
   (cascade path, nasal pole/zero, more formants), it is an additive option with
   a documented default that reproduces the original, never a silent change.
+- **Every stage has an exit test.** A named, runnable check whose result is a
+  number or a diff — not "the code is written" and not "it sounds right". A
+  stage without a passing exit test is in progress, however finished the code
+  looks. One branch per stage; `main` holds only verified stages.
+- **Write down how a claim was established, not just the claim.** A numbered
+  chapter per stage: what was read, what was measured, what proved it. The
+  staged ports elsewhere in this tree are the standard to aim for, and their
+  method is the part that transfers even though their subject matter does not.
 - **Record what turned out to be wrong.** When an assumption in these documents
   is disproved, correct it in place and say what the measurement was. A plan
   with its mistakes edited out teaches nothing.

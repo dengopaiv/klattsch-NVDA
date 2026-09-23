@@ -7,14 +7,15 @@ synthesis project. This is not a new project, and the argument that decided
 `votraxxion` applies here unchanged:
 
 1. **One toolchain.** Plain C11 builds under MSVC, MinGW, clang and gcc with no
-   C++ ABI questions. The NVDA add-on needs x86 and x64 Windows libraries today
-   and a Linux build the day a Linux screen reader wants it.
+   C++ ABI questions. The add-on needs an x64 Windows library, and a Linux
+   build the day a Linux screen reader wants it. Everything here is 64-bit
+   only, per house rule §4 of `..\CLAUDE.md`.
 2. **No allocation on the speech path.** A synthesizer feeding an audio callback
    should never take the allocator lock. Fixed-capacity buffers with explicit
    bounds, sized above anything a screen reader hands over in one call.
 3. **Size.** Template instantiation and exception tables for a program that
-   never throws. The `votraxxion` C library is 153 KB per architecture; that is
-   the target shape.
+   never throws. The `votraxxion` C library is about 153 KB; that is the target
+   shape.
 
 And the shape of the thing agrees. `FormantSynth` is nine scalars, three biquad
 structs and a loop. `compileSection` is a cursor over a token array. Neither
@@ -159,31 +160,56 @@ index by a slot width.
 
 ## The order
 
-Bottom-up, so each step is verifiable before the next depends on it.
+Bottom-up, so each stage is verifiable before the next depends on it.
 
-- [ ] **0. Baseline.** `tools/goldens.mjs` against the JS engine; corpus above;
-      goldens checked in with their generator.
-- [ ] **1. `kl_dsp.c`.** Biquad, pulse, LFSR, soft clip. Checked against the JS
-      per function: a million LFSR states exactly, biquad coefficients across
-      the frequency/bandwidth grid, the pulse across phase × effort.
-- [ ] **2. `kl_banks.c` + `tools/build-banks-c.mjs`.** Generated from the same
-      JSON as `bundled.js`. Checked field by field across all three banks, with
-      `extends` resolution and `null` deletion exercised.
-- [ ] **3. `kl_synth.c`.** The sample loop, driven by a golden schedule read
-      from JSON so the compiler is not yet in the picture. Tier 2 comparison.
-- [ ] **4. `kl_token.c`.** Classification of every corpus token, exact.
-- [ ] **5. `kl_compile.c`.** The four shapes, directives, syllables, voices,
-      banks, extras, warnings. Tier 1 comparison, exact.
-- [ ] **6. `kl_wav.c` + `bin/klattsch_cli.c`.** End to end: the CLI renders the
-      whole corpus and every WAV is byte-identical to the JS CLI's.
-- [ ] **7. Extensions, each off by default.** Formant count as a build
-      dimension, `FNZ`/`FNP`, jitter/shimmer/flutter, per-phoneme duration,
-      cascade path. Each lands with the goldens re-run to prove the default
-      path is unchanged — extensions that alter the baseline are bugs.
-- [ ] **8. Regression.** The goldens run in CI, on every commit, forever.
+**Every stage has an exit test, and the exit test is what "done" means.** Not
+"the code is written" and not "it sounds right" — a named, runnable check whose
+result is a number or a diff. A stage without a passing exit test is in
+progress, however finished the code looks. This discipline is taken from the
+staged ports elsewhere in this tree, which is where it earned its keep: it is
+the thing that makes a long port recoverable when a later stage exposes a
+mistake in an earlier one.
 
-Steps 0–6 are the rewrite. Step 7 is the part that makes it worth having done,
-and nothing in step 7 begins until step 6 is green.
+Status key: ✅ done and verified · ◐ partly done, not verified · ○ not started
+
+| # | Stage | Exit test | Size | Risk | Status |
+|---|---|---|---|---|---|
+| 0 | **Baseline.** `tools/goldens.mjs` against the JS engine, the corpus above, goldens and their generator checked in | The generator re-run twice produces identical goldens; the corpus covers every item in the list above, and a deliberately broken JS engine is caught by it | medium | low | ○ |
+| 1 | **`kl_dsp.c`** — biquad, pulse, LFSR, soft clip | 1,000,000 LFSR states exact; biquad coefficients across the (f, bw) grid and the pulse across phase × effort within 1e-12 of the JS | small | low | ○ |
+| 2 | **`kl_banks.c`** + `tools/build-banks-c.mjs` | All three banks, field by field, identical to the resolved JS banks, with `extends` and `null` deletion exercised | small | low | ○ |
+| 3 | **`kl_synth.c`** — the sample loop, driven by a golden schedule from JSON so the compiler is not yet involved | Tier 2 on every schedule in the corpus: peak difference ≤ 1e-9, zero differing samples after 16-bit quantization | medium | medium | ○ |
+| 4 | **`kl_token.c`** | Every corpus token classified identically, exact, including the malformed ones | small | low | ○ |
+| 5 | **`kl_compile.c`** — the four shapes, directives, syllables, voices, banks, extras, warnings | Tier 1 on the whole corpus: event count, `atMs`, `transitionMs` and every target field exact as IEEE-754 doubles; warning strings identical | medium | **high** | ○ |
+| 6 | **`kl_wav.c`** + `bin/klattsch_cli.c` | The CLI renders the whole corpus and every WAV is byte-identical to the JS CLI's, on MSVC, clang-cl and gcc | small | low | ○ |
+| 7 | **Extensions**, each off by default | The stage-6 exit test still passes unchanged with every extension compiled in and defaulted off | medium | medium | ○ |
+| 8 | **Regression** — goldens in `ctest`, run in CI | A deliberately introduced one-sample error fails the build | small | low | ○ |
+
+Stages 0–6 are the rewrite. Stage 7 is the part that makes it worth having
+done, and nothing in stage 7 begins until stage 6 is green.
+
+Stage 5 is the only high-risk one: it is the largest translation, it is the
+only stage where a difference is a *logic* difference rather than a numeric
+one, and it is where the six hazards above mostly live. It sits after stage 3
+so that the sample loop — the part that is hard to debug by reading — is
+already known good when the compiler is under test.
+
+### Working rules
+
+- **One branch per stage; `main` holds only verified stages.** Each stage is
+  developed on its own branch (`stage0-goldens`, `stage1-dsp`, …) and merges to
+  `main` only when its exit test passes. `main` is then always a set of
+  completed, verified stages rather than a work in progress.
+- **Build with CMake from stage 1**, not at the end. The multi-compiler exit
+  test of stage 6 only works if it has been possible to run it all along, and a
+  port verified on one compiler is verified against that compiler's arithmetic
+  rather than against the reference.
+- **A chapter per stage**, numbered, in `docs/`: what was read, what was
+  measured, and how each claim was established — not just the conclusion. The
+  step log below is the index into those chapters.
+- **Measurements are part of the exit test.** Compile time and render speed
+  ([SCREEN-READER.md](SCREEN-READER.md) §3) are captured by the golden harness
+  from stage 3 onward, so a performance regression is caught the same way a
+  sample regression is.
 
 ## Step log
 

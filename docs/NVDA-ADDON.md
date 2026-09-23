@@ -2,14 +2,17 @@
 
 ## What it has to be
 
-One Python shim and one native library per architecture. No numpy, no scipy, no
+One Python shim and one native library. No numpy, no scipy, no
 pronunciation-dictionary package, no data files. The pattern is
-`votraxxion/nvda-addon/`, which ships in about 330 KB total for both
-architectures including a native GUI, after the Python add-on it replaced
-carried roughly 300 MB of vendored wheels to do the same job.
+`votraxxion/nvda-addon/`, whose add-on and GUI together ship in a few hundred
+KB, after the Python add-on it replaced carried roughly 300 MB of vendored
+wheels to do the same job.
 
-Two libraries because NVDA 2026 is 64-bit only and 2025 and earlier are 32-bit;
-the shim picks by `ctypes.sizeof(ctypes.c_void_p)`, not by NVDA version.
+**64-bit only.** One x64 library, `minimumNVDAVersion = 2026.1`. No x86 build,
+no architecture switch in the shim, no fallback path. House rule §4 of
+`..\CLAUDE.md` forbids producing a 32-bit version of anything, and dropping
+32-bit NVDA 2025 and earlier is the intended consequence rather than an
+oversight. ARM64 is added when it comes up.
 
 ## The blocking problem, and the answer
 
@@ -58,12 +61,11 @@ insufficient in real use.
 ```
 nvda-addon/
   manifest.ini
-  package.py                       builds both DLLs, writes the .nvda-addon
+  package.py                       builds the x64 DLL, writes the .nvda-addon
   addon/
     synthDrivers/
       klattsch.py                  the shim
       klattschNative-x64.dll
-      klattschNative-x86.dll
     doc/en/readme.html
 ```
 
@@ -131,10 +133,12 @@ the point of building both.
 
 ## Packaging
 
-`package.py` builds both DLLs, stamps the version and writes the
-`.nvda-addon` (a zip). Version lives in three places that move together:
-`nvda-addon/manifest.ini`, the `VERSIONINFO` block in the GUI's `.rc`, and the
-release script — same discipline as `votraxxion/packaging/`.
+`package.py` builds the x64 DLL, stamps the version and writes the
+`.nvda-addon` (a zip). **The version lives in one place** — a constant in the
+public C header — and everything that needs it parses that: CMake's
+`project(VERSION)`, the add-on manifest, the GUI's `VERSIONINFO`, and the
+release script. Three places that "move together" is three places that can
+drift; one place cannot.
 
 Releases carry a SHA-256 for every file. The build is unsigned, and a checksum
 somebody can actually check is the only thing distinguishing it from any other
@@ -151,5 +155,6 @@ unsigned executable.
 - [ ] **4.** Contour pass: sentence-final falling and rising.
 - [ ] **5.** C API for the add-on: text in, audio out, cancel, settings.
       Exercised from a C test harness before Python sees it.
-- [ ] **6.** The shim, against NVDA 2023.1 through 2026.1.
-- [ ] **7.** `package.py`, both architectures, checksums.
+- [ ] **6.** The shim, against 64-bit NVDA 2026.1 and later, with
+      [SCREEN-READER.md](SCREEN-READER.md) §2 as the acceptance checklist.
+- [ ] **7.** `package.py`, x64 only, checksums.
