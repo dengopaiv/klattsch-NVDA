@@ -100,8 +100,17 @@ Tier 2 -- sin/cos involved, bound 1e-12
   biquad coefficient grid            ok   2800 values, all bit-identical
 ```
 
-✅ Passes, on MSVC and on clang-cl, and the two compilers' output is
-**byte-identical to each other on all five sections**.
+✅ Passes on **all four toolchains available here**, across two C runtimes and
+two operating systems:
+
+| Toolchain | libm | `glottalPulse` vs the JS |
+|---|---|---|
+| MSVC 19.51 x64 | UCRT | max \|diff\| 2.22e-16, 98.74% bit-identical |
+| clang-cl (VS 18 LLVM) | UCRT | max \|diff\| 2.22e-16, 98.74% bit-identical |
+| WinLibs gcc 16.2 (MinGW-w64) | UCRT | max \|diff\| 2.22e-16, 98.74% bit-identical |
+| Debian gcc 14.2 under WSL | **glibc 2.41** | max \|diff\| 2.22e-16, 98.40% bit-identical |
+
+`tools/build-matrix.ps1` builds and verifies all four in one command.
 
 ### What the numbers say
 
@@ -111,11 +120,31 @@ the JavaScript on 1.26% of the 101,000 grid points, always by one ULP:
 1e-12 bound and ~11 orders below the 16-bit LSB (3.05e-5). The split criterion
 was the right call, and the bound is not close to binding.
 
-**The biquad coefficients are bit-identical on all 2800 values.** MSVC's and
-clang-cl's `sin`/`cos` agree with V8's exactly across the whole grid,
-including both clamp regions. Pleasant, and not something to rely on: the
-`glottalPulse` result shows the same functions disagreeing elsewhere, so the
-tolerance stays.
+**The biquad coefficients are bit-identical on all 2800 values**, on every
+toolchain, including the glibc one. Both libms agree with V8 exactly across
+the whole grid. Pleasant, and not something to rely on — the `glottalPulse`
+result shows the same functions disagreeing elsewhere — so the tolerance stays.
+
+**The libms genuinely differ, and that is the useful finding.** Cross-comparing
+the four builds byte for byte:
+
+| Section | MSVC | clang-cl | WinLibs gcc | WSL gcc |
+|---|---|---|---|---|
+| `lfsr` | `3E7273BD9854` | `3E7273BD9854` | `3E7273BD9854` | `3E7273BD9854` |
+| `softclip` | `2951B3F2AC2C` | `2951B3F2AC2C` | `2951B3F2AC2C` | `2951B3F2AC2C` |
+| `pulse` | `5E09C1DFA5B8` | `5E09C1DFA5B8` | `5E09C1DFA5B8` | **`6D2D485FEBFD`** |
+| `biquad` | `C11ACBE3797E` | `C11ACBE3797E` | `C11ACBE3797E` | `C11ACBE3797E` |
+| `cache` | `1A233902AB05` | `1A233902AB05` | `1A233902AB05` | `1A233902AB05` |
+
+Every Tier 1 section is bit-identical across two libms and two operating
+systems — the integer and rational arithmetic is not negotiable and does not
+vary. `pulse` differs under glibc, by the same one-ULP magnitude but at a
+**different set of points** (98.40% bit-identical against 98.74%, first maximum
+at index 60472 rather than 62493).
+
+That is the split acceptance criterion doing exactly what it was written for.
+Had the rule been "byte-identical or it is a bug", this stage would have passed
+on Windows and failed on Linux, for a reason that is not a bug.
 
 ## 13.5 The build
 
@@ -128,10 +157,22 @@ hard error rather than a quiet success, per house rule §4.
 `ctest` registers three tests: `stage1-dsp` (label `validation`),
 `goldens-current` and `banks-current` (label `quick`). All three pass in 8 s.
 
-Not yet built: **gcc on Linux**. No gcc is installed on this machine, so the
-third leg of the stage 6 exit test is unproven. That is a gap, recorded here
-rather than glossed: two Windows compilers agreeing tells us less than a
-Windows compiler and a Linux one agreeing, because the former share a CRT.
+**The gcc gap is closed.** It was recorded here as unproven, on the grounds
+that two Windows compilers sharing a CRT prove less than a Windows and a Linux
+compiler. Both legs now exist:
+
+- **WinLibs gcc 16.2** (`C:\GIT\environment\winlibs\mingw64`), a MinGW-w64
+  UCRT build. It is deliberately **not on `PATH`** in this environment so it
+  cannot shadow MSVC, so the matrix script prepends its directory only for the
+  invocation that needs it.
+- **Debian gcc 14.2 under WSL**, on glibc 2.41. This is the leg that matters,
+  and it earns its place by disagreeing: see the table above. WinLibs being
+  UCRT means it is *not* an independent libm from MSVC's, so adding it alone
+  would have looked like confirmation while proving very little.
+
+WSL has no node, so its build is verified by dumping the sections to files and
+running the verifier from Windows — `tools/verify-stage1.mjs` takes a directory
+as well as an executable for exactly this.
 
 ## 13.6 Step log
 
@@ -149,4 +190,11 @@ verifier splits Tier 1 from Tier 2 (§13.3). No golden loosened.
 **Exit test passes** on MSVC and clang-cl, which are byte-identical to each
 other. `glottalPulse` max |diff| 2.22e-16 against the JS; biquad bit-identical.
 
-**gcc not run.** Recorded as a gap in §13.5.
+**gcc gap closed** — WinLibs gcc 16.2 (UCRT) and Debian gcc 14.2 under WSL
+(glibc 2.41) both build clean and pass. `tools/build-matrix.ps1` runs all four
+toolchains in one command; `tools/verify-stage1.mjs` grew a directory mode so a
+machine with no node can be verified from one that has it.
+
+**The glibc leg disagreed, as designed.** `pulse` has a different digest under
+glibc while every Tier 1 section is bit-identical across all four builds. The
+tolerance exists for precisely this, and the measured difference is one ULP.

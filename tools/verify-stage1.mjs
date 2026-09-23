@@ -25,7 +25,7 @@
 
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, statSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -34,11 +34,17 @@ import { glottalPulse, BandpassBiquad } from '../src/engine/index.js';
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '..');
 
-const exe = process.argv[2];
-if (!exe || !existsSync(exe)) {
-  process.stderr.write('usage: node tools/verify-stage1.mjs <path-to-kl_dsp_dump>\n');
+// Either run the dump tool, or read sections already dumped to files. The
+// second form is for a build on a machine with no node -- dump there, verify
+// here -- which is how the WSL glibc build is checked from Windows.
+const target = process.argv[2];
+if (!target || !existsSync(target)) {
+  process.stderr.write(
+    'usage: node tools/verify-stage1.mjs <path-to-kl_dsp_dump>\n'
+    + '       node tools/verify-stage1.mjs <dir-of-dumped-sections>\n');
   process.exit(2);
 }
+const fromDir = statSync(target).isDirectory();
 
 const TOLERANCE = 1e-12;
 let failures = 0;
@@ -48,7 +54,15 @@ const line = (label, detail, ok) => {
 };
 
 function dump(section) {
-  return execFileSync(exe, [section], { maxBuffer: 1 << 28 });
+  if (fromDir) {
+    const path = join(target, `${section}.bin`);
+    if (!existsSync(path)) {
+      process.stderr.write(`missing ${path}\n`);
+      process.exit(2);
+    }
+    return readFileSync(path);
+  }
+  return execFileSync(target, [section], { maxBuffer: 1 << 28 });
 }
 
 // --- the JavaScript side has not moved --------------------------------------

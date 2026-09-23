@@ -245,8 +245,10 @@ needs it: CMake's `project(VERSION)`, the add-on manifest, the GUI's
 `VERSIONINFO`, the release script. Three places that "move together" is three
 places that can drift.
 
-**Built by more than one compiler, on more than one OS.** MSVC and clang-cl on
-Windows, gcc on Linux, producing the same samples. A port verified on one
+**Built by more than one compiler, on more than one OS.** Four here: MSVC,
+clang-cl and WinLibs gcc on Windows (all UCRT), and Debian gcc under WSL on
+glibc. Only the last is an independent libm, so it is the one that tests the
+Tier 2 tolerance rather than confirming a shared implementation. A port verified on one
 compiler is verified against that compiler's arithmetic, not against the
 reference. Measured 2026-09-23: MSVC accepts C23 binary literals and digit
 separators in `/std:c17` mode, so MSVC alone will not tell you your C17 is not
@@ -303,6 +305,7 @@ are the record of what was actually measured.
    sample loop is verified before the C compiler exists. This is the first
    stage where Tier 2 applies to whole rendered utterances rather than to a
    grid of one function.
-3. **A gcc build**, on Linux or under MSYS2. Stage 1 passes on MSVC and
-   clang-cl, but those share a CRT; the stage 6 exit test wants a genuinely
-   different libm in the set.
+3. **Keep the four-toolchain matrix green** as each stage lands.
+   `tools/build-matrix.ps1` covers MSVC, clang-cl, WinLibs gcc and WSL's
+   Debian gcc — two C runtimes, two operating systems. The glibc leg is the
+   one that catches what the Windows three cannot, since they share UCRT.

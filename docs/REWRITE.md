@@ -312,6 +312,14 @@ from Tier 2 (value comparison against a live recomputation), and the Tier 2
 digests keep their job as tamper-evidence that the JS has not moved. No golden
 was loosened to make the stage pass.
 
-gcc on Linux is not installed here, so the third leg of the stage 6 exit test
-is unproven. Two Windows compilers agreeing tells us less than a Windows and a
-Linux compiler agreeing, because the former share a CRT.
+The gcc gap recorded when this stage was first written is **closed**: WinLibs
+gcc 16.2 (MinGW-w64, UCRT) and Debian gcc 14.2 under WSL (glibc 2.41) both
+build clean and pass, giving four toolchains over two C runtimes and two
+operating systems. `tools/build-matrix.ps1` runs them all.
+
+The glibc leg is the one that matters, and it **disagreed** — `pulse` has a
+different digest there, while every Tier 1 section is bit-identical across all
+four builds. Same one-ULP magnitude, different set of points. Had the rule been
+"byte-identical or it is a bug", stage 1 would have passed on Windows and
+failed on Linux for a reason that is not a bug. The split criterion is doing
+the job it was written for.
