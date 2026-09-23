@@ -33,3 +33,27 @@ jobs:
       # engine one constant at a time and requires each to be caught.
       - name: the corpus can fail
         run: bash tools/golden-mutations.sh
+
+  stage1:
+    name: Stage 1 -- kl_dsp.c against the JavaScript
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: "lts/*"
+          package-manager-cache: false
+
+      # gcc is the third leg of the stage 6 exit test and is not installed on
+      # the development machine, so CI is where it actually gets exercised.
+      - name: build (gcc)
+        run: |
+          cc --version
+          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build
+
+      - name: stage 1 exit test
+        run: ctest --test-dir build --output-on-failure

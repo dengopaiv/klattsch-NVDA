@@ -228,7 +228,7 @@ Status key: ✅ done and verified · ◐ partly done, not verified · ○ not st
 | # | Stage | Exit test | Size | Risk | Status |
 |---|---|---|---|---|---|
 | 0 | **Baseline.** `tools/goldens.mjs` against the JS engine, the corpus above, goldens and their generator checked in | The generator re-run twice produces identical goldens; the corpus covers every item in the list above, and a deliberately broken JS engine is caught by it | medium | low | ✅ |
-| 1 | **`kl_dsp.c`** — biquad, pulse, LFSR, soft clip | 1,000,000 LFSR states exact; biquad coefficients across the (f, bw) grid and the pulse across phase × effort within 1e-12 of the JS | small | low | ○ |
+| 1 | **`kl_dsp.c`** — biquad, pulse, LFSR, soft clip | 1,000,000 LFSR states exact; biquad coefficients across the (f, bw) grid and the pulse across phase × effort within 1e-12 of the JS | small | low | ✅ |
 | 2 | **`kl_banks.c`** + `tools/build-banks-c.mjs` | All three banks, field by field, identical to the resolved JS banks, with `extends` and `null` deletion exercised | small | low | ○ |
 | 3 | **`kl_synth.c`** — the sample loop, driven by a golden schedule from JSON so the compiler is not yet involved | Tier 2 on every schedule in the corpus: peak difference ≤ 1e-9, zero differing samples after 16-bit quantization | medium | medium | ○ |
 | 4 | **`kl_token.c`** | Every corpus token classified identically, exact, including the malformed ones | small | low | ○ |
@@ -292,3 +292,26 @@ The fourth was a wrong expectation rather than a hole: editing
 `klatt1980-en.json` moves no golden because **the engine imports `bundled.js`,
 not the JSON**. That is `build-banks.js --check`'s job. The mutation now
 asserts the division of labour in both directions instead of being deleted.
+
+**1. `kl_dsp.c`** ✅ — [docs/13-stage1-dsp.md](13-stage1-dsp.md). Four
+primitives, ~120 lines of C17, clean at `/W4` and at `-Wall -Wextra -Wpedantic
+-Wshadow -Wconversion`. Exit test passes on **MSVC 19.51 and clang-cl**, whose
+output is byte-identical to each other on all five sections.
+
+Tier 1 exact: the million LFSR states, `softClip`, and the coefficient-cache
+relations. Tier 2: `glottalPulse` max |diff| **2.22e-16** against the JS
+(1.26% of 101,000 points differ, always by one ULP), biquad coefficients
+**bit-identical on all 2800 values**. The bound is 1e-12, so the measured
+difference is ~4 orders inside it and ~11 orders below the 16-bit LSB — the
+split criterion was right and is nowhere near binding.
+
+Stage 1 exposed a gap in stage 0: **a digest cannot express a tolerance**, so
+`primitives.json`'s digests are the right bar for the exact primitives and the
+wrong one for the two that call `sin`. The verifier now splits Tier 1 (digest)
+from Tier 2 (value comparison against a live recomputation), and the Tier 2
+digests keep their job as tamper-evidence that the JS has not moved. No golden
+was loosened to make the stage pass.
+
+gcc on Linux is not installed here, so the third leg of the stage 6 exit test
+is unproven. Two Windows compilers agreeing tells us less than a Windows and a
+Linux compiler agreeing, because the former share a CRT.

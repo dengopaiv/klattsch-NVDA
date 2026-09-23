@@ -7,3 +7,8 @@ output/
 
 # bun lockfile from one-off lint runs
 bun.lock
+
+# CMake build trees. One per compiler while the multi-compiler exit test of
+# stage 6 is being worked towards.
+build/
+build-*/
