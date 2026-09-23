@@ -148,14 +148,25 @@ byte-identical to the JavaScript CLI's, on MSVC, clang-cl and gcc.
       on-disk bytes against freshly generated text, so a Windows checkout with
       `core.autocrlf=true` has CRLF where the generator writes LF, and it
       false-positives. The banks have not drifted.
-- [ ] **Fix the guard rather than living with it.** A `.gitattributes` pinning
-      `bundled.js` to LF, or a `--check` that normalizes before comparing.
-      Cheap now; a recurring false alarm across the whole port if left. The
-      guard is also **wired to nothing** — neither workflow runs it — so it
-      joins `ctest` at stage 8 alongside the goldens.
-- [ ] **Line endings decided for the goldens.** Files compared byte for byte
-      must not be rewritten by git on checkout. Same fix, decided once, before
-      any golden exists.
+- [x] **Fix the guard rather than living with it.** **Done 2026-09-23.** Both
+      halves: `.gitattributes` pins `bundled.js` to LF so a checkout stops
+      rewriting it, and `--check` normalizes line endings before comparing so
+      it stays correct in a tree cloned before that pin existed. A
+      line-endings-only difference now passes with a note naming the cause
+      rather than failing. Verified on three cases — CRLF on disk passes with
+      the note, LF on disk passes clean, and a deliberately altered formant
+      value in `klatt1980-en.json` still fails with exit 1. That last case is
+      the one worth keeping: a staleness guard that cannot fail is worse than
+      no guard.
+- [x] **Line endings decided for the goldens.** **Done 2026-09-23.**
+      `.gitattributes` pins `goldens/**` to LF and every binary extension to
+      `binary`, with the binary rules last so a captured WAV under `goldens/`
+      is never converted. Decided before the first golden exists, which was
+      the point.
+- [x] **The guard is wired to something.** **Done 2026-09-23.** It ran nowhere
+      — neither workflow invoked it. `.github/workflows/check.yml` now runs it
+      on push and pull request. It joins the goldens in `ctest` at stage 8;
+      until CMake exists there is no reason a Node check should wait for it.
 
 ## Phase 3 — Extend the engine ○
 
@@ -265,7 +276,7 @@ CMakeLists.txt  the product build: library, CLI, tests
 | 0 — Study | ✅ done |
 | 1 — Compare | ✅ done |
 | 1 — Screen-reader requirements | ✅ done |
-| 2 — Rewrite (stages 0–6) | ○ not started · 1 of 3 prerequisites settled |
+| 2 — Rewrite (stages 0–6) | ○ not started · **prerequisites all settled** |
 | 3 — Extend + measure | ○ not started |
 | 4 — Generator | ○ not started |
 | 5 — Add-on | ○ not started |
@@ -275,12 +286,11 @@ are the record of what was actually measured.
 
 ## The next three things
 
-1. **Pin line endings** for generated and golden files, and fix
-   `build-banks.js --check` so it stops false-positiving on Windows. Settles
-   the two open prerequisites above.
-2. **Write `tools/goldens.mjs` and capture the baseline** — stage 0. This is
+1. **Write `tools/goldens.mjs` and capture the baseline** — stage 0. This is
    the first test this codebase has ever had, so the corpus list in
    [REWRITE.md](REWRITE.md) is worth reviewing before it is captured rather
-   than after.
-3. **`kl_dsp.c`** — stage 1. The smallest and least risky translation, and the
+   than after. The goldens land LF-pinned, which is now true by default.
+2. **`kl_dsp.c`** — stage 1. The smallest and least risky translation, and the
    one that proves the harness works end to end.
+3. **`kl_banks.c`** — stage 2, generated from the same JSON as `bundled.js`,
+   now with a CI check standing guard over the shared source of truth.

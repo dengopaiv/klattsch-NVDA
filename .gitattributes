@@ -1,0 +1,43 @@
+# Line endings.
+#
+# Some files here are compared byte for byte -- the generated phoneme-bank
+# bundle against its generator's output, and (from stage 0 of the C rewrite)
+# golden corpora against a fresh render. Git rewriting line endings on checkout
+# breaks that comparison: on Windows with core.autocrlf=true the working tree
+# gets CRLF where the generator writes LF, and the file looks changed when its
+# content is identical. That already happened once -- see docs/ROADMAP.md,
+# phase 2 prerequisites.
+#
+# The rule: anything compared byte for byte is pinned to LF, and anything
+# binary is never converted at all. The last matching pattern wins.
+
+# Default: let git decide what is text, and keep LF in the repository.
+* text=auto
+
+# Generated. tools/build-banks.js writes LF and its --check mode compares
+# against what is on disk.
+src/engine/banks/bundled.js text eol=lf
+
+# Golden corpora and their manifests. Byte-for-byte comparison is the whole
+# point of these, so they must arrive exactly as they were captured.
+goldens/** text eol=lf
+
+# C sources and the build, pinned so three compilers on two operating systems
+# are reading identical bytes.
+*.c    text eol=lf
+*.h    text eol=lf
+*.cmake text eol=lf
+CMakeLists.txt text eol=lf
+
+# Shell scripts break if they arrive with CRLF.
+*.sh text eol=lf
+
+# Never convert. Listed last so these win over every rule above, including
+# goldens/** for a captured WAV.
+*.wav  binary
+*.bin  binary
+*.dll  binary
+*.exe  binary
+*.nvda-addon binary
+*.gif  binary
+*.mp3  binary

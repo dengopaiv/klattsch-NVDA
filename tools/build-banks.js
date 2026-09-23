@@ -51,6 +51,14 @@ function render(banks) {
 const banks = loadBanks();
 const rendered = render(banks);
 
+// Staleness is a question about content, not about line endings. A Windows
+// checkout with core.autocrlf=true has CRLF on disk where this generator
+// writes LF, and a raw string comparison then reports every such checkout as
+// stale even when the data is byte-identical to what is committed.
+// .gitattributes pins this file to LF; normalizing here as well keeps the
+// check correct in a tree that was cloned before that pin existed.
+const normalizeEol = (s) => s.replace(/\r\n/g, '\n');
+
 if (process.argv.includes('--check')) {
   let existing = '';
   try {
@@ -58,14 +66,26 @@ if (process.argv.includes('--check')) {
   } catch {
     /* missing file: treated as stale */
   }
-  if (existing !== rendered) {
+  if (normalizeEol(existing) !== normalizeEol(rendered)) {
     process.stderr.write(
       'bundled.js is out of date with src/engine/banks/*.json. ' +
         'Re-run `node tools/build-banks.js`.\n',
     );
     process.exit(1);
   }
-  process.stdout.write(`bundled.js up to date (${Object.keys(banks).length} banks)\n`);
+  const banksCount = Object.keys(banks).length;
+  if (existing !== rendered) {
+    // Content matches; only the line endings differ. Not stale, but worth
+    // saying, because the working tree does differ from what the generator
+    // writes and a byte-for-byte tool other than this one would notice.
+    process.stdout.write(
+      `bundled.js up to date (${banksCount} banks); on-disk line endings are ` +
+        'CRLF where the generator writes LF. Content is identical. ' +
+        'See .gitattributes.\n',
+    );
+  } else {
+    process.stdout.write(`bundled.js up to date (${banksCount} banks)\n`);
+  }
 } else {
   writeFileSync(outFile, rendered);
   process.stdout.write(
