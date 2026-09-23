@@ -187,15 +187,18 @@ that alters the baseline is a bug, not a new voice.
 All three come from [SCREEN-READER.md](SCREEN-READER.md), and all three are
 cheap now and expensive later.
 
-- [ ] **Latency.** Compile time for a long utterance, and render speed as a
-      multiple of real time. klattsch recomputes three biquads' coefficients
-      *every sample* during a transition and interpolates 19 parameters per
-      sample, so the second number is not obviously comfortable. Both enter the
-      golden harness at stage 3 and decide how urgent the next item is.
-- [ ] **Chunked rendering** in the C API, with cancel between chunks, so time
-      to first audio is one chunk rather than one utterance. The DSP needs no
-      change — `kl_synth` already renders into a caller's buffer of any length
-      and keeps its state between calls.
+- [x] **Latency — measured 2026-09-23 on the JavaScript engine**, which is the
+      baseline the C port inherits. **42–44× real time**, flat across a line, a
+      45-second paragraph and a 20 ms chunk; compile time 1.4 ms for the
+      paragraph. Throughput is ample and is *not* a reason to port. But
+      rendering a paragraph whole costs **1.02 s before the first sample**,
+      against **1.9 ms** chunked — a factor of ~500, available in any language.
+      Full table in [SCREEN-READER.md](SCREEN-READER.md) §3.
+- [ ] **Chunked rendering** in the C API, with cancel between chunks. Promoted
+      by that measurement from "better" to **the design**: a whole-utterance
+      loop in C would buy ~10× and leave a ~100 ms stall, which chunking in
+      JavaScript already beats. The DSP needs no change — `kl_synth` renders
+      into a caller's buffer of any length and keeps its state between calls.
 - [ ] **Parameter audibility.** Every frozen constant rendered across its range
       and sorted into three lists: settings-ring material, generator-only, and
       inaudible or one-directional. This is a document, and it decides what

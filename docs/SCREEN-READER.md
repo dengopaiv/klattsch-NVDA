@@ -118,22 +118,44 @@ paragraph means rendering the whole paragraph before the first word is heard.
 - `cancel()` between chunks stops the render immediately rather than discarding
   work already done.
 
-**Measure before assuming this is enough.** Two numbers decide it, and neither
-is known yet:
+### Measured, 2026-09-23
 
-1. **Compile time for a long utterance.** The compiler runs before any audio
-   can be produced, so it is pure latency. It is a single pass over tokens and
-   should be microseconds, but it has never been measured.
-2. **Render speed as a multiple of real time.** klattsch recomputes three
-   biquads' coefficients *every sample* during a transition — two `sin`, one
-   `cos`, one divide per resonator per sample — and interpolates 19 parameters
-   per sample. That is a lot of work per sample by the standards of this
-   family. If it renders at only a few times real time, chunked rendering is
-   mandatory rather than merely better.
+The JavaScript engine, Node 26.7, 48 kHz, on the development machine. Warmed
+JIT, averaged over 50 iterations for the line and 10 for the paragraph.
 
-Both go in the golden harness as timings, so a regression in either is caught
-the same way a regression in the samples is. Neither is a reason to optimise
-before measuring.
+| | Audio | Compile | Render | Ratio |
+|---|---|---|---|---|
+| One line (48 events) | 3.86 s | 0.12 ms | 90.8 ms | **42.5× real time** |
+| One paragraph (565 events) | 44.67 s | 1.40 ms | 1023.3 ms | **43.7× real time** |
+| One 20 ms chunk | 20 ms | — | 0.47 ms | **42× real time** |
+
+Three conclusions, and the third is the one that matters.
+
+**Compile time is not a latency source.** 1.4 ms for a 45-second paragraph. It
+can be ignored.
+
+**Throughput is not a problem either, and it is not a reason to port.** 42×
+real time in JavaScript is already ample for a screen reader, and the ratio is
+flat across utterance lengths and chunk sizes, so there is no size at which it
+degrades. A C port will improve it, but improving a number that is already
+sufficient is not a justification — the reasons for the port are the ones in
+[REWRITE.md](REWRITE.md), none of which is speed.
+
+**Time to first audio is a real problem, and it is architectural rather than
+linguistic.** Rendering the paragraph whole costs **1.02 seconds before the
+first sound**. Chunked, it is **1.9 ms** — the compile plus one 20 ms chunk.
+That is a factor of about 500, and it is available in any language. Writing
+the same whole-utterance loop in C would buy roughly 10× and leave a ~100 ms
+stall in its place; chunking in JavaScript would beat it outright.
+
+So chunked rendering is not an optimisation to consider after the port. It is
+the design, and the port inherits it rather than fixes it. On slower hardware
+than this machine every ratio falls together, which changes none of the above:
+the whole-utterance stall scales with the machine, and the chunked one does
+not.
+
+Both timings go in the golden harness, so a regression in either is caught the
+same way a regression in the samples is.
 
 ## 4. Failure modes to design against
 
