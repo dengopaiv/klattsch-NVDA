@@ -64,7 +64,7 @@ function render() {
   const names = banks.list().sort();
   const out = [];
 
-  out.push('/* Generated from src/engine/banks/*.json by tools/build-banks-c.mjs.');
+  out.push('/* Generated from the JSON files in src/engine/banks by tools/build-banks-c.mjs.');
   out.push(' * Do not edit by hand. Re-run the generator when the banks change.');
   out.push(' *');
   out.push(' * Banks are emitted already resolved: `extends` and `null` deletion have');

@@ -72,3 +72,10 @@ jobs:
       # second libm as well as a second compiler.
       - name: the sample-loop comparison can fail
         run: python3 tools/stage3-mutations.py build
+
+      # Stage 4 is Tier 1 -- no tolerance -- so a disagreement here is a bug
+      # rather than a libm difference. Running it on Ubuntu gcc puts the
+      # tokenizer against a second C runtime, and the normalization half
+      # against a second build of the same generated table.
+      - name: the tokenizer comparison can fail
+        run: python3 tools/stage4-mutations.py build

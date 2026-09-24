@@ -306,7 +306,7 @@ CMakeLists.txt  the product build: library, CLI, tests
 | 0 — Study | ✅ done |
 | 1 — Compare | ✅ done |
 | 1 — Screen-reader requirements | ✅ done |
-| 2 — Rewrite (stages 0–6) | ◐ **stages 0–3 ✅**, stages 4–6 not started |
+| 2 — Rewrite (stages 0–6) | ◐ **stages 0–4 ✅**, stages 5–6 not started |
 | 3 — Extend + measure | ○ not started |
 | 4 — Generator | ○ not started |
 | 5 — Add-on | ○ not started |
@@ -316,11 +316,18 @@ are the record of what was actually measured.
 
 ## The next three things
 
-1. **`kl_token.c`** — stage 4, exact classification of every corpus token,
-   including the malformed ones. Back to Tier 1: no arithmetic, no tolerance.
-2. **`kl_compile.c`** — stage 5, the only high-risk stage in the plan. The
-   largest translation, and the one where a difference is a logic difference
-   rather than a numeric one.
+1. **`kl_compile.c`** — stage 5, and the only high-risk stage in the plan.
+   The four phrase shapes, directives, syllables, voices, banks, extras and
+   the warning strings. The largest translation, and the one where a
+   difference is a logic difference rather than a numeric one. Tier 1 on the
+   whole corpus: event count, `atMs`, `transitionMs` and every target field
+   exact as IEEE-754 doubles, warning strings identical.
+2. **Decide what normalization the product needs.** Stage 4 ships the NFKC
+   singleton table and leaves out canonical composition, with a measurement
+   bounding the cost: the only thing that can differ is the byte content of an
+   `unknown` token holding a combining mark. That is the right trade for a
+   phoneme grammar. It may not be once the text front end of phase 3 is
+   feeding it real prose — see [16-stage4-token.md](16-stage4-token.md) §16.1.
 3. **Keep the four-toolchain matrix green** as each stage lands.
    `tools/build-matrix.ps1` covers MSVC, clang-cl, WinLibs gcc and WSL's
    Debian gcc — two C runtimes, two operating systems. The glibc leg is the

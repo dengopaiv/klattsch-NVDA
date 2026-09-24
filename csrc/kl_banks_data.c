@@ -1,4 +1,4 @@
-/* Generated from src/engine/banks/*.json by tools/build-banks-c.mjs.
+/* Generated from the JSON files in src/engine/banks by tools/build-banks-c.mjs.
  * Do not edit by hand. Re-run the generator when the banks change.
  *
  * Banks are emitted already resolved: `extends` and `null` deletion have
