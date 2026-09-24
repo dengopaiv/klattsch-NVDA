@@ -3,6 +3,10 @@
 #   pwsh tools/build-matrix.ps1            build all, run the stage verifiers
 #   pwsh tools/build-matrix.ps1 -Compare   also diff the compilers against each other
 #
+# Covers stages 1 to 5. The -Compare table walks stage 1's sections only: they
+# are the ones that can legitimately differ between libms, which is the whole
+# reason the WSL leg is here.
+#
 # The stage 6 exit test requires MSVC, clang-cl and gcc to produce identical
 # samples. That only works if all of them have been runnable all along, so this
 # runs from stage 1 rather than appearing at the end.
@@ -28,11 +32,20 @@ param(
 $ErrorActionPreference = "Stop"
 $repo = Split-Path $PSScriptRoot -Parent
 # Per stage: the dump tool, its verifier, and the sections it emits.
+#
+# Stages 3, 4 and 5 were added in stage 5. Before that this script covered
+# stages 1 and 2 only, and the later stages were built and verified per
+# toolchain by hand -- which is worse, not better, and was written up as a
+# weakness in ROADMAP.md rather than left implied.
 $stages = @(
-  @{ Stage = 1; Tool = "kl_dsp_dump";   Verify = "verify-stage1.mjs";
+  @{ Stage = 1; Tool = "kl_dsp_dump";     Verify = "verify-stage1.mjs";
      Sections = @("lfsr", "softclip", "pulse", "biquad", "cache") },
-  @{ Stage = 2; Tool = "kl_banks_dump"; Verify = "verify-stage2.mjs";
-     Sections = @("banks", "probe") }
+  @{ Stage = 2; Tool = "kl_banks_dump";   Verify = "verify-stage2.mjs";
+     Sections = @("banks", "probe") },
+  @{ Stage = 3; Tool = "kl_synth_dump";   Verify = "verify-stage3.mjs" },
+  @{ Stage = 4; Tool = "kl_token_dump";   Verify = "verify-stage4.mjs";
+     Tool2 = "kl_norm_dump" },
+  @{ Stage = 5; Tool = "kl_compile_dump"; Verify = "verify-stage5.mjs" }
 )
 # The cross-compiler comparison walks stage 1's sections: they are the ones
 # that can legitimately differ between libms. Stage 2 is pure table data.
@@ -103,7 +116,10 @@ foreach ($b in @("build-msvc", "build-clang", "build-gcc")) {
     $exe = Join-Path $repo "$b\$($st.Tool).exe"
     if (Test-Path $exe) {
       Write-Host "--- $b, stage $($st.Stage) ---"
-      & node (Join-Path $repo "tools\$($st.Verify)") $exe | Select-Object -Last 3 | Write-Host
+      # Stage 4 takes two tools: the tokenizer's dump and the normalizer's.
+      $vargs = @($exe)
+      if ($st.Tool2) { $vargs += (Join-Path $repo "$b\$($st.Tool2).exe") }
+      & node (Join-Path $repo "tools\$($st.Verify)") @vargs | Select-Object -Last 3 | Write-Host
     }
   }
 }
@@ -118,10 +134,41 @@ if ($wslOk) {
   # inline gets eaten somewhere between PowerShell, wsl.exe and bash, and the
   # dump tool is then called with no argument at all.
   $shFile = Join-Path $dump "dump.sh"
-  $body = "set -e`ncd '$wslRepo'`nfor s in $($sections -join ' '); do`n  ./build-wsl/kl_dsp_dump `"`$s`" > '$wslDump'/`"`$s`".bin`ndone`n"
-  [IO.File]::WriteAllText($shFile, ($body -replace "`r`n", "`n"))
+  # The sample rates come from the goldens' own manifest rather than a list
+  # repeated here, so a rate added to the corpus cannot silently stop being
+  # covered on the one toolchain with a different libm.
+  $manifest = Get-Content (Join-Path $repo "goldens\manifest.json") -Raw | ConvertFrom-Json
+  $rates = $manifest.audioRates
+
+  $lines = @("set -e", "cd '$wslRepo'")
+  # Stage 1: one file per section.
+  $lines += "for s in $($sections -join ' '); do"
+  $lines += "  ./build-wsl/kl_dsp_dump `"`$s`" > '$wslDump'/`"`$s`".bin"
+  $lines += "done"
+  # Stage 3: one file per sample rate, named as verify-stage3 expects.
+  $lines += "for r in $($rates -join ' '); do"
+  $lines += "  ./build-wsl/kl_synth_dump goldens/schedules.bin `"`$r`" > '$wslDump'/`"`$r`".bin"
+  $lines += "done"
+  # Stages 4 and 5.
+  $lines += "./build-wsl/kl_norm_dump --allcp > '$wslDump'/norm.bin"
+  $lines += "./build-wsl/kl_token_dump goldens/cases-text.bin > '$wslDump'/tokens.bin"
+  $lines += "./build-wsl/kl_token_dump --numbers goldens/numbers.bin > '$wslDump'/numbers.bin"
+  $lines += "./build-wsl/kl_token_dump goldens/divergences.bin > '$wslDump'/divergences.bin"
+  $lines += "./build-wsl/kl_compile_dump goldens/cases-compile.bin > '$wslDump'/compile.bin"
+
+  # Built in two statements on purpose: PowerShell binds the -replace operands
+  # as further arguments to WriteAllText if the expression is written inline,
+  # and the error it gives ("no overload ... argument count 3") names neither.
+  $body = (($lines -join "`n") + "`n") -replace "`r`n", "`n"
+  [IO.File]::WriteAllText($shFile, $body)
   wsl -d $WslDistro -- bash "$wslDump/dump.sh" | Out-Null
-  & node (Join-Path $repo "tools\verify-stage1.mjs") $dump | Select-Object -Last 4 | Write-Host
+
+  # Stage 2 has no directory mode and needs none: it is pure table data, with
+  # no arithmetic a second libm could answer differently.
+  foreach ($st in ($stages | Where-Object { $_.Stage -ne 2 })) {
+    Write-Host "--- build-wsl, stage $($st.Stage) ---"
+    & node (Join-Path $repo "tools\$($st.Verify)") $dump | Select-Object -Last 4 | Write-Host
+  }
 }
 
 # --- do the compilers agree with each other? --------------------------------

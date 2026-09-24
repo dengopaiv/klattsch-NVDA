@@ -6,6 +6,7 @@
 //   node tools/cases-to-bin.mjs              -> goldens/cases-text.bin
 //   node tools/cases-to-bin.mjs --numbers    -> goldens/numbers.bin (the Number() grid)
 //   node tools/cases-to-bin.mjs --divergence -> goldens/divergences.bin
+//   node tools/cases-to-bin.mjs --compile    -> goldens/cases-compile.bin
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import { ALL as DIVERGENCE_INPUTS } from './stage4-divergences.mjs';
@@ -49,6 +50,51 @@ export function numberGrid() {
   return out;
 }
 
+// The ten scalar options compileSection reads, in the order kl_opt declares
+// them in csrc/kl_compile.h. The order is part of the wire format between
+// this and kl_compile_dump, so it is written down once and shared rather
+// than repeated in two places that can drift.
+export const OPT_NAMES = [
+  'baseF0', 'rate', 'scale',
+  'vibratoDepth', 'vibratoRate',
+  'tremoloDepth', 'tremoloRate',
+  'aspiration', 'tilt', 'effort',
+];
+
+// Stage 5 needs each case's opts as well as its text: `bank`, `extras` and
+// `engine` all change what the compiler produces, and 262 of the 714 cases
+// carry one. `gain` is in the corpus too and is deliberately not here -- it
+// is a renderer option that compileSection never reads.
+export function packCompileCases(cases) {
+  const parts = [Buffer.alloc(4)];
+  parts[0].writeUInt32LE(cases.length);
+  const u32 = (n) => { const b = Buffer.alloc(4); b.writeUInt32LE(n); return b; };
+  const f64 = (x) => { const b = Buffer.alloc(8); b.writeDoubleLE(x); return b; };
+  const str = (s) => { const b = Buffer.from(s ?? '', 'utf8'); return [u32(b.length), b]; };
+
+  for (const c of cases) {
+    const o = c.opts ?? {};
+    parts.push(...str(c.text));
+
+    let mask = 0;
+    const vals = [];
+    OPT_NAMES.forEach((name, i) => {
+      if (o[name] !== undefined) mask |= (1 << i);
+      vals.push(o[name] ?? 0);
+    });
+    parts.push(u32(mask));
+    for (const v of vals) parts.push(f64(v));
+
+    parts.push(...str(o.bank));
+    parts.push(...str(o.engine));
+
+    const extras = Object.entries(o.extras ?? {});
+    parts.push(u32(extras.length));
+    for (const [k, v] of extras) { parts.push(...str(k)); parts.push(f64(v)); }
+  }
+  return Buffer.concat(parts);
+}
+
 // Only when run as a program. verify-stage4.mjs imports numberGrid() from
 // here, and an import that rewrites the corpus as a side effect is a test
 // that quietly changes its own inputs.
@@ -61,6 +107,11 @@ if (!runAsScript) {
 } else if (process.argv.includes('--divergence')) {
   writeFileSync(join(root, 'goldens', 'divergences.bin'), pack(DIVERGENCE_INPUTS));
   process.stdout.write(`wrote goldens/divergences.bin  ${DIVERGENCE_INPUTS.length} inputs
+`);
+} else if (process.argv.includes('--compile')) {
+  const cases = JSON.parse(readFileSync(join(root, 'goldens', 'cases.json'), 'utf8'));
+  writeFileSync(join(root, 'goldens', 'cases-compile.bin'), packCompileCases(cases));
+  process.stdout.write(`wrote goldens/cases-compile.bin  ${cases.length} cases
 `);
 } else if (wantNumbers) {
   const grid = numberGrid();

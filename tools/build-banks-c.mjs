@@ -32,6 +32,42 @@ const outFile = join(here, '..', 'csrc', 'kl_banks_data.c');
 // C struct, the dump tool and the verifier all share.
 const NUMERIC = ['voicing', 'F1', 'F2', 'F3', 'BW1', 'BW2', 'BW3', 'A1', 'A2', 'A3'];
 
+// Everything a phoneme entry is allowed to contain. The generator reads a
+// fixed set of fields, so anything outside this list would be dropped on the
+// floor without a word -- and the JS `scaled()` spreads the whole phoneme
+// object into every schedule target, so a dropped field is a real difference
+// between the two engines and not a cosmetic one.
+//
+// Added in stage 5, after the C compiler was written against `glideTo` and
+// found to be reading exactly F1, F2 and F3 from it because that is all any
+// bank happens to define. That was true, and nothing was checking it.
+const PHONEME_KEYS = new Set([...NUMERIC, 'isStop', 'glideTo', 'ipa', 'example', 'source']);
+const GLIDE_KEYS = new Set(['F1', 'F2', 'F3']);
+
+function checkPhonemeShape(bankName, code, p) {
+  for (const k of Object.keys(p)) {
+    if (!PHONEME_KEYS.has(k)) {
+      throw new Error(
+        `${bankName}.${code}: unknown phoneme field ${JSON.stringify(k)}. `
+        + 'csrc/kl_banks.h has no slot for it, so it would be silently dropped '
+        + 'from the C tables while the JS still spreads it into every schedule '
+        + 'target. Add it to kl_phoneme and to this list, together.');
+    }
+  }
+  if (p.glideTo) {
+    for (const k of Object.keys(p.glideTo)) {
+      if (!GLIDE_KEYS.has(k)) {
+        throw new Error(
+          `${bankName}.${code}.glideTo: unknown field ${JSON.stringify(k)}. `
+          + 'kl_glide holds F1, F2 and F3 only, and csrc/kl_compile.c relies on '
+          + 'that: it takes the bandwidths and amplitudes from the phoneme even '
+          + 'on the glide event, which is only correct while glideTo cannot '
+          + 'carry them.');
+      }
+    }
+  }
+}
+
 function cString(s) {
   if (s == null) return 'NULL';
   const escaped = String(s)
@@ -102,6 +138,7 @@ function render() {
     out.push(`static const kl_phoneme ph_${ident}[] = {`);
     for (const code of codes) {
       const p = bank.phonemes[code];
+      checkPhonemeShape(name, code, p);
       const nums = NUMERIC.map((k) => cDouble(p[k] ?? 0)).join(', ');
       const glide = p.glideTo
         ? `1, { ${cDouble(p.glideTo.F1)}, ${cDouble(p.glideTo.F2)}, ${cDouble(p.glideTo.F3)} }`

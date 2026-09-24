@@ -12749,6 +12749,124 @@
       }
     ]
   ],
+  "voice/warning-in-second": [
+    [
+      {
+        "atMs": 0,
+        "target": {
+          "A1": 1,
+          "A2": 0.9,
+          "A3": 0.7,
+          "BW1": 130,
+          "BW2": 70,
+          "BW3": 160,
+          "F0": 120,
+          "F1": 700,
+          "F2": 1220,
+          "F3": 2600,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5,
+          "voicing": 1
+        },
+        "transitionMs": 35
+      },
+      {
+        "atMs": 110,
+        "target": {
+          "A1": 0,
+          "A2": 0,
+          "A3": 0,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5
+        },
+        "transitionMs": 100
+      }
+    ],
+    [
+      {
+        "atMs": 0,
+        "target": {
+          "A1": 0,
+          "A2": 0,
+          "A3": 0,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5
+        },
+        "transitionMs": 100
+      }
+    ]
+  ],
+  "voice/warnings-in-both": [
+    [
+      {
+        "atMs": 0,
+        "target": {
+          "A1": 0,
+          "A2": 0,
+          "A3": 0,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5
+        },
+        "transitionMs": 100
+      }
+    ],
+    [
+      {
+        "atMs": 0,
+        "target": {
+          "A1": 0,
+          "A2": 0,
+          "A3": 0,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5
+        },
+        "transitionMs": 100
+      }
+    ],
+    [
+      {
+        "atMs": 0,
+        "target": {
+          "A1": 0,
+          "A2": 0,
+          "A3": 0,
+          "aspiration": 0,
+          "effort": 0.5,
+          "tilt": 0,
+          "tremoloDepth": 0,
+          "tremoloRate": 5,
+          "vibratoDepth": 0,
+          "vibratoRate": 5
+        },
+        "transitionMs": 100
+      }
+    ]
+  ],
   "vq/all": [
     [
       {

@@ -243,7 +243,7 @@ Status key: ✅ done and verified · ◐ partly done, not verified · ○ not st
 | 2 | **`kl_banks.c`** + `tools/build-banks-c.mjs` | All three banks, field by field, identical to the resolved JS banks, with `extends` and `null` deletion exercised | small | low | ✅ |
 | 3 | **`kl_synth.c`** — the sample loop, driven by a golden schedule so the compiler is not yet involved | Tier 2 on every schedule in the corpus, at all three sample rates: every differing sample sub-ULP, zero differing samples after 16-bit quantization | medium | medium | ✅ |
 | 4 | **`kl_token.c`** + `kl_norm.c` | Every corpus token classified identically, exact, including the malformed ones; normalization exhaustive over all 1,112,064 code points | **medium** | low | ✅ |
-| 5 | **`kl_compile.c`** — the four shapes, directives, syllables, voices, banks, extras, warnings | Tier 1 on the whole corpus: event count, `atMs`, `transitionMs` and every target field exact as IEEE-754 doubles; warning strings identical | medium | **high** | ○ |
+| 5 | **`kl_compile.c`** — the four shapes, directives, syllables, voices, banks, extras, warnings | Tier 1 on the whole corpus: event count, `atMs`, `transitionMs` and every target field exact as IEEE-754 doubles; warning strings identical | medium | **high** | ✅ |
 | 6 | **`kl_wav.c`** + `bin/klattsch_cli.c` | The CLI renders the whole corpus and every WAV is byte-identical to the JS CLI's, on MSVC, clang-cl and gcc | small | low | ○ |
 | 7 | **Extensions**, each off by default | The stage-6 exit test still passes unchanged with every extension compiled in and defaulted off | medium | medium | ○ |
 | 8 | **Regression** — goldens in `ctest`, run in CI | A deliberately introduced one-sample error fails the build | small | low | ◐ |
@@ -252,22 +252,31 @@ Stages 0–6 are the rewrite. Stage 7 is the part that makes it worth having
 done, and nothing in stage 7 begins until stage 6 is green.
 
 Stage 8 is marked partly done rather than not started, because most of it
-arrived early and it would be dishonest to claim otherwise. Nine `ctest`
-entries cover stages 1 to 4 and the three currency guards; all four mutation
+arrived early and it would be dishonest to claim otherwise. Ten `ctest`
+entries cover stages 1 to 5 and the three currency guards; all five mutation
 suites and the whole of `ctest` run in CI on every push and pull request; and
 its exit test has actually been performed — a deliberately broken engine was
 pushed on 2026-09-24 and watched go red, with the numbers in
-[ROADMAP.md](ROADMAP.md). What is missing is the part the stage is really
-about: CI builds with **one** compiler, so the four-toolchain agreement that
-stages 1 to 4 rest on is not enforced by anything automatic. Nor is it fully
-scripted — `tools/build-matrix.ps1` runs the stage 1 and 2 verifiers only, and
-stages 3 and 4 were checked across toolchains by hand.
+[ROADMAP.md](ROADMAP.md). Stage 5 closed the other half of the gap recorded
+here: `tools/build-matrix.ps1` now runs every stage on all four toolchains in
+one command, where before it covered stages 1 and 2 only. What is still
+missing is the part the stage is really about: CI builds with **one**
+compiler, so the four-toolchain agreement the earlier stages rest on is not
+enforced by anything automatic.
 
-Stage 5 is the only high-risk one: it is the largest translation, it is the
-only stage where a difference is a *logic* difference rather than a numeric
-one, and it is where the six hazards above mostly live. It sits after stage 3
-so that the sample loop — the part that is hard to debug by reading — is
-already known good when the compiler is under test.
+Stage 5 was the only high-risk one: the largest translation, the only stage
+where a difference is a *logic* difference rather than a numeric one, and
+where the six hazards above mostly live. It sat after stage 3 so that the
+sample loop — the part that is hard to debug by reading — was already known
+good when the compiler went under test.
+
+That ordering paid off in an unexpected way. The compiler's verifier passed on
+its first run, which for the highest-risk stage is the least reassuring way to
+pass; what found the real problems was the mutation suite, and what it found
+was five holes in the *corpus* rather than five bugs in the C. The largest:
+of the 262 cases carrying options, not one set a scalar, so all ten of the
+compiler's `opts.x ?? default` initial values could have come from the wrong
+place with the whole corpus green. See [17-stage5-compile.md](17-stage5-compile.md) §17.7.
 
 ### Working rules
 
@@ -340,9 +349,10 @@ The gcc gap recorded when this stage was first written is **closed**: WinLibs
 gcc 16.2 (MinGW-w64, UCRT) and Debian gcc 14.2 under WSL (glibc 2.41) both
 build clean and pass, giving four toolchains over two C runtimes and two
 operating systems. `tools/build-matrix.ps1` runs them all — by hand, on the
-development machine. Only the Ubuntu gcc leg runs in CI, so this and every
-later "passes on four toolchains" is a measurement with a date on it rather
-than a property enforced on every push. [ROADMAP.md](ROADMAP.md), cross-cutting
+development machine, and since stage 5 it runs every stage's verifier rather
+than only stages 1 and 2. Only the Ubuntu gcc leg runs in CI, so this and
+every later "passes on four toolchains" is a measurement with a date on it
+rather than a property enforced on every push. [ROADMAP.md](ROADMAP.md), cross-cutting
 rules, says what closing that would take.
 
 The glibc leg is the one that matters, and it **disagreed** — `pulse` has a
@@ -427,3 +437,32 @@ both directions on every run.
 `tools/stage4-mutations.py`: **24 of 24 caught**, after closing three corpus
 gaps — one of which showed that `comment/hash-not-at-boundary` had never
 tested what its name claims.
+
+**5. `kl_compile.c`** ✅ — [docs/17-stage5-compile.md](17-stage5-compile.md).
+The cursor, the four phoneme shapes, directives, syllables, voice sections,
+banks, extras and the warning strings. Compiles straight into the `kl_event`
+array `kl_synth_queue()` already takes, so stage 6 needs no conversion step.
+
+Exit test: **729 cases over 20 groups**, 53,460 target fields over 2,430
+events, 1,445 phrase spans and 744 per-voice schedules, every field exact as
+IEEE-754 doubles and every digest matching the frozen goldens — on all four
+toolchains, byte-identical. REWRITE's Tier 1 reserved a 1e-9 tolerance for
+`noteToHz`; it was not needed, because `noteToHz` is spent in the tokenizer
+and this stage only ever sees the number the token already carried. **No
+tolerance anywhere in stage 5.**
+
+The verifier passed on its first run. `tools/stage5-mutations.py` — 51
+mutations — is what made that mean anything: **43 caught, 8 missed** on the
+first pass. Three of the misses are unreachable and each was *proved* so
+(disjoint key spaces; `burstMs × 0.2 ≤ 5` over 402,001 slot widths; 455
+directive tokens with zero ever both `reset` and `relative`), and are kept
+with `expect_caught=False` so the claim is re-checked every run. The other
+five were holes in the corpus, closed with 15 new cases: **51 of 51** on the
+second pass.
+
+Two findings that were not about the C at all. The golden harness had been
+digesting the Japanese banks' `ipa` and `example` strings as NaN on 28 cases,
+because `Buffer.writeDoubleLE` of a string does not throw. And **not one of
+the 262 cases carrying options set a scalar**, so all ten `opts.x ?? default`
+initial values — the path a screen reader uses on every utterance — were
+unverified.
