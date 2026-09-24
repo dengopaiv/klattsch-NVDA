@@ -40,7 +40,7 @@ so the reference implementation cannot disagree with its own source.
 
 ```
   Phase 0   Study                  -> ARCHITECTURE.md        done
-  Phase 1   Compare                -> COMPARISON.md          done
+  Phase 1   Compare                -> kept privately          done
             Screen-reader needs    -> SCREEN-READER.md       done
   Phase 2   Rewrite in C           -> REWRITE.md stages 0-6  done
   Phase 3   Extend the engine      -> REWRITE.md stage 7
@@ -93,14 +93,19 @@ interpolated parameters are the small half of the real surface.
 
 ## Phase 1 — Compare ✅
 
-Two documents, because there are two different questions.
+Two questions, and only one of the two answers belongs in a public
+repository.
 
-**[COMPARISON.md](COMPARISON.md)** — klattsch against the twelve synthesizers
-surveyed in `..\speech synths overview.md`. Four findings:
+**The comparison itself is kept privately and is not in this repository.**
+Several of the engines klattsch was measured against are private disassembly
+work; naming them here, or repeating what taking them apart established about
+their internals, would put that work in a public repository by the back door.
+What the comparison concluded *about klattsch* is below, and is the part that
+shapes this project:
 
-1. **Three formants is the defining limit.** Every other formant synth in the
-   folder has more. The bank format already anticipates `F4`+; the DSP does
-   not. Formant count becomes a build dimension.
+1. **Three formants is the defining limit.** Every other formant synth it was
+   measured against has more. The bank format already anticipates `F4`+; the
+   DSP does not. Formant count becomes a build dimension.
 2. **The text front end is the blocking gap for NVDA, and it is already solved
    next door.** `votraxxion/src/ttv.c` does text → ARPABET in C with no
    allocation and no data files. klattsch speaks ARPABET. Its first stage lifts

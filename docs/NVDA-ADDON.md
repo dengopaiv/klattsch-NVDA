@@ -40,10 +40,10 @@ What has to be built on top of the lift:
   stress affects both duration (×1.5) and pitch (+8 Hz), so a stress
   assignment pass is needed. First cut: primary stress on the first full vowel
   of a content word, which is what most of this family of synth does.
-- **Number, abbreviation and symbol normalization.** TruVoice is the model for
-  how far this can go (addresses, phone numbers, email headers). The first
-  version needs cardinals, ordinals, and the punctuation names a screen reader
-  says aloud.
+- **Number, abbreviation and symbol normalization.** Commercial screen-reader
+  engines take this a long way — addresses, phone numbers, email headers — and
+  that is the standard to measure against eventually. The first version needs
+  cardinals, ordinals, and the punctuation names a screen reader says aloud.
 - **Sentence contour.** The compiler already has punctuation pauses and
   per-phoneme pitch deltas. A contour pass emits `.` as falling and `?` as
   rising by writing pitch deltas onto the last stressed vowel, which means it

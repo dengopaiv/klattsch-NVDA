@@ -2,9 +2,9 @@
 
 ## Why C and not C++
 
-The survey in `..\speech synths overview.md` recommends modern C++ for a new
-synthesis project. This is not a new project, and the argument that decided
-`votraxxion` applies here unchanged:
+The survey these projects were planned against recommends modern C++ for a
+new synthesis project. This is not a new project, and the argument that
+decided `votraxxion` applies here unchanged:
 
 1. **One toolchain.** Plain C17 builds under MSVC, MinGW, clang and gcc with no
    C++ ABI questions. The add-on needs an x64 Windows library, and a Linux

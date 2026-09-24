@@ -13,11 +13,15 @@ ones upstream froze as constants.
 Four pieces of work, in order, each finishable before the next begins:
 
 1. **Study the engine.** Written down in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
-2. **Compare it to the other synthesizers** in `C:\git\speech synthesis\`, to
-   know what it has, what it lacks, and what is worth borrowing.
-   [docs/COMPARISON.md](docs/COMPARISON.md), and
-   [docs/SCREEN-READER.md](docs/SCREEN-READER.md) for what a screen reader
-   needs that a WAV renderer does not.
+2. **Compare it to the other synthesizers** studied alongside it, to know what
+   it has, what it lacks, and what is worth borrowing. **That write-up is kept
+   privately and is not part of this repository** — several of the engines it
+   compares against are private disassembly work, and naming them here would
+   put that work in a public repository by the back door. What it concluded
+   *about klattsch* is in [docs/ROADMAP.md](docs/ROADMAP.md) phase 3 and in
+   [docs/REWRITE.md](docs/REWRITE.md), where it belongs.
+   [docs/SCREEN-READER.md](docs/SCREEN-READER.md) is the other half of this
+   phase and stays: what a screen reader needs that a WAV renderer does not.
 3. **Rewrite the engine in C.** [docs/REWRITE.md](docs/REWRITE.md).
 4. **Ship it**: an NVDA add-on ([docs/NVDA-ADDON.md](docs/NVDA-ADDON.md)) and a
    GUI sample generator ([docs/GENERATOR.md](docs/GENERATOR.md)).

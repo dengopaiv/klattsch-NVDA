@@ -8,8 +8,8 @@
 > including the ones frozen as constants today.
 >
 > The plan is written down in [`docs/ROADMAP.md`](docs/ROADMAP.md), with the
-> engine study in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), a comparison
-> against twelve other synthesizers in [`docs/COMPARISON.md`](docs/COMPARISON.md),
+> engine study in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), what a screen
+> reader needs in [`docs/SCREEN-READER.md`](docs/SCREEN-READER.md),
 > and the C rewrite, add-on and generator plans in
 > [`docs/REWRITE.md`](docs/REWRITE.md), [`docs/NVDA-ADDON.md`](docs/NVDA-ADDON.md)
 > and [`docs/GENERATOR.md`](docs/GENERATOR.md).
