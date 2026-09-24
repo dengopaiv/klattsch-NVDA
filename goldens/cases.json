@@ -10029,6 +10029,69 @@
   {
     "compile": {
       "engine": null,
+      "events": 3,
+      "phrasesDigest": "479cd9186acb91a50e11a002180bd195d8b4e43945b542338c6316e2d38ca02c",
+      "scheduleDigest": "15bbcf83a685487a82f23f20158c110c2da112a004f92fcdcef1cdcdbd23f751",
+      "totalMs": 370,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 3,
+          "scheduleDigest": "15bbcf83a685487a82f23f20158c110c2da112a004f92fcdcef1cdcdbd23f751",
+          "totalMs": 370
+        }
+      ],
+      "warnings": []
+    },
+    "group": "directive",
+    "id": "directive/pitch-bracket",
+    "text": "[pitch=200] AA AA",
+    "tokens": {
+      "count": 3,
+      "digest": "e80a937f56f2c00ab3dcf555a39c6791a92e73c7ff138fc3ea59f8e0996ad186",
+      "types": [
+        "directive",
+        "phoneme",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "compile": {
+      "engine": null,
+      "events": 3,
+      "phrasesDigest": "cf775574f0a4075b80783c4d4207db615bc7d171a238e55fea7a6d30102e12a2",
+      "scheduleDigest": "b08db9847049201eb5369834c2c5d4d74aa01fbbaf9515d67b5176777e16bde7",
+      "totalMs": 370,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 3,
+          "scheduleDigest": "b08db9847049201eb5369834c2c5d4d74aa01fbbaf9515d67b5176777e16bde7",
+          "totalMs": 370
+        }
+      ],
+      "warnings": []
+    },
+    "group": "directive",
+    "id": "directive/pitch-then-base",
+    "text": "[pitch=200] AA b+10 AA",
+    "tokens": {
+      "count": 4,
+      "digest": "806e26b507afd87748560dc21b797d2e2a8f7d629235d22e69301537bc543815",
+      "types": [
+        "directive",
+        "phoneme",
+        "directive",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "compile": {
+      "engine": null,
       "events": 2,
       "phrasesDigest": "f5f1cfd7a6a1efefdf3d533ed51d5bd99a8bd00384861a67d5326068c474f96f",
       "scheduleDigest": "65096678aaf08e4945065fbf4c4a45729edaaf17383d0f70de47968d031ea56a",
@@ -18214,6 +18277,41 @@
     }
   },
   {
+    "compile": {
+      "engine": null,
+      "events": 3,
+      "phrasesDigest": "36d862f0d2fca8c10a6ea63f3537d796f48064f543e9c77260517c60e13962ce",
+      "scheduleDigest": "0b317a995dad1d1110e26b1c3fe0202732b7b7843b72bd4e9b895a3c60325d56",
+      "totalMs": 370,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 3,
+          "scheduleDigest": "0b317a995dad1d1110e26b1c3fe0202732b7b7843b72bd4e9b895a3c60325d56",
+          "totalMs": 370
+        }
+      ],
+      "warnings": []
+    },
+    "group": "bank",
+    "id": "bank/reset-to-opts-distinct",
+    "opts": {
+      "bank": "ja-mokhtari-2000"
+    },
+    "text": "[bank=ja-hecko-2026] A [bank] A",
+    "tokens": {
+      "count": 4,
+      "digest": "04540ca55a3f0d6823ffb0649591c70dc7e5c50b6e450748ffb8182716523023",
+      "types": [
+        "bank_switch",
+        "phoneme",
+        "bank_reset",
+        "phoneme"
+      ]
+    }
+  },
+  {
     "audio": {
       "8000": {
         "f64": "704ed5125b68ef05d3155a5619f991fd12997def2767fcd51d7cd2f57d63ea2e",
@@ -18669,6 +18767,140 @@
     }
   },
   {
+    "audio": {
+      "8000": {
+        "f64": "4ef9e4c0ef31344d71b8d863c65f29008410d57b4ae5e37701148eb58720fc2a",
+        "i16": "cc76f3a30d790135a71a8064d7f755fadc9afd527d001339774c656625e04146",
+        "peak": 0.667471706867218,
+        "rms": 0.1440817386830327,
+        "samples": 2080
+      },
+      "22050": {
+        "f64": "470173295097a6343276aa7dff1c8106956b180370bcf6a3112f2c085aa03469",
+        "i16": "2b91cb4a85818ae63ad183c18f1221839e7c4a0d8d0405a4fac5327064d55cc5",
+        "peak": 0.7004112005233765,
+        "rms": 0.14679978360287907,
+        "samples": 5733
+      },
+      "48000": {
+        "f64": "cf59af924c7e16e7de6b0f2604c2bd93f46be3ee6a9174dd3f9e421a0b9c3f67",
+        "i16": "60128643b02ac8baf63f13e0f4dbcfe6018d5c2b668fd81fddbc3e65be425608",
+        "peak": 0.70860356092453,
+        "rms": 0.14665681721066928,
+        "samples": 12480
+      }
+    },
+    "compile": {
+      "engine": null,
+      "events": 2,
+      "phrasesDigest": "b4ea20a73ce4f3975cb442b1922fc6456fbe38ea38631b77c00055c51176d2a7",
+      "scheduleDigest": "4ab1be5b6b4d6ed093a4be16f1bda476544f89ba0300617c9479d63ab86caf50",
+      "totalMs": 260,
+      "voiceCount": 2,
+      "voices": [
+        {
+          "engine": null,
+          "events": 2,
+          "scheduleDigest": "4ab1be5b6b4d6ed093a4be16f1bda476544f89ba0300617c9479d63ab86caf50",
+          "totalMs": 260
+        },
+        {
+          "engine": null,
+          "events": 1,
+          "scheduleDigest": "fea83b934073661775174fddbdcdac74eb92a4a7cb3379dff5211296ada249eb",
+          "totalMs": 150
+        }
+      ],
+      "warnings": [
+        "unknown phoneme: ZZZ"
+      ]
+    },
+    "group": "voice",
+    "id": "voice/warning-in-second",
+    "text": "AA [voice=1] ZZZ",
+    "tokens": {
+      "count": 3,
+      "digest": "dcbc034e2c930f928874800dd66194decee699ea6e376f324ef8acf6780356b1",
+      "types": [
+        "phoneme",
+        "directive",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "audio": {
+      "8000": {
+        "f64": "b1c591b028ed13e9df78d683fc3853d56808e5d8a885e72b70e7eec13d1a8d7c",
+        "i16": "02d12d69fa037e60ee5497b5f7576d397873714720830d08f74c5a3c87ffdede",
+        "peak": 0,
+        "rms": 0,
+        "samples": 1200
+      },
+      "22050": {
+        "f64": "b4728cc3703a4df45293431fd383ae2fbbcc4fa91eab48b7c213743769888bbb",
+        "i16": "2291ff4ba543070f71168bc3a4706ee22677b4d99d9ab4218f5771ce27a4013d",
+        "peak": 0,
+        "rms": 0,
+        "samples": 3308
+      },
+      "48000": {
+        "f64": "4d0684167699b54019600daf67c787e4c3b4c917782028968073658353771cbf",
+        "i16": "f69e7e9a52aef157c3d9bf318cefcede462ac7d1fcf9ea6dcfaa51f12c901c53",
+        "peak": 0,
+        "rms": 0,
+        "samples": 7200
+      }
+    },
+    "compile": {
+      "engine": null,
+      "events": 1,
+      "phrasesDigest": "5ec55c9e4d2bb0e0a34f1eb308bc84435b6012009effeb53bb02c8c1c192841a",
+      "scheduleDigest": "fea83b934073661775174fddbdcdac74eb92a4a7cb3379dff5211296ada249eb",
+      "totalMs": 150,
+      "voiceCount": 3,
+      "voices": [
+        {
+          "engine": null,
+          "events": 1,
+          "scheduleDigest": "fea83b934073661775174fddbdcdac74eb92a4a7cb3379dff5211296ada249eb",
+          "totalMs": 150
+        },
+        {
+          "engine": null,
+          "events": 1,
+          "scheduleDigest": "fea83b934073661775174fddbdcdac74eb92a4a7cb3379dff5211296ada249eb",
+          "totalMs": 150
+        },
+        {
+          "engine": null,
+          "events": 1,
+          "scheduleDigest": "fea83b934073661775174fddbdcdac74eb92a4a7cb3379dff5211296ada249eb",
+          "totalMs": 150
+        }
+      ],
+      "warnings": [
+        "unknown phoneme: ZZZ",
+        "unknown token: @@@",
+        "unknown directive: qq"
+      ]
+    },
+    "group": "voice",
+    "id": "voice/warnings-in-both",
+    "text": "ZZZ [voice=1] @@@ [voice=2] [qq=1]",
+    "tokens": {
+      "count": 5,
+      "digest": "f7855c78c6dfb6f8b9dc7824ea4e69212224de333caf374728d635b581b6271b",
+      "types": [
+        "phoneme",
+        "directive",
+        "unknown",
+        "directive",
+        "directive"
+      ]
+    }
+  },
+  {
     "compile": {
       "engine": null,
       "events": 3,
@@ -18891,6 +19123,97 @@
         "directive",
         "directive",
         "phoneme"
+      ]
+    }
+  },
+  {
+    "compile": {
+      "engine": null,
+      "events": 2,
+      "phrasesDigest": "3247f6c6c8bdb7ef15eaae7a00b4481f44af5b8e6a4b2b21c8dd620c54f20836",
+      "scheduleDigest": "d1b2ea6abba855c889558b532b813ccfb28477c60ee8f74a14ddb623fc64308d",
+      "totalMs": 260,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 2,
+          "scheduleDigest": "d1b2ea6abba855c889558b532b813ccfb28477c60ee8f74a14ddb623fc64308d",
+          "totalMs": 260
+        }
+      ],
+      "warnings": []
+    },
+    "group": "extras",
+    "id": "extras/names-a-parameter",
+    "text": "[F1=900] AA",
+    "tokens": {
+      "count": 2,
+      "digest": "23d7164aeb4d409db25e5a1c21e4a1f761de1b082078e20cecfbdb8f78ade173",
+      "types": [
+        "directive",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "compile": {
+      "engine": null,
+      "events": 3,
+      "phrasesDigest": "7cb784d659dff7dbcd7f5e42628a6498de2fc1c0885784a347dc3e55bf2f2a29",
+      "scheduleDigest": "51da302ad9e2c925c9b0eac8cf18ba4218524fd4a9a4c4f436a46af75e4d955f",
+      "totalMs": 370,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 3,
+          "scheduleDigest": "51da302ad9e2c925c9b0eac8cf18ba4218524fd4a9a4c4f436a46af75e4d955f",
+          "totalMs": 370
+        }
+      ],
+      "warnings": []
+    },
+    "group": "extras",
+    "id": "extras/names-f0",
+    "text": "[F0=999] AA AA",
+    "tokens": {
+      "count": 3,
+      "digest": "d8194f263471bada7dac2e833e86959eb383eda8876a697f6e72a60b30b048a5",
+      "types": [
+        "directive",
+        "phoneme",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "compile": {
+      "engine": null,
+      "events": 2,
+      "phrasesDigest": "6d29dad0053821e455e2eddab359279b0d43c8bfa590be5ff49cba3c1cc1b278",
+      "scheduleDigest": "fd2e5d008664d2d9cb52a352abc941492563118956b99c94f28fa2cee4351b8f",
+      "totalMs": 250,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 2,
+          "scheduleDigest": "fd2e5d008664d2d9cb52a352abc941492563118956b99c94f28fa2cee4351b8f",
+          "totalMs": 250
+        }
+      ],
+      "warnings": []
+    },
+    "group": "extras",
+    "id": "extras/names-a-parameter-on-silence",
+    "text": "[BW2=55] ,",
+    "tokens": {
+      "count": 2,
+      "digest": "bc9e63d6fbcfd70e340ae0f50e1c97d13e3b142d616a3740519de7fc78a25bcc",
+      "types": [
+        "directive",
+        "pause"
       ]
     }
   },
@@ -25653,6 +25976,289 @@
       "digest": "1c1ce62446e0c168d50e6f8d3165f9fa9cdef3e440dbac6c9c73e66bcc579945",
       "types": [
         "directive",
+        "directive",
+        "directive",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "compile": {
+      "engine": null,
+      "events": 3,
+      "phrasesDigest": "73f7f6c87c80770c54c8cde3feb8a74b9ea5eb33317999620ede7c171bc7e9b7",
+      "scheduleDigest": "e4c08e3c2fa353ecd05da7937001633ae635d99351a74ca3754ef3a56bc433fb",
+      "totalMs": 370,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 3,
+          "scheduleDigest": "e4c08e3c2fa353ecd05da7937001633ae635d99351a74ca3754ef3a56bc433fb",
+          "totalMs": 370
+        }
+      ],
+      "warnings": []
+    },
+    "group": "opts",
+    "id": "opts/none",
+    "text": "AA AA",
+    "tokens": {
+      "count": 2,
+      "digest": "c4e9d23cef71dbfc0f8c1d301885c171b88156eb710674803ad2650d38b8937a",
+      "types": [
+        "phoneme",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "compile": {
+      "engine": null,
+      "events": 3,
+      "phrasesDigest": "683173bfc3c979c0cfcdf2c45e1e6d871d54a052594a92b7579aaac248c32397",
+      "scheduleDigest": "eb9ca1613e02319e0b2dc0e833b102b21bb8aaa6ed45def05ac63653f4fcca54",
+      "totalMs": 650,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 3,
+          "scheduleDigest": "eb9ca1613e02319e0b2dc0e833b102b21bb8aaa6ed45def05ac63653f4fcca54",
+          "totalMs": 650
+        }
+      ],
+      "warnings": []
+    },
+    "group": "opts",
+    "id": "opts/all",
+    "opts": {
+      "aspiration": 0.9,
+      "baseF0": 200,
+      "effort": 0.9,
+      "rate": 250,
+      "scale": 1.4,
+      "tilt": 0.5,
+      "tremoloDepth": 0.9,
+      "tremoloRate": 9,
+      "vibratoDepth": 9,
+      "vibratoRate": 9
+    },
+    "text": "AA AA",
+    "tokens": {
+      "count": 2,
+      "digest": "c4e9d23cef71dbfc0f8c1d301885c171b88156eb710674803ad2650d38b8937a",
+      "types": [
+        "phoneme",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "compile": {
+      "engine": null,
+      "events": 3,
+      "phrasesDigest": "878e7df8b3a7d075101dfb21620cbaf1fb3d7dd4f54018159e556b83613b6342",
+      "scheduleDigest": "c978f3206ad608acb94f601605e8850b8c12741d3a4e1b362ff25efc8e6fe093",
+      "totalMs": 580,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 3,
+          "scheduleDigest": "c978f3206ad608acb94f601605e8850b8c12741d3a4e1b362ff25efc8e6fe093",
+          "totalMs": 580
+        }
+      ],
+      "warnings": []
+    },
+    "group": "opts",
+    "id": "opts/reset-rate",
+    "opts": {
+      "rate": 250
+    },
+    "text": "r180 AA r AA",
+    "tokens": {
+      "count": 4,
+      "digest": "bfbf37a7f9f9de574cdab28696cac76cac0abc381c21193454689c5a50e26a49",
+      "types": [
+        "directive",
+        "phoneme",
+        "directive",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "compile": {
+      "engine": null,
+      "events": 3,
+      "phrasesDigest": "50cca91198825d61cbdfb94cba5144998afdfc41e4938f24aa125ae1011aee51",
+      "scheduleDigest": "f5b33c6c84f4e7c67daf929f5057cbf55563c13d85b4261b90f840fd35bf8b00",
+      "totalMs": 370,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 3,
+          "scheduleDigest": "f5b33c6c84f4e7c67daf929f5057cbf55563c13d85b4261b90f840fd35bf8b00",
+          "totalMs": 370
+        }
+      ],
+      "warnings": []
+    },
+    "group": "opts",
+    "id": "opts/reset-base",
+    "opts": {
+      "baseF0": 200
+    },
+    "text": "b180 AA b AA",
+    "tokens": {
+      "count": 4,
+      "digest": "4e630254ed087537673757e5865c88d172be2a610ec982f97900b5f1c81ba372",
+      "types": [
+        "directive",
+        "phoneme",
+        "directive",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "compile": {
+      "engine": null,
+      "events": 3,
+      "phrasesDigest": "50cca91198825d61cbdfb94cba5144998afdfc41e4938f24aa125ae1011aee51",
+      "scheduleDigest": "fce35ef77fe2424e352027dd3c93806360c1efa72dde95ff4fb4e190ff95f601",
+      "totalMs": 370,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 3,
+          "scheduleDigest": "fce35ef77fe2424e352027dd3c93806360c1efa72dde95ff4fb4e190ff95f601",
+          "totalMs": 370
+        }
+      ],
+      "warnings": []
+    },
+    "group": "opts",
+    "id": "opts/reset-scale",
+    "opts": {
+      "scale": 1.4
+    },
+    "text": "s0.7 AA s AA",
+    "tokens": {
+      "count": 4,
+      "digest": "8c6b4b503e674b2d34cf323cd21dab15db4b44f57fbe01ea37437de951d5a0d3",
+      "types": [
+        "directive",
+        "phoneme",
+        "directive",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "compile": {
+      "engine": null,
+      "events": 3,
+      "phrasesDigest": "65c6d0f1e349dcce5688b201f15d43dce7bc4f88bad50ddc7395d5c33f4807fd",
+      "scheduleDigest": "ede0d39aeb08a624aa9148833131f90ca9fb3ed8f7c931372df61c3fc256c4dc",
+      "totalMs": 550,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 3,
+          "scheduleDigest": "ede0d39aeb08a624aa9148833131f90ca9fb3ed8f7c931372df61c3fc256c4dc",
+          "totalMs": 550
+        }
+      ],
+      "warnings": []
+    },
+    "group": "opts",
+    "id": "opts/reset-all",
+    "opts": {
+      "aspiration": 0.9,
+      "baseF0": 200,
+      "effort": 0.9,
+      "rate": 250,
+      "scale": 1.4,
+      "tilt": 0.5,
+      "tremoloDepth": 0.9,
+      "tremoloRate": 9,
+      "vibratoDepth": 9,
+      "vibratoRate": 9
+    },
+    "text": "b150 r150 s0.6 v3 w3 m0.3 n3 h0.3 t0.2 g0.3 AA b r s v w m n h t g AA",
+    "tokens": {
+      "count": 22,
+      "digest": "caf77d4ce4c0e304c80885d0b4b29997ecf66dae0e37ba7486eb4567ba798689",
+      "types": [
+        "directive",
+        "directive",
+        "directive",
+        "directive",
+        "directive",
+        "directive",
+        "directive",
+        "directive",
+        "directive",
+        "directive",
+        "phoneme",
+        "directive",
+        "directive",
+        "directive",
+        "directive",
+        "directive",
+        "directive",
+        "directive",
+        "directive",
+        "directive",
+        "directive",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "compile": {
+      "engine": null,
+      "events": 3,
+      "phrasesDigest": "4c00ae3294bbcd1a951b9604a0c57001c562edc4964ad7403adfc85ccff181d4",
+      "scheduleDigest": "ce0feb264afa9ee902f9c1bd3045e41347b44ad1ef33b0148e4068193bfd4748",
+      "totalMs": 600,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 3,
+          "scheduleDigest": "ce0feb264afa9ee902f9c1bd3045e41347b44ad1ef33b0148e4068193bfd4748",
+          "totalMs": 600
+        }
+      ],
+      "warnings": []
+    },
+    "group": "opts",
+    "id": "opts/relative-from-opts",
+    "opts": {
+      "aspiration": 0.9,
+      "baseF0": 200,
+      "effort": 0.9,
+      "rate": 250,
+      "scale": 1.4,
+      "tilt": 0.5,
+      "tremoloDepth": 0.9,
+      "tremoloRate": 9,
+      "vibratoDepth": 9,
+      "vibratoRate": 9
+    },
+    "text": "AA b+10 r-50 AA",
+    "tokens": {
+      "count": 4,
+      "digest": "9b5017362c8a8f9e214175eded2b65f74b713ca3ddc214f431755d6a53c6afd3",
+      "types": [
+        "phoneme",
         "directive",
         "directive",
         "phoneme"

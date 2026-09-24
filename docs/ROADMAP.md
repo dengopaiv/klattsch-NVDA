@@ -256,13 +256,13 @@ reference. Measured 2026-09-23: MSVC accepts C23 binary literals and digit
 separators in `/std:c17` mode, so MSVC alone will not tell you your C17 is not
 C17 — which is why all three run from stage 1, not at the end.
 
-**The four-toolchain matrix is local and manual, and that is a weakness.**
-`tools/build-matrix.ps1` is run by hand on the development machine, and it
-covers **stages 1 and 2 only** — stages 3 and 4 were built and verified per
-toolchain by hand, which is worse, not better. The only leg that runs
-automatically is Ubuntu's gcc, in CI. So "passes on four
-toolchains" in a stage chapter is a measurement taken on a particular day, not
-a property continuously enforced — and a regression that only MSVC or only
+**The four-toolchain matrix is local and manual, and that is still a
+weakness.** `tools/build-matrix.ps1` now covers **stages 1 to 5** — stage 5
+extended it, because doing stage 5 by hand would have repeated the mistake
+stages 3 and 4 made. But it is still run by hand on the development machine,
+and the only leg that runs automatically is Ubuntu's gcc, in CI. So "passes on
+four toolchains" in a stage chapter is a measurement taken on a particular day,
+not a property continuously enforced — and a regression that only MSVC or only
 clang-cl would catch can land on `main` green. Closing that means a hosted
 Windows runner with MSVC and clang-cl, which is stage 8's business rather than
 something to bolt on now. Until it is closed, the stage chapters say when each
@@ -270,7 +270,7 @@ measurement was taken, and this paragraph says why that matters.
 
 **CI runs the same checks, and has been seen to fail.** GitHub Actions runs
 `Checks` (the `bundled.js` currency guard) and `Goldens` (the golden currency
-check, all four mutation suites, the gcc build and all nine `ctest` entries)
+check, all five mutation suites, the gcc build and all ten `ctest` entries)
 on every push to `main` and every pull request — those two files are now the
 whole of `.github/workflows/`. Ubuntu's gcc is a fifth build
 environment on top of the four above, and a second glibc — but it is the
@@ -342,23 +342,24 @@ are the record of what was actually measured.
 
 ## The next three things
 
-1. **`kl_compile.c`** — stage 5, and the only high-risk stage in the plan.
-   The four phrase shapes, directives, syllables, voices, banks, extras and
-   the warning strings. The largest translation, and the one where a
-   difference is a logic difference rather than a numeric one. Tier 1 on the
-   whole corpus: event count, `atMs`, `transitionMs` and every target field
-   exact as IEEE-754 doubles, warning strings identical.
+1. **`kl_wav.c` and `bin/klattsch_cli.c`** — stage 6, and the first point at
+   which this repository produces a usable program rather than a verified
+   library. The CLI must render the whole corpus to WAV files byte-identical
+   to the JavaScript CLI's, on MSVC, clang-cl and gcc. One thing is not
+   optional there and is easy to drop by accident: `bin/klattsch.mjs:37`
+   writes a `software: 'klattsch · https://tgies.github.io/klattsch'` field
+   into every WAV's LIST INFO chunk. A C CLI that omits it strips upstream's
+   credit from every file this engine produces.
 2. **Decide what normalization the product needs.** Stage 4 ships the NFKC
    singleton table and leaves out canonical composition, with a measurement
    bounding the cost: the only thing that can differ is the byte content of an
    `unknown` token holding a combining mark. That is the right trade for a
    phoneme grammar. It may not be once the text front end of phase 3 is
    feeding it real prose — see [16-stage4-token.md](16-stage4-token.md) §16.1.
-3. **Extend `tools/build-matrix.ps1` to the stages it has fallen behind.**
-   It builds and verifies MSVC, clang-cl, WinLibs gcc and WSL's Debian gcc —
-   two C runtimes, two operating systems, and the glibc leg catches what the
-   Windows three cannot since they share UCRT. But it still only runs the
-   stage 1 and 2 verifiers, so stages 3 and 4 were checked across toolchains
-   by hand. One command that runs every stage on every toolchain is the
-   difference between a matrix that is kept green and one that is remembered
-   about.
+3. **Get the Windows toolchains into CI.** `tools/build-matrix.ps1` now runs
+   every stage on all four toolchains in one command, which was the third item
+   here and is done. What is left is the harder half: it runs on one machine,
+   when somebody remembers. Ubuntu gcc is still the only leg anything
+   automatic exercises, so a break that only MSVC or only clang-cl would catch
+   still lands on `main` green. A hosted Windows runner is stage 8's business,
+   and this is the note that it has not been done.

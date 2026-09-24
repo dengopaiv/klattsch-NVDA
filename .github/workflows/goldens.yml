@@ -79,3 +79,11 @@ jobs:
       # against a second build of the same generated table.
       - name: the tokenizer comparison can fail
         run: python3 tools/stage4-mutations.py build
+
+      # Stage 5 is the highest-risk stage in the plan: the largest
+      # translation, and the only one where a difference is a logic difference
+      # rather than a numeric one. Its verifier passed on the first run, so
+      # this suite is what decides whether that meant the translation was
+      # right or the comparison was blind.
+      - name: the compiler comparison can fail
+        run: python3 tools/stage5-mutations.py build

@@ -19,14 +19,15 @@
   ],
   "counts": {
     "byGroup": {
-      "bank": 4,
+      "bank": 5,
       "comment": 9,
-      "directive": 43,
+      "directive": 45,
       "edge": 5,
       "engine": 4,
-      "extras": 7,
+      "extras": 10,
       "normalize": 8,
       "note": 233,
+      "opts": 7,
       "pause": 6,
       "phoneme": 129,
       "phoneme-frame": 129,
@@ -36,10 +37,10 @@
       "syllable": 10,
       "unknown": 6,
       "utterance": 13,
-      "voice": 7,
+      "voice": 9,
       "voice-quality": 20
     },
-    "cases": 714
+    "cases": 729
   },
   "engine": "0.8.0",
   "excludedTargetKeys": [

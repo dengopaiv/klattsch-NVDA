@@ -193,6 +193,11 @@ function buildCorpus() {
   add('directive', 'directive/p/abs', 'AA p250 AA');
   add('directive', 'directive/p/bare-dropped', 'AA p AA');
   add('directive', 'directive/p/negative', 'AA p-250 AA');
+  // `pitch` is the same state as `base`, and the only way to reach it is the
+  // bracket form -- no compact letter maps to it. Without this the two can be
+  // separated and nothing notices.
+  add('directive', 'directive/pitch-bracket', '[pitch=200] AA AA');
+  add('directive', 'directive/pitch-then-base', '[pitch=200] AA b+10 AA');
 
   // 3. Note names across the whole range, including the accidental forms and
   //    the negative octave. noteToHz is the compiler's only transcendental.
@@ -241,6 +246,13 @@ function buildCorpus() {
     { bank: 'ja-mokhtari-2000' });
   add('bank', 'bank/unknown', 'AA [bank=nope] AA');
   add('bank', 'bank/switch-twice', '[bank=ja-mokhtari-2000] A [bank=klatt1980-en] AA');
+  // bank/reset-to-opts above cannot actually tell the opts bank from the
+  // default one: it reads AA after the reset, and AA is inherited unchanged
+  // from klatt1980-en by both Japanese banks, so all three answers agree. `A`
+  // exists only in the Japanese banks and differs between them, so this is
+  // the case that distinguishes the three.
+  add('bank', 'bank/reset-to-opts-distinct', '[bank=ja-hecko-2026] A [bank] A',
+    { bank: 'ja-mokhtari-2000' });
 
   // 7. Voices. Sections compile from a fresh initial state, so running
   //    directives must not carry across a marker -- the easiest thing in the
@@ -252,6 +264,11 @@ function buildCorpus() {
   add('voice', 'voice/leading-marker', '[voice=1] AA');
   add('voice', 'voice/no-carry', 'b200 r300 AA [voice=1] AA');
   add('voice', 'voice/uneven-lengths', 'AA AA AA AA [voice=1] IY');
+  // Warnings are merged across sections in section order. Every other voice
+  // case compiles cleanly, so voice 0's warnings could be reported as the
+  // whole list and no golden would move.
+  add('voice', 'voice/warning-in-second', 'AA [voice=1] ZZZ');
+  add('voice', 'voice/warnings-in-both', 'ZZZ [voice=1] @@@ [voice=2] [qq=1]');
 
   // 8. Uppercase extras: set, overridden, cleared. They ride into every
   //    subsequent target as opaque state.
@@ -262,6 +279,16 @@ function buildCorpus() {
   add('extras', 'extras/negative', '[TILT=-3.5] AA');
   add('extras', 'extras/from-opts', 'AA [OQ] AA', { extras: { OQ: 0.5 } });
   add('extras', 'extras/scaled-f4', '[F4=3300] [BW4=250] s1.2 AA');
+  //     An extras key that names one of the 19 synthesis parameters is not an
+  //     extra at all: the JS spread writes it straight over the phoneme's own
+  //     value, and over a silence event's too. Ten of the nineteen are
+  //     reachable this way -- the ones whose names begin with an uppercase
+  //     letter, which is the only shape an extras key can have. Stage 5's
+  //     mutation suite found the compiler could stop honouring them entirely
+  //     and no golden moved.
+  add('extras', 'extras/names-a-parameter', '[F1=900] AA');
+  add('extras', 'extras/names-f0', '[F0=999] AA AA');
+  add('extras', 'extras/names-a-parameter-on-silence', '[BW2=55] ,');
 
   // 9. Unknown input. The warning strings are the contract.
   add('unknown', 'unknown/phoneme', 'AA ZZZ AA');
@@ -396,6 +423,33 @@ function buildCorpus() {
   //     else in the corpus reaches it.
   add('voice-quality', 'vq/vibrato-exceeds-f0', 'b80 v200 w5 AA AA');
   add('voice-quality', 'vq/vibrato-far-exceeds-f0', 'b60 v400 w3 AA');
+
+  // 19. Initial state supplied by the caller. Every `opts.x ?? default` in
+  //     compileSection, and every bare-letter reset that reads it back.
+  //
+  //     Until stage 5 no corpus case set a single scalar option -- the 262
+  //     that carried opts all carried `bank`, `extras`, `engine` or `gain` --
+  //     so ten of the compiler's initial values could be taken from the
+  //     defaults instead of from the caller and nothing moved. A screen
+  //     reader sets rate and pitch on every utterance, so this is the path
+  //     the shipped engine will spend its life in.
+  const ALL_OPTS = {
+    baseF0: 200, rate: 250, scale: 1.4,
+    vibratoDepth: 9, vibratoRate: 9,
+    tremoloDepth: 0.9, tremoloRate: 9,
+    aspiration: 0.9, tilt: 0.5, effort: 0.9,
+  };
+  add('opts', 'opts/none', 'AA AA');
+  add('opts', 'opts/all', 'AA AA', ALL_OPTS);
+  add('opts', 'opts/reset-rate', 'r180 AA r AA', { rate: 250 });
+  add('opts', 'opts/reset-base', 'b180 AA b AA', { baseF0: 200 });
+  add('opts', 'opts/reset-scale', 's0.7 AA s AA', { scale: 1.4 });
+  // Every bare-letter reset in one case, so a single initial value taken from
+  // the wrong place cannot hide behind the other nine.
+  add('opts', 'opts/reset-all',
+    'b150 r150 s0.6 v3 w3 m0.3 n3 h0.3 t0.2 g0.3 AA b r s v w m n h t g AA',
+    ALL_OPTS);
+  add('opts', 'opts/relative-from-opts', 'AA b+10 r-50 AA', ALL_OPTS);
 
   return cases;
 }

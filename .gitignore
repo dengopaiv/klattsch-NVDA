@@ -12,3 +12,6 @@ bun.lock
 # stage 6 is being worked towards.
 build/
 build-*/
+
+# Python bytecode from the mutation runners
+__pycache__/
