@@ -254,7 +254,7 @@ had `comment/hash-not-at-boundary` and it was not testing what its name says.
 The corpus went from 711 cases to **714**; stage 0's own suite still catches
 34 of 34 against it.
 
-## 16.7 Two harness defects, and one in the goldens
+## 16.7 Four harness defects, and one in the goldens
 
 Consistent with stages 2 and 3, the tooling was wrong more often than the code.
 
@@ -270,6 +270,30 @@ and the patterns were written with LF. The script printed "added" regardless.
 That is precisely the stage 3 lesson — a tool that reports a passing result it
 did not verify — arriving again in a different costume. Every edit since
 asserts its match count.
+
+**Both mutation runners were converting LF-pinned sources to CRLF.**
+`Path.write_text()` on Windows translates newlines to `os.linesep` -- including
+on the path that *restores* the original after a mutation. `.gitattributes`
+pins `*.c` to LF precisely so that four compilers on two operating systems read
+identical bytes, and running either suite once quietly undid that for the file
+under test. It surfaced only because `git status` showed `csrc/kl_synth.c`
+modified after a stage 4 run that never touches it. Live since stage 3. Both
+runners now write bytes.
+
+**A verify step hung twice, and a timeout is not a result.** In a run of all
+four suites back to back, two stage 4 mutations came back `HARNESS TIMEOUT
+(verify)` at the 300-second deadline. The verifier was then measured at
+**0.69 seconds**, five runs in a row, and the same suite run on its own caught
+24 of 24 including both. So these were hangs, not slowness, and the cause is
+environmental -- most likely a freshly linked executable still held by
+something when the verifier tries to run it, after forty-odd relinks in a row.
+Not conclusively identified.
+
+The fix is a single retry, and -- the part that matters -- the retry is
+**counted and printed in the summary**. A harness that silently swallows its
+own flakiness is back to being a test that cannot fail. Reporting a hang as
+though it were a mutation result is worse: it is a false negative in the one
+tool whose job is to prove the suite has no false negatives.
 
 **`goldens.mjs` deleted files it did not own.** Capturing the goldens ran
 `rmSync(outDir, { recursive: true })` and recreated the directory, which
@@ -302,5 +326,7 @@ stage 0 still 34 of 34. `ctest` 9 of 9.
 
 **Two pre-existing `-Wcomment` warnings fixed** — `banks/*.json` inside a block
 comment opens a nested comment, which gcc warns about on every build.
+
+**Three fixes to the mutation runners** — §16.7. A cp1252 decode that blamed the wrong mutation, a newline translation that undid the LF pinning on every run, and a verify hang that is now retried once and reported.
 
 **One deliberate divergence**, §16.3, asserted in both directions every run.

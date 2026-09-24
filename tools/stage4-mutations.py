@@ -127,6 +127,19 @@ MUTATIONS = [
 MUTATIONS = [(m + (True,)) if len(m) == 4 else m for m in MUTATIONS]
 
 
+def write_lf(path, text):
+    """Write without newline translation.
+
+    .gitattributes pins *.c to LF so that four compilers on two operating
+    systems read identical bytes. Path.write_text() on Windows translates
+    to os.linesep, so the naive version of this script rewrote the file as
+    CRLF -- including when restoring the original after a mutation, which
+    left the working tree permanently converted and undid the pinning the
+    moment the suite was run once.
+    """
+    path.write_bytes(text.encode("utf-8"))
+
+
 def run(cmd, timeout=BUILD_TIMEOUT):
     try:
         # errors='replace', because the verifier prints token text and some of
@@ -163,7 +176,7 @@ def main():
         return 2
 
     originals = {f: f.read_text(encoding="utf-8") for f in (SRC, NORM)}
-    passed = failed = 0
+    passed = failed = retries = 0
 
     print("Breaking the tokenizer; each line must be caught.\n")
     try:
@@ -179,7 +192,7 @@ def main():
                 print(f"  {label:<52} SKIP (pattern not found)", flush=True)
                 failed += 1
                 continue
-            target.write_text(text.replace(find, repl, 1), encoding="utf-8")
+            write_lf(target, text.replace(find, repl, 1))
 
             rc, timed_out = run(["cmake", "--build", str(build)])
             if timed_out:
@@ -193,6 +206,17 @@ def main():
                     ["node", "tools/verify-stage4.mjs", str(tok), str(nrm)],
                     timeout=VERIFY_TIMEOUT)
                 if timed_out:
+                    # Measured: this verifier runs in well under a second, so a timeout is
+                    # a hang rather than slowness. It has been seen when several suites run
+                    # against the same build directory at once. Retry once, and say so in
+                    # the summary -- smoothing a flake over in silence is how a suite stops
+                    # meaning anything, and reporting a hang as a mutation result is a
+                    # false negative.
+                    retries += 1
+                    rc, timed_out = run(
+                        ["node", "tools/verify-stage4.mjs", str(tok), str(nrm)],
+                        timeout=VERIFY_TIMEOUT)
+                if timed_out:
                     verdict = "HARNESS TIMEOUT (verify)"
                     failed += 1
                 elif rc == 0:
@@ -205,14 +229,15 @@ def main():
                     failed += not expect_caught
             print(f"  {label:<52} {verdict}", flush=True)
 
-            target.write_text(originals[target], encoding="utf-8")
+            write_lf(target, originals[target])
             run(["cmake", "--build", str(build)])
     finally:
         for f, text in originals.items():
-            f.write_text(text, encoding="utf-8")
+            write_lf(f, text)
         run(["cmake", "--build", str(build)])
 
-    print(f"\ncaught {passed}, missed {failed}")
+    print(f"\ncaught {passed}, missed {failed}"
+          + (f" -- {retries} verify retry(s) after a harness hang" if retries else ""))
     if failed:
         print("A mutation slipped through: the corpus does not reach that path.", file=sys.stderr)
         return 1
