@@ -254,6 +254,23 @@ reference. Measured 2026-09-23: MSVC accepts C23 binary literals and digit
 separators in `/std:c17` mode, so MSVC alone will not tell you your C17 is not
 C17 — which is why all three run from stage 1, not at the end.
 
+**CI runs the same checks, and has been seen to fail.** GitHub Actions runs
+`Checks` (the `bundled.js` currency guard) and `Goldens` (the golden currency
+check, all three mutation suites, the gcc build and all seven `ctest` entries)
+on every push to `main` and every pull request. Ubuntu's gcc is a fifth build
+environment on top of the four above, and a second glibc.
+
+A green check nobody has watched go red is the same thing as a corpus that
+cannot fail, so on 2026-09-24 it was made to go red on purpose: PR #2 changed
+`DEFAULT.gain` from 3.5 to 3.51 in the frozen JavaScript engine and nothing
+else. Result — `goldens match a fresh capture` failed; `stage3-synth` and
+`stage3-chunked` failed with 2,321,998 differing 16-bit samples at a peak
+float32 difference of 2.421e-3; and `stage1-dsp` failed on its currency guard
+(*"JS ENGINE HAS CHANGED -- fix that before reading anything below"*) while its
+own Tier 1 digests still passed, which is correct: gain does not reach the DSP
+primitives. `Checks` stayed green, also correct: the banks did not change. The
+PR was closed, never merged.
+
 **C17, not C11 and not C23.** C11 was inherited without re-examination; C17 is
 the same language with its defects fixed. C23 is out because MSVC 19.51 has no
 `/std:c23` and its `clatest` lacks `constexpr`, `nullptr`, the `bool` keyword
