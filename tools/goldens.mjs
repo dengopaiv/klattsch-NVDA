@@ -612,6 +612,19 @@ function captureWav() {
     metadata: { software: 'klattsch-goldens', comment: 'HH AH L OW' },
   });
   const noNorm = encodeWav(buf, 22050, { peakNormalize: 0 });
+  // Three samples past full scale, normalization off: the only way to reach
+  // the clamp. With peakNormalize on, the loudest sample is 0.95 by
+  // construction and `if (s > 1)` can never bind -- five corpus cases mix
+  // past 1.0 and still do not reach it.
+  const loud = Float32Array.from(buf, (v) => v * 3);
+  const clipped = encodeWav(loud, 22050, { peakNormalize: 0 });
+  // A zero-length buffer: a 44-byte file, and the one thing that reaches the
+  // `if (peak > 0)` guard by way of a peak that is exactly zero.
+  const empty = encodeWav(new Float32Array(0), 22050);
+  // An empty string is falsy in JavaScript, so a present-but-empty software
+  // field is an absent one and the file gets ICMT without ISFT. "Present and
+  // empty" and "absent" have to stay the same thing in the C.
+  const emptySoftware = encodeWav(buf, 22050, { metadata: { software: '', comment: 'x' } });
   const hash = (b) => createHash('sha256').update(b).digest('hex');
   return {
     plain: { bytes: plain.bytes.length, gain: plain.gain, header: [...plain.bytes.slice(0, 44)], digest: hash(plain.bytes) },
@@ -623,6 +636,11 @@ function captureWav() {
       const w = encodeWav(buf, 22050, { metadata: { comment: 'odd' } });
       return { bytes: w.bytes.length, digest: hash(w.bytes) };
     })(),
+    clipped: { bytes: clipped.bytes.length, gain: clipped.gain, digest: hash(clipped.bytes) },
+    empty: { bytes: empty.bytes.length, gain: empty.gain, digest: hash(empty.bytes),
+      header: [...empty.bytes] },
+    emptySoftware: { bytes: emptySoftware.bytes.length, gain: emptySoftware.gain,
+      digest: hash(emptySoftware.bytes) },
   };
 }
 
