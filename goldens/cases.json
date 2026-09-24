@@ -19064,6 +19064,39 @@
   {
     "compile": {
       "engine": null,
+      "events": 3,
+      "phrasesDigest": "ca92c6e13a5f70c501cc561b514bf32a352d0498b0e0f76fda744860f7d00e9f",
+      "scheduleDigest": "e4c08e3c2fa353ecd05da7937001633ae635d99351a74ca3754ef3a56bc433fb",
+      "totalMs": 370,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 3,
+          "scheduleDigest": "e4c08e3c2fa353ecd05da7937001633ae635d99351a74ca3754ef3a56bc433fb",
+          "totalMs": 370
+        }
+      ],
+      "warnings": [
+        "unknown directive: q_q"
+      ]
+    },
+    "group": "unknown",
+    "id": "unknown/underscore-key",
+    "text": "AA [q_q=3] AA",
+    "tokens": {
+      "count": 3,
+      "digest": "130600f0fb70695ec71ed38daa7de4f2ac876fa483af7abb36d2ae29c16e4575",
+      "types": [
+        "phoneme",
+        "directive",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "compile": {
+      "engine": null,
       "events": 2,
       "phrasesDigest": "34fe3b6af4791d5b6744fbd664e875485dcd279792d419b54345799b8bbd7590",
       "scheduleDigest": "4ab1be5b6b4d6ed093a4be16f1bda476544f89ba0300617c9479d63ab86caf50",
@@ -19295,6 +19328,39 @@
       "count": 0,
       "digest": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
       "types": []
+    }
+  },
+  {
+    "compile": {
+      "engine": null,
+      "events": 3,
+      "phrasesDigest": "9bde340ff699822b99e6d923be54782964c21a6bad00b04996b263b0eb6324a6",
+      "scheduleDigest": "e4c08e3c2fa353ecd05da7937001633ae635d99351a74ca3754ef3a56bc433fb",
+      "totalMs": 370,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 3,
+          "scheduleDigest": "e4c08e3c2fa353ecd05da7937001633ae635d99351a74ca3754ef3a56bc433fb",
+          "totalMs": 370
+        }
+      ],
+      "warnings": [
+        "unknown token: #tail"
+      ]
+    },
+    "group": "comment",
+    "id": "comment/block-then-hash",
+    "text": "AA /*x*/#tail AA",
+    "tokens": {
+      "count": 3,
+      "digest": "1878758c2d76026771d3937df20f6f8d0d3c4f16ad6fc55b9c6d8569fd951b28",
+      "types": [
+        "phoneme",
+        "unknown",
+        "phoneme"
+      ]
     }
   },
   {
@@ -23216,6 +23282,40 @@
       "count": 2,
       "digest": "c8495d5997f72a784edb4795242a12961b7d43bc64e7099db94ed1e82168c41d",
       "types": [
+        "phoneme",
+        "phoneme"
+      ]
+    }
+  },
+  {
+    "compile": {
+      "engine": null,
+      "events": 2,
+      "phrasesDigest": "1d165fd5faf858c39b50cfbaff93d4b9a13a01d91609fd59913ae45809487782",
+      "scheduleDigest": "4ab1be5b6b4d6ed093a4be16f1bda476544f89ba0300617c9479d63ab86caf50",
+      "totalMs": 260,
+      "voiceCount": 1,
+      "voices": [
+        {
+          "engine": null,
+          "events": 2,
+          "scheduleDigest": "4ab1be5b6b4d6ed093a4be16f1bda476544f89ba0300617c9479d63ab86caf50",
+          "totalMs": 260
+        }
+      ],
+      "warnings": [
+        "unknown phoneme: BB",
+        "unknown phoneme: CC"
+      ]
+    },
+    "group": "stress",
+    "id": "stress/mark-after-two",
+    "text": "AA BB ' CC",
+    "tokens": {
+      "count": 3,
+      "digest": "77ea001eb96451b811414ff380dedfa707774ba868e9bdb358565fce4a66d3be",
+      "types": [
+        "phoneme",
         "phoneme",
         "phoneme"
       ]

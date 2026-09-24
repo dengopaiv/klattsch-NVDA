@@ -20,7 +20,7 @@
   "counts": {
     "byGroup": {
       "bank": 4,
-      "comment": 8,
+      "comment": 9,
       "directive": 43,
       "edge": 5,
       "engine": 4,
@@ -32,14 +32,14 @@
       "phoneme-frame": 129,
       "pitch": 9,
       "rate": 65,
-      "stress": 6,
+      "stress": 7,
       "syllable": 10,
-      "unknown": 5,
+      "unknown": 6,
       "utterance": 13,
       "voice": 7,
       "voice-quality": 20
     },
-    "cases": 711
+    "cases": 714
   },
   "engine": "0.8.0",
   "excludedTargetKeys": [

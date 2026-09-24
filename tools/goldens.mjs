@@ -256,6 +256,8 @@ function buildCorpus() {
   add('unknown', 'unknown/directive', 'AA [qq=3] AA');
   add('unknown', 'unknown/lowercase-bracket', 'AA [oq=3] AA');
   add('unknown', 'unknown/several', 'ZZZ @@@ [qq=1]');
+  // The directive key class is \w, which includes the underscore.
+  add('unknown', 'unknown/underscore-key', 'AA [q_q=3] AA');
 
   // 10. Comments in every position a comment can occur, including the one that
   //     splits a token in half -- which the tokenizer handles by continuing to
@@ -268,6 +270,11 @@ function buildCorpus() {
   add('comment', 'comment/block-unterminated', 'AA /* never closed');
   add('comment', 'comment/block-multiline', 'AA /* one\ntwo */ AA');
   add('comment', 'comment/only', '# nothing but a comment');
+  // The `#` boundary test is only reachable with a non-space behind it
+  // straight after a block comment; everywhere else the tokenizer has just
+  // skipped whitespace. Without this case the test can be deleted and no
+  // golden moves -- stage 4's mutation suite found exactly that.
+  add('comment', 'comment/block-then-hash', 'AA /*x*/#tail AA');
 
   // 11. Normalization: NFKC, zero-width removal, and the homoglyph table.
   //     Cyrillic А and Greek Α both look like Latin A and must fold to it.
@@ -305,6 +312,9 @@ function buildCorpus() {
   add('stress', 'stress/mark-before-any', "' AA");
   add('stress', 'stress/mark-after-directive', "AA b150 ' AA");
   add('stress', 'stress/double', "AA' ' AA");
+  // Two phonemes before the mark, so that searching the token list
+  // forwards instead of backwards gives a different answer.
+  add('stress', 'stress/mark-after-two', "AA BB ' CC");
 
   // 14. Pauses and the sentence-final path.
   add('pause', 'pause/comma', 'AA , AA');
@@ -629,8 +639,17 @@ if (check) {
   const m = JSON.parse(files['manifest.json']);
   process.stdout.write(`goldens up to date (${m.counts.cases} cases, ${Object.keys(files).length} files)\n`);
 } else {
-  rmSync(outDir, { recursive: true, force: true });
+  // Remove the JSON goldens this script owns, and only those. Wiping the
+  // whole directory also deleted the derived binaries beside them --
+  // schedules.bin, which stage 3 reads, and cases-text.bin, numbers.bin and
+  // divergences.bin, which stage 4 does. Re-capturing the goldens would then
+  // break the next stage run with a missing-file error that said nothing
+  // about the cause. Found by stage 4's mutation suite, which re-captured and
+  // then could not find its own input.
   mkdirSync(outDir, { recursive: true });
+  for (const f of readdirSync(outDir)) {
+    if (f.endsWith('.json')) rmSync(join(outDir, f), { force: true });
+  }
   for (const [name, content] of Object.entries(files)) {
     writeFileSync(join(outDir, name), content);
   }

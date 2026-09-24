@@ -129,7 +129,12 @@ MUTATIONS = [(m + (True,)) if len(m) == 4 else m for m in MUTATIONS]
 
 def run(cmd, timeout=BUILD_TIMEOUT):
     try:
-        r = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, timeout=timeout)
+        # errors='replace', because the verifier prints token text and some of
+        # it is not ASCII. Python's default here is the console code page, and
+        # cp1252 choking on U+00A8 killed the reader thread mid-run and was
+        # reported as a harness timeout on the *next* mutation.
+        r = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True,
+                           encoding='utf-8', errors='replace', timeout=timeout)
         return r.returncode, False
     except subprocess.TimeoutExpired:
         return None, True

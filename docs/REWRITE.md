@@ -242,7 +242,7 @@ Status key: ✅ done and verified · ◐ partly done, not verified · ○ not st
 | 1 | **`kl_dsp.c`** — biquad, pulse, LFSR, soft clip | 1,000,000 LFSR states exact; biquad coefficients across the (f, bw) grid and the pulse across phase × effort within 1e-12 of the JS | small | low | ✅ |
 | 2 | **`kl_banks.c`** + `tools/build-banks-c.mjs` | All three banks, field by field, identical to the resolved JS banks, with `extends` and `null` deletion exercised | small | low | ✅ |
 | 3 | **`kl_synth.c`** — the sample loop, driven by a golden schedule so the compiler is not yet involved | Tier 2 on every schedule in the corpus, at all three sample rates: every differing sample sub-ULP, zero differing samples after 16-bit quantization | medium | medium | ✅ |
-| 4 | **`kl_token.c`** | Every corpus token classified identically, exact, including the malformed ones | small | low | ○ |
+| 4 | **`kl_token.c`** + `kl_norm.c` | Every corpus token classified identically, exact, including the malformed ones; normalization exhaustive over all 1,112,064 code points | **medium** | low | ✅ |
 | 5 | **`kl_compile.c`** — the four shapes, directives, syllables, voices, banks, extras, warnings | Tier 1 on the whole corpus: event count, `atMs`, `transitionMs` and every target field exact as IEEE-754 doubles; warning strings identical | medium | **high** | ○ |
 | 6 | **`kl_wav.c`** + `bin/klattsch_cli.c` | The CLI renders the whole corpus and every WAV is byte-identical to the JS CLI's, on MSVC, clang-cl and gcc | small | low | ○ |
 | 7 | **Extensions**, each off by default | The stage-6 exit test still passes unchanged with every extension compiled in and defaulted off | medium | medium | ○ |
@@ -357,3 +357,56 @@ bank. Every key is carried.
 `tools/stage2-mutations.sh` corrupts the table one field at a time: **6 of 6
 caught**, including a dropped `source` string, which is a licensing problem
 rather than a cosmetic one.
+
+**3. `kl_synth.c`** ✅ — [docs/15-stage3-synth.md](15-stage3-synth.md). The
+sample loop, driven by the golden schedules so the compiler stays out of it.
+
+Exit test at three sample rates on four toolchains: at 48 kHz, **4 differing
+samples in 2,948,352** and **zero after 16-bit quantization**; at 22050 and
+8000, none at all. Every one of the four is under a single float32 ULP — a
+rounding boundary tipped, not accumulation through the biquads. glibc renders
+a different set of three, which is the tolerance doing exactly its job.
+
+This is the stage that **corrected the acceptance criterion**. The Tier 2
+clause said "peak absolute difference ≤ 1e-9 in float64 before quantization",
+and neither side ever produces a float64 sample — the JavaScript renders into
+a `Float32Array`, so the rounding to single precision is part of the algorithm.
+The clause was also tighter than the representation. See §15.2.
+
+Chunked rendering at 137 samples is **byte-identical** to whole-buffer
+rendering, which is what phase 3's design depends on, so it is its own ctest
+entry rather than a remark. `tools/stage3-mutations.py`: **15 of 15 caught**,
+after three rounds in which the harness was wrong and the code was not.
+
+**4. `kl_token.c`** ✅ — [docs/16-stage4-token.md](16-stage4-token.md). The
+tokenizer, and `kl_norm.c` underneath it, which turned out to be the larger
+half: `tokenize()` starts with `normalize('NFKC')`, which is all of Unicode.
+
+The table is the **4,965 NFKC singleton mappings** and nothing else — no
+canonical composition, no reordering — and the omission is bounded by
+measurement rather than hope: of the 12,236 code points with a multi-character
+NFD, **none is ASCII and none is whitespace**, and no ASCII code point is
+moved by NFKC or NFD at all. Composition cannot produce a character this
+grammar reads. Verified exhaustively against V8 over **all 1,112,064 code
+points, zero differences**.
+
+Exit test: **714 cases, 1,922 tokens**, every field identical and every token
+digest matching the frozen goldens, on four toolchains — and the dumps are
+**byte-identical across all four including glibc**. `noteToHz` calls
+`pow(2, k/12)`, so stage 4 had a transcendental and could have needed a
+tolerance; it did not. Stage 4 is Tier 1 in fact, not only in intent.
+
+`strtod()` is deliberately not used. It takes the decimal separator from the C
+locale, so inside NVDA on a Finnish or German desktop `strtod("3.5")` would
+return 3 — a defect the most natural translation would have introduced and
+that would never have appeared on the developer's machine.
+
+**One deliberate divergence**, §16.3: `part in PAUSE_MS` walks the prototype
+chain, so eight inputs including `toString` classify as a pause whose `ms` is
+a function, which downstream makes `atMs` a string and `totalMs` NaN with no
+warning. The C declines to reproduce it, and the divergence is asserted in
+both directions on every run.
+
+`tools/stage4-mutations.py`: **24 of 24 caught**, after closing three corpus
+gaps — one of which showed that `comment/hash-not-at-boundary` had never
+tested what its name claims.
