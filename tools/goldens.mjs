@@ -45,10 +45,23 @@ class Digest {
 
 // Fields that ride into a schedule target from the JS object spread but are
 // not synthesis parameters: `scaled()` spreads the whole phoneme, so the
-// phoneme's shape flags come along. The C struct will not have them. This is
-// the one documented difference between the two schedules, and it lives here,
-// in one place, rather than as a tolerance scattered through the comparison.
-const NON_PARAM_TARGET_KEYS = new Set(['isStop', 'glideTo', 'voicing']);
+// phoneme's shape flags and its documentation come along. The C struct will
+// not have them. This is the one documented difference between the two
+// schedules, and it lives here, in one place, rather than as a tolerance
+// scattered through the comparison.
+//
+// `ipa`, `example` and `source` were added in stage 5. They are per-phoneme
+// documentation strings, present in both Japanese banks, and they reached the
+// extras branch below -- where `d.f64(string)` does not throw but quietly
+// digests a NaN. So five corpus cases were pinning the *positions* of two
+// strings in a sorted key list and nothing else. Excluding them cannot mask a
+// real directive: an extras key is only ever created by the `/^[A-Z]/` branch
+// of the directive switch, so every extras key begins with an uppercase ASCII
+// letter and these three cannot collide with one.
+const NON_PARAM_TARGET_KEYS = new Set([
+  'isStop', 'glideTo', 'voicing',
+  'ipa', 'example', 'source',
+]);
 
 // `voicing` is in PARAMS, so it is digested; it is listed above only to
 // document that it is deliberately *not* excluded. Remove it from the set.
