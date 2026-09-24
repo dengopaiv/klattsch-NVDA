@@ -14,6 +14,14 @@
 > [`docs/REWRITE.md`](docs/REWRITE.md), [`docs/NVDA-ADDON.md`](docs/NVDA-ADDON.md)
 > and [`docs/GENERATOR.md`](docs/GENERATOR.md).
 >
+> **The native engine builds today.** Stages 0–6 of
+> [`docs/REWRITE.md`](docs/REWRITE.md) are done. `cmake -B build && cmake
+> --build build` produces `klattsch`, a C program that renders a phoneme
+> string to a WAV file — verified over the whole 729-case corpus at three
+> sample rates, on four toolchains, with every file byte-identical to the one
+> the JavaScript CLI writes. The NVDA add-on and the GUI generator are phases
+> 4 and 5 and are not written yet.
+>
 > **This is a fork and it stays one.** klattsch is Tony Gies's work; altering it
 > fundamentally changes nothing about that. The MIT license and copyright below
 > are his and travel with everything this repository produces, the C rewrite

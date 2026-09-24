@@ -244,16 +244,31 @@ Status key: ✅ done and verified · ◐ partly done, not verified · ○ not st
 | 3 | **`kl_synth.c`** — the sample loop, driven by a golden schedule so the compiler is not yet involved | Tier 2 on every schedule in the corpus, at all three sample rates: every differing sample sub-ULP, zero differing samples after 16-bit quantization | medium | medium | ✅ |
 | 4 | **`kl_token.c`** + `kl_norm.c` | Every corpus token classified identically, exact, including the malformed ones; normalization exhaustive over all 1,112,064 code points | **medium** | low | ✅ |
 | 5 | **`kl_compile.c`** — the four shapes, directives, syllables, voices, banks, extras, warnings | Tier 1 on the whole corpus: event count, `atMs`, `transitionMs` and every target field exact as IEEE-754 doubles; warning strings identical | medium | **high** | ✅ |
-| 6 | **`kl_wav.c`** + `bin/klattsch_cli.c` | The CLI renders the whole corpus and every WAV is byte-identical to the JS CLI's, on MSVC, clang-cl and gcc | small | low | ○ |
+| 6 | **`kl_wav.c`** + `csrc/kl_render.c` + `bin/klattsch_cli.c` | The whole corpus rendered to WAV at all three sample rates, every file byte-identical to the JavaScript's, on four toolchains — and the CLI proved end to end to be that pipeline | small | **medium** | ✅ |
 | 7 | **Extensions**, each off by default | The stage-6 exit test still passes unchanged with every extension compiled in and defaulted off | medium | medium | ○ |
 | 8 | **Regression** — goldens in `ctest`, run in CI | A deliberately introduced one-sample error fails the build | small | low | ◐ |
 
-Stages 0–6 are the rewrite. Stage 7 is the part that makes it worth having
-done, and nothing in stage 7 begins until stage 6 is green.
+Stages 0–6 are the rewrite, and they are done. Stage 7 is the part that makes
+it worth having done.
+
+> **Corrected 2026-09-24, in stage 6.** That row read *small, low risk* and
+> said the CLI would render the corpus. Both halves were wrong. The risk is
+> not small, because `encodeWav` peak-normalizes: the gain is
+> `0.95 / peak`, so every byte of the file depends on the single loudest
+> sample of the mix, and stage 3 had already measured four samples per
+> 2.9 million where two libms disagree by one float32 ULP. If one of those is
+> ever the peak, roughly a thousand 16-bit samples move. It was measured
+> before any C was written — none of them is a peak, on either libm — and the
+> verifier now reports how much room is left, because 0.089% of samples sit
+> within one ULP of a 16-bit rounding boundary. And the CLI cannot render the
+> corpus: it takes a phoneme string and nothing else, so it cannot reach the
+> 262 cases that carry a bank, an engine or seeded extras. The exit test
+> drives the pipeline and proves the CLI *is* the pipeline, separately. See
+> [18-stage6-wav.md](18-stage6-wav.md) §18.2 and §18.7.
 
 Stage 8 is marked partly done rather than not started, because most of it
-arrived early and it would be dishonest to claim otherwise. Ten `ctest`
-entries cover stages 1 to 5 and the three currency guards; all five mutation
+arrived early and it would be dishonest to claim otherwise. Eleven `ctest`
+entries cover stages 1 to 6 and the four currency guards; all six mutation
 suites and the whole of `ctest` run in CI on every push and pull request; and
 its exit test has actually been performed — a deliberately broken engine was
 pushed on 2026-09-24 and watched go red, with the numbers in
@@ -466,3 +481,49 @@ because `Buffer.writeDoubleLE` of a string does not throw. And **not one of
 the 262 cases carrying options set a scalar**, so all ten `opts.x ?? default`
 initial values — the path a screen reader uses on every utterance — were
 unverified.
+
+**6. `kl_wav.c`, `kl_render.c`, `kl_fmt.c`, `bin/klattsch_cli.c`** ✅ —
+[docs/18-stage6-wav.md](18-stage6-wav.md). The RIFF header, the `LIST INFO`
+chunk, peak normalization, the float32 mix of the voice sections, and the
+program. The first artifact here that is a program rather than a verified
+library.
+
+Exit test: **729 cases at 48000, 22050 and 8000 Hz — 2,187 whole files,
+41.1 MB, every byte identical** and every normalization gain an identical
+double; plus seven encoder goldens, a sweep of `Math.round`, a sweep of
+`toFixed`, and 13 end-to-end pairs in which both real programs are run and
+their files *and* their stderr lines compared. **No tolerance anywhere in
+stage 6** — the arithmetic that could need one is all upstream, in stage 3.
+
+The risk in this stage was not where the plan put it. Normalization makes
+every byte of the file depend on one sample, so the first thing done was to
+measure whether stage 3's four sub-ULP disagreements could move the peak.
+None of them does, on either libm — but 0.089% of samples sit within one
+float32 ULP of a 16-bit rounding boundary, so the verifier reports that margin
+on every run rather than leaving byte-identity looking like a theorem.
+
+Three functions had to be written rather than called: `Math.round` is neither
+`round()` nor `floor(x + 0.5)`, and `toFixed` rounds a tie the other way from
+`printf`. Both of `toFixed`'s ties are reachable in the one line the CLI
+prints — three corpus cases render to exactly 24.5 KB, where `printf` prints
+24 and JavaScript prints 25, and no corpus case ties the seconds figure, so
+that one is constructed.
+
+`tools/stage6-mutations.py` — 44 mutations — is what made the first-run pass
+mean anything: **42 caught, 2 missed** on the first pass, and for the first
+time in this port **neither miss was a gap in the corpus**. Both were faults
+in the suite: one mutation was a no-op, because `strlen("")` is 0 and an
+encoder that keys a field on its length cannot be broken that way with a
+one-line change; the other was genuinely unobservable, because all 744 voice
+sections end with their amplitudes at zero and so render exact zeros past
+their own `totalMs`. **44 of 44** on the second pass, with four expected
+misses each proved unreachable. Three of the mutations remove or alter the
+`ISFT` field, and all three are caught.
+
+On four toolchains, with `tools/build-matrix.ps1`: MSVC, clang-cl and WinLibs
+gcc each pass and each run their own `klattsch.exe` against the JavaScript
+program, 12 invocations apiece; Debian gcc under WSL passes with its ten. The
+dumps are **byte-identical across all four** — 43.2 MB compared with `cmp` —
+which is the leg that matters, because glibc is the only independent libm here
+and it is the one that disagrees with the other three at stages 1 and 3.
+Neither disagreement survives into a file.
