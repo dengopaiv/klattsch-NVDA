@@ -61,10 +61,10 @@ export const OPT_NAMES = [
   'aspiration', 'tilt', 'effort',
 ];
 
-// Stage 5 needs each case's opts as well as its text: `bank`, `extras` and
-// `engine` all change what the compiler produces, and 262 of the 714 cases
-// carry one. `gain` is in the corpus too and is deliberately not here -- it
-// is a renderer option that compileSection never reads.
+// Stages 5 and 6 need each case's opts as well as its text: `bank`, `extras`
+// and `engine` all change what the compiler produces, and 269 of the 729
+// cases carry one. `gain` is in the corpus too and is deliberately not here
+// -- it is a renderer option that compileSection never reads.
 export function packCompileCases(cases) {
   const parts = [Buffer.alloc(4)];
   parts[0].writeUInt32LE(cases.length);

@@ -5,7 +5,7 @@
  *   kl_wav_dump --round-sweep
  *
  * The blob is goldens/cases-compile.bin, the same file stage 5 reads: each
- * case is its text plus the opts compileSection needs, because 262 of the 729
+ * case is its text plus the opts compileSection needs, because 269 of the 729
  * cases carry a bank, an engine or seeded extras and a renderer driven only
  * by text would never reach those paths.
  *

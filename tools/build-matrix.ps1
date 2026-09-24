@@ -3,13 +3,14 @@
 #   pwsh tools/build-matrix.ps1            build all, run the stage verifiers
 #   pwsh tools/build-matrix.ps1 -Compare   also diff the compilers against each other
 #
-# Covers stages 1 to 5. The -Compare table walks stage 1's sections only: they
+# Covers stages 1 to 6. The -Compare table walks stage 1's sections only: they
 # are the ones that can legitimately differ between libms, which is the whole
 # reason the WSL leg is here.
 #
 # The stage 6 exit test requires MSVC, clang-cl and gcc to produce identical
-# samples. That only works if all of them have been runnable all along, so this
-# runs from stage 1 rather than appearing at the end.
+# files. That only works if all of them have been runnable all along, so this
+# runs from stage 1 rather than appearing at the end -- and stage 6 is the one
+# stage where the CLI itself is run on every toolchain, not only its library.
 #
 # Why four and not three: MSVC, clang-cl and WinLibs gcc are all UCRT on
 # Windows, so agreement between them says little about libm -- they may be
@@ -45,7 +46,8 @@ $stages = @(
   @{ Stage = 3; Tool = "kl_synth_dump";   Verify = "verify-stage3.mjs" },
   @{ Stage = 4; Tool = "kl_token_dump";   Verify = "verify-stage4.mjs";
      Tool2 = "kl_norm_dump" },
-  @{ Stage = 5; Tool = "kl_compile_dump"; Verify = "verify-stage5.mjs" }
+  @{ Stage = 5; Tool = "kl_compile_dump"; Verify = "verify-stage5.mjs" },
+  @{ Stage = 6; Tool = "kl_wav_dump";     Verify = "verify-stage6.mjs"; Cli = $true }
 )
 # The cross-compiler comparison walks stage 1's sections: they are the ones
 # that can legitimately differ between libms. Stage 2 is pure table data.
@@ -119,6 +121,12 @@ foreach ($b in @("build-msvc", "build-clang", "build-gcc")) {
       # Stage 4 takes two tools: the tokenizer's dump and the normalizer's.
       $vargs = @($exe)
       if ($st.Tool2) { $vargs += (Join-Path $repo "$b\$($st.Tool2).exe") }
+      # Stage 6 verifies the program as well as the library, so it is handed
+      # the CLI this toolchain built rather than whichever one is on PATH.
+      if ($st.Cli) {
+        $cliExe = Join-Path $repo "$b\klattsch.exe"
+        if (Test-Path $cliExe) { $vargs += @("--cli", $cliExe) }
+      }
       & node (Join-Path $repo "tools\$($st.Verify)") @vargs | Select-Object -Last 3 | Write-Host
     }
   }
@@ -155,6 +163,34 @@ if ($wslOk) {
   $lines += "./build-wsl/kl_token_dump --numbers goldens/numbers.bin > '$wslDump'/numbers.bin"
   $lines += "./build-wsl/kl_token_dump goldens/divergences.bin > '$wslDump'/divergences.bin"
   $lines += "./build-wsl/kl_compile_dump goldens/cases-compile.bin > '$wslDump'/compile.bin"
+  # Stage 6: one file of whole WAVs per rate, the two sweeps, the encoder
+  # goldens, and then the CLI itself run on each of the end-to-end texts.
+  $lines += "for r in $($rates -join ' '); do"
+  $lines += "  ./build-wsl/kl_wav_dump goldens/cases-compile.bin `"`$r`" > '$wslDump'/wav`"`$r`".bin"
+  $lines += "done"
+  $lines += "./build-wsl/kl_wav_dump --round-sweep > '$wslDump'/round-sweep.bin"
+  $lines += "./build-wsl/kl_wav_dump --tofixed-sweep > '$wslDump'/tofixed-sweep.bin"
+  $lines += "./build-wsl/kl_wav_dump --wav-goldens > '$wslDump'/wav-goldens.bin"
+  # Each run happens in its own directory with the output called out.wav, so
+  # that the line the program prints is the same one the JavaScript prints on
+  # the Windows side -- the path is part of that line.
+  $lines += "i=0"
+  $lines += "while IFS= read -r t; do"
+  $lines += "  mkdir -p '$wslDump'/run`$i"
+  $lines += "  (cd '$wslDump'/run`$i && '$wslRepo'/build-wsl/klattsch `"`$t`" out.wav 2> '$wslDump'/cli-`$i.err)"
+  $lines += "  mv '$wslDump'/run`$i/out.wav '$wslDump'/cli-`$i.wav"
+  $lines += "  i=`$((i+1))"
+  $lines += "done < '$wslDump'/cli-texts.txt"
+
+  # The text list is produced by the verifier itself, so the two sides cannot
+  # disagree about which texts they are comparing.
+  $verifier = Join-Path $repo "tools"
+  $verifier = Join-Path $verifier "verify-stage6.mjs"
+  $texts = & node $verifier --list-cli-cases
+  if (-not $texts) { throw "verify-stage6.mjs --list-cli-cases produced nothing" }
+  [IO.File]::WriteAllText((Join-Path $dump "cli-texts.txt"),
+                          (($texts -join "`n") + "`n"),
+                          (New-Object Text.UTF8Encoding $false))
 
   # Built in two statements on purpose: PowerShell binds the -replace operands
   # as further arguments to WriteAllText if the expression is written inline,

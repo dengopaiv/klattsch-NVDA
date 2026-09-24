@@ -42,7 +42,7 @@ so the reference implementation cannot disagree with its own source.
   Phase 0   Study                  -> ARCHITECTURE.md        done
   Phase 1   Compare                -> COMPARISON.md          done
             Screen-reader needs    -> SCREEN-READER.md       done
-  Phase 2   Rewrite in C           -> REWRITE.md stages 0-6  not started
+  Phase 2   Rewrite in C           -> REWRITE.md stages 0-6  done
   Phase 3   Extend the engine      -> REWRITE.md stage 7
   Phase 4   GUI sample generator   -> GENERATOR.md
   Phase 5   NVDA add-on            -> NVDA-ADDON.md
@@ -118,7 +118,7 @@ stalls; generation-tagged cancellation; constant-pitch rate). Two of its
 findings reach back into the engine and are scheduled in phase 3 rather than
 left to phase 5: **latency** (§3) and **parameter audibility** (§5).
 
-## Phase 2 — The C rewrite ○
+## Phase 2 — The C rewrite ✅
 
 [REWRITE.md](REWRITE.md), stages 0–6. C17, no allocation on the speech path,
 seven translation units, CMake from stage 1, goldens captured from the
@@ -131,12 +131,16 @@ last bits. The compiler and the integer DSP must match **exactly**; rendered
 audio must show **zero differing samples after 16-bit quantization**.
 
 Stage-by-stage exit tests, sizes and risks are the table in that document.
-Stage 5 (`kl_compile.c`) is the only high-risk one: it is the largest
-translation and the only stage where a difference is a logic difference rather
-than a numeric one.
+Stage 5 (`kl_compile.c`) was the largest translation and the only stage where
+a difference is a logic difference rather than a numeric one. Stage 6 turned
+out to carry a risk the plan had not priced: peak normalization makes every
+byte of a file depend on one sample of the mix, so stage 3's four sub-ULP
+disagreements had to be measured against it before any C was written.
 
-**Done when** the C CLI renders the whole corpus and every WAV is
-byte-identical to the JavaScript CLI's, on MSVC, clang-cl and gcc.
+**Done**, 2026-09-24. The whole corpus renders to WAV at all three sample
+rates with every file byte-identical to the JavaScript's, on MSVC, clang-cl,
+WinLibs gcc and Debian gcc under WSL — 2,187 files, 41.1 MB, no tolerance
+anywhere. See [18-stage6-wav.md](18-stage6-wav.md).
 
 ### Prerequisites, settled before stage 0 begins
 
@@ -257,9 +261,10 @@ separators in `/std:c17` mode, so MSVC alone will not tell you your C17 is not
 C17 — which is why all three run from stage 1, not at the end.
 
 **The four-toolchain matrix is local and manual, and that is still a
-weakness.** `tools/build-matrix.ps1` now covers **stages 1 to 5** — stage 5
-extended it, because doing stage 5 by hand would have repeated the mistake
-stages 3 and 4 made. But it is still run by hand on the development machine,
+weakness.** `tools/build-matrix.ps1` now covers **stages 1 to 6**, and from
+stage 6 it runs the CLI itself on every toolchain rather than only the library
+— including inside WSL, where each run happens in its own directory so that
+the line the program prints is the line the JavaScript prints. But it is still run by hand on the development machine,
 and the only leg that runs automatically is Ubuntu's gcc, in CI. So "passes on
 four toolchains" in a stage chapter is a measurement taken on a particular day,
 not a property continuously enforced — and a regression that only MSVC or only
@@ -332,7 +337,7 @@ CMakeLists.txt  the product build: library, CLI, tests
 | 0 — Study | ✅ done |
 | 1 — Compare | ✅ done |
 | 1 — Screen-reader requirements | ✅ done |
-| 2 — Rewrite (stages 0–6) | ◐ **stages 0–4 ✅**, stages 5–6 not started |
+| 2 — Rewrite (stages 0–6) | ✅ **stages 0–6 done**, all verified on four toolchains |
 | 3 — Extend + measure | ○ not started |
 | 4 — Generator | ○ not started |
 | 5 — Add-on | ○ not started |
@@ -342,14 +347,19 @@ are the record of what was actually measured.
 
 ## The next three things
 
-1. **`kl_wav.c` and `bin/klattsch_cli.c`** — stage 6, and the first point at
-   which this repository produces a usable program rather than a verified
-   library. The CLI must render the whole corpus to WAV files byte-identical
-   to the JavaScript CLI's, on MSVC, clang-cl and gcc. One thing is not
-   optional there and is easy to drop by accident: `bin/klattsch.mjs:37`
-   writes a `software: 'klattsch · https://tgies.github.io/klattsch'` field
-   into every WAV's LIST INFO chunk. A C CLI that omits it strips upstream's
-   credit from every file this engine produces.
+1. **Stage 7 — the extensions, each off by default.** Phase 2 is done, so
+   this is the part that makes having done it worth it: a cascade path, a
+   nasal pole and zero, more formants, and the parameters upstream froze as
+   constants. The exit test is already written and already passes — the
+   stage-6 comparison must still give 2,187 byte-identical files with every
+   extension compiled in and defaulted off, which is a much sharper
+   requirement than "the tests still pass".
+
+   The attribution note that used to sit here is now enforced rather than
+   remembered: `bin/klattsch.mjs:37` writes
+   `software: 'klattsch · https://tgies.github.io/klattsch'` into every WAV,
+   the C keeps it in one `#define`, and `tools/verify-stage6.mjs` fails if the
+   two stop matching or if the CLI stops using it.
 2. **Decide what normalization the product needs.** Stage 4 ships the NFKC
    singleton table and leaves out canonical composition, with a measurement
    bounding the cost: the only thing that can differ is the byte content of an
