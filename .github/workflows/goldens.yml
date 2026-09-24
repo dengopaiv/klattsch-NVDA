@@ -63,3 +63,12 @@ jobs:
       # the check to notice.
       - name: the bank comparison can fail
         run: bash tools/stage2-mutations.sh build
+
+      # The stage 3 suite is the one that matters most and the one that has
+      # only ever run on the development machine. Its mutations are logic --
+      # the drain order, which parameters get a fresh increment, what
+      # tilt_prev holds -- rather than constants, and one of them caught a
+      # real mechanical-translation error. Running it here puts it against a
+      # second libm as well as a second compiler.
+      - name: the sample-loop comparison can fail
+        run: python3 tools/stage3-mutations.py build
