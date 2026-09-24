@@ -1,7 +1,7 @@
 /* Phoneme banks: the parameter tables the compiler reads.
  *
  * Translated from src/engine/banks/index.js, with the data generated from
- * src/engine/banks/*.json by tools/build-banks-c.mjs. klattsch is Tony Gies's
+ * the JSON files in src/engine/banks by tools/build-banks-c.mjs. klattsch is Tony Gies's
  * work; a translation of someone's algorithm is still their algorithm, and the
  * phoneme data is somebody's published measurement -- see the `source` fields,
  * which are part of the data and are carried rather than dropped.
