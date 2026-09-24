@@ -77,6 +77,11 @@ order and `strcmp`, so the binary search is unaffected.
 individually rather than by digest, so a failure names the bank, the phoneme
 and the field.
 
+*Measured by hand on the development machine with `tools/build-matrix.ps1`,
+which builds and verifies all four. CI runs the Ubuntu gcc leg only, so this
+is a result with a date on it rather than a property enforced on every push —
+[ROADMAP.md](ROADMAP.md), cross-cutting rules.*
+
 ```
 Bank data -- Tier 1, exact
   bank count                             ok   3

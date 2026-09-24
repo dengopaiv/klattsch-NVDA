@@ -14,6 +14,14 @@ change.
 
 694 cases across 19 groups, plus the primitives tested directly.
 
+> **The corpus has grown since.** Later stages found paths it did not reach and
+> closed them: stage 3 added the `vq` group and took it to 711
+> ([15-stage3-synth.md](15-stage3-synth.md) §15.4), stage 4 took it to **714**
+> ([16-stage4-token.md](16-stage4-token.md) §16.6). The numbers in this chapter
+> are what was captured at stage 0 and are left as they were; `goldens/manifest.json`
+> always holds the current count. Every extension was driven by a mutation that
+> survived, never by a stage needing to pass.
+
 | Group | Cases | What it answers |
 |---|---:|---|
 | `phoneme`, `phoneme-frame` | 258 | every phoneme in all three banks, alone and framed |

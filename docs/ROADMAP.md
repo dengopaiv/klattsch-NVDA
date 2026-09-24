@@ -32,7 +32,8 @@ Two of those rows do more work than they look like they do. **There are no
 tests**, so the goldens of phase 2 are the first tests this codebase will ever
 have — there is no existing corpus to reuse or cross-check against, and the
 corpus is therefore entirely our responsibility. And **there is no build
-step**: what is in `src/` is exactly what npm publishes and what a CDN serves,
+step**: what is in `src/` is exactly what upstream's npm package ships and what
+a CDN serves,
 so the reference implementation cannot disagree with its own source.
 
 ## The order, and why
@@ -163,10 +164,11 @@ byte-identical to the JavaScript CLI's, on MSVC, clang-cl and gcc.
       `binary`, with the binary rules last so a captured WAV under `goldens/`
       is never converted. Decided before the first golden exists, which was
       the point.
-- [x] **The guard is wired to something.** **Done 2026-09-23.** It ran nowhere
-      — neither workflow invoked it. `.github/workflows/check.yml` now runs it
-      on push and pull request. It joins the goldens in `ctest` at stage 8;
-      until CMake exists there is no reason a Node check should wait for it.
+- [x] **The guard is wired to something.** **Done 2026-09-23.** It ran
+      nowhere — the two workflows inherited from upstream at the time
+      (`pages.yml` and `publish.yml`, both since removed) invoked nothing of
+      ours. `.github/workflows/check.yml` now runs it on push and pull
+      request, and `ctest` runs it too as `banks-current`.
 
 ## Phase 3 — Extend the engine ○
 
@@ -254,11 +256,35 @@ reference. Measured 2026-09-23: MSVC accepts C23 binary literals and digit
 separators in `/std:c17` mode, so MSVC alone will not tell you your C17 is not
 C17 — which is why all three run from stage 1, not at the end.
 
+**The four-toolchain matrix is local and manual, and that is a weakness.**
+`tools/build-matrix.ps1` is run by hand on the development machine, and it
+covers **stages 1 and 2 only** — stages 3 and 4 were built and verified per
+toolchain by hand, which is worse, not better. The only leg that runs
+automatically is Ubuntu's gcc, in CI. So "passes on four
+toolchains" in a stage chapter is a measurement taken on a particular day, not
+a property continuously enforced — and a regression that only MSVC or only
+clang-cl would catch can land on `main` green. Closing that means a hosted
+Windows runner with MSVC and clang-cl, which is stage 8's business rather than
+something to bolt on now. Until it is closed, the stage chapters say when each
+measurement was taken, and this paragraph says why that matters.
+
 **CI runs the same checks, and has been seen to fail.** GitHub Actions runs
 `Checks` (the `bundled.js` currency guard) and `Goldens` (the golden currency
-check, all three mutation suites, the gcc build and all seven `ctest` entries)
-on every push to `main` and every pull request. Ubuntu's gcc is a fifth build
-environment on top of the four above, and a second glibc.
+check, all four mutation suites, the gcc build and all nine `ctest` entries)
+on every push to `main` and every pull request — those two files are now the
+whole of `.github/workflows/`. Ubuntu's gcc is a fifth build
+environment on top of the four above, and a second glibc — but it is the
+*only* one CI exercises; see the paragraph above.
+
+Two inherited workflows were removed rather than kept. `pages.yml` had failed
+on every push since the fork was made, because Pages is not enabled here and
+`actions/configure-pages` 404s before it builds anything; upstream publishes a
+demo page, this fork keeps the browser engine as a frozen reference and
+publishes nothing. `publish.yml` triggered on any `v*` tag and ran `npm
+publish` against `package.json`, which correctly still names Tony Gies's
+package — so the first NVDA add-on release tag would have aimed it at his npm
+entry. Three things happened to block that, all of them by accident rather
+than design. Removed 2026-09-24.
 
 A green check nobody has watched go red is the same thing as a corpus that
 cannot fail, so on 2026-09-24 it was made to go red on purpose: PR #2 changed
@@ -290,7 +316,7 @@ file it was translated from.
 src/            the JavaScript engine — inherited, frozen, the reference
 csrc/           the C engine
 bin/            klattsch.mjs (JS CLI) and klattsch_cli.c (C CLI)
-tools/          build-banks.js, build-banks-c.mjs, goldens.mjs
+tools/          generators, per-stage verifiers and mutation suites
 goldens/        captured from the JS, checked in, LF-pinned
 gui-native/     the sample generator
 nvda-addon/     manifest, shim, package.py
@@ -328,7 +354,11 @@ are the record of what was actually measured.
    `unknown` token holding a combining mark. That is the right trade for a
    phoneme grammar. It may not be once the text front end of phase 3 is
    feeding it real prose — see [16-stage4-token.md](16-stage4-token.md) §16.1.
-3. **Keep the four-toolchain matrix green** as each stage lands.
-   `tools/build-matrix.ps1` covers MSVC, clang-cl, WinLibs gcc and WSL's
-   Debian gcc — two C runtimes, two operating systems. The glibc leg is the
-   one that catches what the Windows three cannot, since they share UCRT.
+3. **Extend `tools/build-matrix.ps1` to the stages it has fallen behind.**
+   It builds and verifies MSVC, clang-cl, WinLibs gcc and WSL's Debian gcc —
+   two C runtimes, two operating systems, and the glibc leg catches what the
+   Windows three cannot since they share UCRT. But it still only runs the
+   stage 1 and 2 verifiers, so stages 3 and 4 were checked across toolchains
+   by hand. One command that runs every stage on every toolchain is the
+   difference between a matrix that is kept green and one that is remembered
+   about.

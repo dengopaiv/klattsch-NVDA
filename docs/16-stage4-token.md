@@ -185,6 +185,12 @@ grid on its first run, which is what the grid is for.
 
 ✅ Passes on all four toolchains.
 
+*Measured by hand on the development machine, each toolchain built and its
+verifier run directly: `tools/build-matrix.ps1` still covers only stages 1
+and 2. CI runs the Ubuntu gcc leg only, so this is a result with a date on it
+rather than a property enforced on every push — [ROADMAP.md](ROADMAP.md),
+cross-cutting rules.*
+
 ```
 Tokens -- every case in the corpus, field by field
   cases compared                     ok     714

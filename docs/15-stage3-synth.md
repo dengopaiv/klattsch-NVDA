@@ -60,6 +60,12 @@ grow past a ULP and be caught.
 
 ✅ Passes on all four toolchains, at all three sample rates.
 
+*Measured by hand on the development machine, each toolchain built and its
+verifier run directly: `tools/build-matrix.ps1` still covers only stages 1
+and 2. CI runs the Ubuntu gcc leg only, so this is a result with a date on it
+rather than a property enforced on every push — [ROADMAP.md](ROADMAP.md),
+cross-cutting rules.*
+
 ```
 Sample rate 48000
   cases compared                 ok   107

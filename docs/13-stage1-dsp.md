@@ -103,6 +103,11 @@ Tier 2 -- sin/cos involved, bound 1e-12
 ✅ Passes on **all four toolchains available here**, across two C runtimes and
 two operating systems:
 
+*Measured by hand on the development machine with `tools/build-matrix.ps1`,
+which builds and verifies all four. CI runs the Ubuntu gcc leg only, so this
+is a result with a date on it rather than a property enforced on every push —
+[ROADMAP.md](ROADMAP.md), cross-cutting rules.*
+
 | Toolchain | libm | `glottalPulse` vs the JS |
 |---|---|---|
 | MSVC 19.51 x64 | UCRT | max \|diff\| 2.22e-16, 98.74% bit-identical |

@@ -246,10 +246,22 @@ Status key: ✅ done and verified · ◐ partly done, not verified · ○ not st
 | 5 | **`kl_compile.c`** — the four shapes, directives, syllables, voices, banks, extras, warnings | Tier 1 on the whole corpus: event count, `atMs`, `transitionMs` and every target field exact as IEEE-754 doubles; warning strings identical | medium | **high** | ○ |
 | 6 | **`kl_wav.c`** + `bin/klattsch_cli.c` | The CLI renders the whole corpus and every WAV is byte-identical to the JS CLI's, on MSVC, clang-cl and gcc | small | low | ○ |
 | 7 | **Extensions**, each off by default | The stage-6 exit test still passes unchanged with every extension compiled in and defaulted off | medium | medium | ○ |
-| 8 | **Regression** — goldens in `ctest`, run in CI | A deliberately introduced one-sample error fails the build | small | low | ○ |
+| 8 | **Regression** — goldens in `ctest`, run in CI | A deliberately introduced one-sample error fails the build | small | low | ◐ |
 
 Stages 0–6 are the rewrite. Stage 7 is the part that makes it worth having
 done, and nothing in stage 7 begins until stage 6 is green.
+
+Stage 8 is marked partly done rather than not started, because most of it
+arrived early and it would be dishonest to claim otherwise. Nine `ctest`
+entries cover stages 1 to 4 and the three currency guards; all four mutation
+suites and the whole of `ctest` run in CI on every push and pull request; and
+its exit test has actually been performed — a deliberately broken engine was
+pushed on 2026-09-24 and watched go red, with the numbers in
+[ROADMAP.md](ROADMAP.md). What is missing is the part the stage is really
+about: CI builds with **one** compiler, so the four-toolchain agreement that
+stages 1 to 4 rest on is not enforced by anything automatic. Nor is it fully
+scripted — `tools/build-matrix.ps1` runs the stage 1 and 2 verifiers only, and
+stages 3 and 4 were checked across toolchains by hand.
 
 Stage 5 is the only high-risk one: it is the largest translation, it is the
 only stage where a difference is a *logic* difference rather than a numeric
@@ -280,7 +292,8 @@ already known good when the compiler is under test.
 Kept short on purpose: what changed, and what proved it.
 
 **0. Baseline** ✅ — [docs/12-stage0-goldens.md](12-stage0-goldens.md).
-694 cases over 19 groups, captured in 3.4 s to 900 KB of JSON, plus the
+694 cases over 19 groups at the time (**714** now — stages 3 and 4 each found
+paths the corpus did not reach), captured in 3.4 s to 900 KB of JSON, plus the
 primitives tested directly: a million xorshift states, `glottalPulse` over a
 101×1000 phase-by-effort grid, biquad coefficients across the (f, bw, sr) grid
 including both clamp regions, `softClip` either side of the knee.
@@ -326,7 +339,11 @@ was loosened to make the stage pass.
 The gcc gap recorded when this stage was first written is **closed**: WinLibs
 gcc 16.2 (MinGW-w64, UCRT) and Debian gcc 14.2 under WSL (glibc 2.41) both
 build clean and pass, giving four toolchains over two C runtimes and two
-operating systems. `tools/build-matrix.ps1` runs them all.
+operating systems. `tools/build-matrix.ps1` runs them all — by hand, on the
+development machine. Only the Ubuntu gcc leg runs in CI, so this and every
+later "passes on four toolchains" is a measurement with a date on it rather
+than a property enforced on every push. [ROADMAP.md](ROADMAP.md), cross-cutting
+rules, says what closing that would take.
 
 The glibc leg is the one that matters, and it **disagreed** — `pulse` has a
 different digest there, while every Tier 1 section is bit-identical across all
