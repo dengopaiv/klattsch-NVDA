@@ -32,7 +32,7 @@ export const DEFAULT = {
   F1: 500, BW1: 80,  A1: 0,
   F2: 1500, BW2: 120, A2: 0,
   F3: 2500, BW3: 160, A3: 0,
-  gain: 3.5,
+  gain: 3.51,
   vibratoDepth: 0,
   vibratoRate: 5,
   tremoloDepth: 0,
