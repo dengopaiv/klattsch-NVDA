@@ -97,9 +97,20 @@ MUTATIONS = [
     ("the LIST payload size forgets the padding", WAV,
      "    if (c) { payload += 8 + c + (c % 2); subs++; }",
      "    if (c) { payload += 8 + c; subs++; }"),
-    ("an empty software string becomes a present one", WAV,
-     "        if (meta->software && meta->software[0]) s = strlen(meta->software);",
-     "        if (meta->software) s = strlen(meta->software);"),
+    # Three sites at once, because one is a no-op: an empty string and an
+    # absent one both have length 0, so `strlen("")` makes the two spellings
+    # of the guard the same function. The mistake a mechanical translation
+    # actually makes is to key the field on the *pointer* rather than on the
+    # length, consistently, which writes an ISFT sub-chunk of length zero.
+    # Measured before this entry existed: it grows the emptySoftware golden
+    # from 26,086 bytes to 26,094, and the golden catches it.
+    ("an empty software field becomes a present one", WAV,
+     ["        if (meta->software && meta->software[0]) s = strlen(meta->software);",
+      "    if (s) { payload += 8 + s + (s % 2); subs++; }",
+      '        if (sw_len) p += put_sub(p, "ISFT", meta->software, sw_len);'],
+     ["        if (meta->software) s = strlen(meta->software);",
+      "    if (meta && meta->software) { payload += 8 + s + (s % 2); subs++; }",
+      '        if (meta->software) p += put_sub(p, "ISFT", meta->software, sw_len);']),
     # The one this repository cares about most. Two entries, because the file
     # is written by two programs and losing the credit in either is the same
     # loss to the person who ends up with the file.
@@ -165,9 +176,16 @@ MUTATIONS = [
     ("voices are mixed in reverse order", REN,
      "    for (vi = 0; vi < c->n_voices; vi++) {",
      "    for (vi = c->n_voices; vi-- > 0; ) {"),
+    # Unreachable, and measured: every one of the corpus's 744 voice sections
+    # ends with its three amplitudes at zero, so a section renders exact
+    # zeros past its own totalMs -- 5,280 to 15,840 of them in the five cases
+    # that have a short section. Adding zero to a float changes nothing, so
+    # rendering a voice too long is not observable in the file even though it
+    # is wrong. Kept so the claim is re-checked: if a section ever ends with
+    # a non-zero amplitude, this line turns into a failure.
     ("each voice is rendered to the length of the utterance", REN,
      "        vn = kl_render_samples_for(v->total_ms, sample_rate);",
-     "        vn = kl_render_samples_for(c->total_ms, sample_rate);"),
+     "        vn = kl_render_samples_for(c->total_ms, sample_rate);", False),
     ("the mix assigns instead of adding", REN,
      "        for (i = 0; i < n; i++) out[i] += a->scratch[i];",
      "        for (i = 0; i < n; i++) out[i] = a->scratch[i];"),
@@ -225,6 +243,12 @@ MUTATIONS = [
 ]
 
 MUTATIONS = [(m + (True,)) if len(m) == 4 else m for m in MUTATIONS]
+# A mutation may name several sites, because some mistakes are only a mistake
+# when they are made consistently -- see the empty software field above.
+MUTATIONS = [(lbl, tgt,
+              f if (f is None or isinstance(f, list)) else [f],
+              r if (r is None or isinstance(r, list)) else [r], e)
+             for lbl, tgt, f, r, e in MUTATIONS]
 
 FILES = sorted({m[1] for m in MUTATIONS if m[1] is not None})
 
@@ -263,7 +287,13 @@ def find_tool(build, name):
 
 
 def main():
-    build = Path(sys.argv[1] if len(sys.argv) > 1 else "build")
+    argv = sys.argv[1:]
+    rate = None
+    if "--rate" in argv:
+        i = argv.index("--rate")
+        rate = argv[i + 1]
+        del argv[i:i + 2]
+    build = Path(argv[0] if argv else "build")
     if not (ROOT / build).is_dir():
         print("usage: python tools/stage6-mutations.py <configured-build-dir>", file=sys.stderr)
         return 2
@@ -282,6 +312,12 @@ def main():
         return 2
 
     verify = ["node", "tools/verify-stage6.mjs", str(dump)]
+    # One rate instead of three is about four times faster and catches every
+    # mutation in this file. The exit test itself -- all three rates -- is
+    # what ctest runs; this is the meta-test, and CI uses it to keep the job
+    # inside its timeout.
+    if rate:
+        verify += ["--rate", rate]
     if cli is not None:
         verify += ["--cli", str(cli)]
     else:
@@ -298,12 +334,15 @@ def main():
                 print(label, flush=True)
                 continue
 
-            n = original[target].count(find)
-            if n != 1:
-                print(f"  {label:<52} SKIP (pattern matches {n} times)", flush=True)
+            text = original[target]
+            bad = next((f for f in find if text.count(f) != 1), None)
+            if bad is not None:
+                print(f"  {label:<52} SKIP (pattern matches {text.count(bad)} times)", flush=True)
                 failed += 1
                 continue
-            write_lf(target, original[target].replace(find, repl, 1))
+            for f, r in zip(find, repl):
+                text = text.replace(f, r, 1)
+            write_lf(target, text)
 
             rc, timed_out = run(["cmake", "--build", str(build), "--config", "Release"])
             if timed_out:

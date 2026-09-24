@@ -53,7 +53,11 @@ import { encodeWav } from '../src/engine/wav.js';
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '..');
 
-const RATES = [48000, 22050, 8000];
+// All three by default. `--rate N` narrows it to one, which is what the
+// mutation suite and CI use: a mutation caught at 48 kHz is caught, and the
+// exit test itself is the three-rate run that ctest performs.
+const rateIdx = process.argv.indexOf('--rate');
+const RATES = rateIdx > 0 ? [Number(process.argv[rateIdx + 1])] : [48000, 22050, 8000];
 
 const cases = JSON.parse(readFileSync(join(root, 'goldens', 'cases.json'), 'utf8'));
 const jsCli = readFileSync(join(root, 'bin', 'klattsch.mjs'), 'utf8');
@@ -95,14 +99,7 @@ function encodeCli(buf, sampleRate, text) {
   });
 }
 
-// Cases the CLI can actually be driven with: it takes a phoneme string and
-// nothing else, so a case carrying a bank or seeded extras is out of reach.
-const plainCases = cases.filter((c) => !c.opts || Object.keys(c.opts).length === 0);
-
-// The end-to-end set. Fixed members first, then a search of the corpus for
-// the two toFixed ties, because both are reachable and printf disagrees with
-// JavaScript on both: a file 512 bytes mod 1024 makes bytes/1024 an exact
-// half, and a 375 ms utterance makes totalMs/1000 exactly 0.375.
+// The end-to-end set: the texts both real programs are run on.
 let cliCases = null;
 function pickCliCases() {
   if (cliCases) return cliCases;
@@ -113,59 +110,31 @@ function pickCliCases() {
   take('b140 AY+30 . AY-30');
   // Named because each reaches something the first two do not: a syllable
   // group, two voice sections to mix, a warning on stderr, a bank chosen from
-  // inside the text, and a non-ASCII argument -- which on Windows only
-  // survives because the CLI reads its arguments as UTF-16 and converts.
+  // inside the text, and two non-ASCII arguments -- which on Windows only
+  // survive because the CLI reads its arguments as UTF-16 and converts.
   for (const id of ['syllable/many', 'voice/uneven-lengths', 'unknown/several',
                     'utterance/japanese', 'normalize/nfkc-fullwidth',
-                    'normalize/cyrillic']) {
+                    'normalize/cyrillic', 'syllable/unclosed']) {
     const c = cases.find((x) => x.id === id);
     if (c && (!c.opts || Object.keys(c.opts).length === 0)) take(c.text);
   }
-  // The two ties, searched for rather than constructed.
-  const isTie = (x, f) => {
-    const s = x * 2 ** (f + 1);
-    return Number.isInteger(s) && Math.abs(s % 2) === 1;
-  };
-  let kbTie = null, secTie = null;
-  for (const c of plainCases) {
-    if (secTie === null && isTie(c.compile.totalMs / 1000, 2)) secTie = c.text;
-    if (kbTie === null) {
-      const { buf } = renderCli(c.text, c.opts, 48000);
-      const bytes = encodeCli(buf, 48000, c.text).bytes.length;
-      if (isTie(bytes / 1024, 0)) kbTie = c.text;
-    }
-    if (kbTie !== null && secTie !== null) break;
-  }
-  take(secTie);
-  take(kbTie);
 
-  // Neither tie occurs in the corpus, so both are constructed. Each is a
-  // value where printf and toFixed give different answers -- an exact tie
-  // whose lower neighbour is even, so ties-to-even rounds down where
-  // toFixed rounds the magnitude up.
+  // The two toFixed ties, which are where printf and JavaScript actually
+  // disagree: an exact tie whose lower neighbour is even, so ties-to-even
+  // rounds down where toFixed rounds the magnitude up.
   //
-  //  * seconds: "[rate=175] AA ." compiles to exactly 625 ms, and
-  //    (0.625).toFixed(2) is "0.63" where printf("%.2f") gives "0.62".
-  //  * kilobytes: the file must be 512 bytes mod 2048. A `#` comment is
-  //    ignored by the compiler but travels into the ICMT field, so padding
-  //    the text moves the file length by a byte a character without moving a
-  //    sample -- which makes the length solvable instead of searched for.
+  //  * kilobytes. Measured over the 460 cases the CLI can be driven with:
+  //    three have a file of exactly 25,088 bytes, which is 24.5 KB, where
+  //    printf prints 24 and JavaScript prints 25. `syllable/unclosed` is one
+  //    of them and is in the list above, so this tie needs nothing built.
+  //  * seconds. Measured the same way: *no* corpus case makes totalMs/1000
+  //    an exact tie at two decimals, so this one is constructed.
+  //    "[rate=175] AA ." compiles to exactly 625 ms, and (0.625).toFixed(2)
+  //    is "0.63" where printf("%.2f") gives "0.62".
   take('[rate=175] AA .');
-  take(padToKbTie('HH AH L OW'));
 
   cliCases = picked;
   return picked;
-}
-
-function padToKbTie(base) {
-  const bytes0 = encodeCli(renderCli(base, null, 48000).buf, 48000, base).bytes.length;
-  const l0 = Buffer.byteLength(base, 'utf8');
-  const fixed = bytes0 - l0 - (l0 % 2);          // everything but the ICMT payload
-  for (let pad = 0; pad < 8192; pad++) {
-    const l = l0 + 2 + pad;
-    if ((fixed + l + (l % 2)) % 2048 === 512) return `${base} #${'x'.repeat(pad)}`;
-  }
-  return null;
 }
 
 if (process.argv[2] === '--list-cli-cases') {
@@ -272,7 +241,7 @@ process.stdout.write('\n  the reference bin/klattsch.mjs\n');
     const n = jsCli.split(s).length - 1;
     if (n !== 1) wrong.push(`${JSON.stringify(s)} appears ${n} times, expected 1`);
   }
-  line('the six steps are unchanged', `${steps.length} fragments`, wrong.length === 0);
+  line("the CLI's pipeline is unchanged", `${steps.length} fragments`, wrong.length === 0);
   show(wrong);
 
   // The attribution, compared against the C constant rather than against a
