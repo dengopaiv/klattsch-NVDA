@@ -50,6 +50,7 @@ computer another accept attached unhappy impossible
 # Typographic punctuation, folded (UTF-8 below).
 “Quoted,” she said — and left… Then ’twas over.
 Café, naïve, résumé, façade, Zoë.
+The dog’s bone isn’t John’s.
 
 # Things with no speech in them.
 ,,,

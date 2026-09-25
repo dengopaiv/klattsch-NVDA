@@ -44,7 +44,7 @@ FILES = [TEXT, RULES]
 BUILD_TIMEOUT = 300
 VERIFY_TIMEOUT = 300
 
-# (label, file, find, replace)
+# (label, file, find, replace[, expect_caught])
 MUTATIONS = [
     ("pass 1 -- the lift", None, None, None),
     ("a rule's output: EE reads IH, not IY", RULES,
@@ -91,9 +91,12 @@ MUTATIONS = [
     ("h is dropped rather than HH", TEXT,
      '        case \'h\': add_item(x, KL_TEXT_ITEM_PHONE, "HH", src); break;',
      '        case \'h\': break;'),
+    # Equivalent: a break writes nothing and stress skips it, so a second one
+    # changes no output; it only spends an item slot. Kept to say so.
     ("two word breaks in a row are both kept", TEXT,
      "                x->items[x->item_count - 1].kind == KL_TEXT_ITEM_PHONE)\n                add_item(x, KL_TEXT_ITEM_BREAK, NULL, src);",
-     "                1)\n                add_item(x, KL_TEXT_ITEM_BREAK, NULL, src);"),
+     "                1)\n                add_item(x, KL_TEXT_ITEM_BREAK, NULL, src);",
+     False),
 
     ("pass 3 -- stress", None, None, None),
     ("positions not recorded (all at 0)", TEXT,
@@ -245,7 +248,9 @@ def main():
 
     print("Breaking the text front end; each line must be caught.\n")
     try:
-        for label, target, find, repl in MUTATIONS:
+        for entry in MUTATIONS:
+            label, target, find, repl = entry[:4]
+            expect_caught = entry[4] if len(entry) > 4 else True
             if target is None:
                 print(label, flush=True)
                 continue
@@ -270,12 +275,15 @@ def main():
                         caught_by.append(name + " TIMED OUT")
                     elif rc != 0:
                         caught_by.append(name)
-                if not caught_by:
-                    verdict, ok = "NOT CAUGHT  <-- gap", False
-                elif any("TIMED OUT" in c for c in caught_by):
+                if any("TIMED OUT" in c for c in caught_by):
                     verdict, ok = "HARNESS TIMEOUT: " + ", ".join(caught_by), False
+                elif not caught_by:
+                    verdict = "NOT CAUGHT  <-- gap" if expect_caught else "not caught, as expected"
+                    ok = not expect_caught
                 else:
-                    verdict, ok = "caught by " + " and ".join(caught_by), True
+                    verdict = ("caught by " + " and ".join(caught_by) if expect_caught
+                               else "CAUGHT -- the equivalent mutant is not equivalent")
+                    ok = expect_caught
             passed += ok
             failed += not ok
             print(f"  {label:<58} {verdict}", flush=True)
