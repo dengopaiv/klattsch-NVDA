@@ -14,7 +14,20 @@
 
 cmake_minimum_required(VERSION 3.16)
 
-project(klattsch VERSION 0.8.0 LANGUAGES C)
+# The version is Klattsch Native's, read from the one header that holds it
+# (csrc/kl_version.h). package.json's 0.8.0 is upstream's JavaScript package
+# and is not this number.
+file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/csrc/kl_version.h" KL_VERSION_LINES
+     REGEX "^#define KL_VERSION_(MAJOR|MINOR|PATCH) ")
+foreach(line IN LISTS KL_VERSION_LINES)
+  if(line MATCHES "^#define KL_VERSION_(MAJOR|MINOR|PATCH) +([0-9]+)")
+    set(KL_VERSION_${CMAKE_MATCH_1} ${CMAKE_MATCH_2})
+  endif()
+endforeach()
+
+project(klattsch
+        VERSION ${KL_VERSION_MAJOR}.${KL_VERSION_MINOR}.${KL_VERSION_PATCH}
+        LANGUAGES C)
 
 # C17: C11 with its defect reports fixed, and the newest dialect every target
 # compiler actually has. MSVC 19.51 has no /std:c23 at all, and its `clatest`
@@ -133,12 +146,10 @@ if(WIN32 AND MSVC)
   add_executable(klattsch_gui WIN32
     gui-native/klattsch_gui.cpp
     gui-native/klattsch_gui.rc)
-  target_compile_definitions(klattsch_gui PRIVATE
-    UNICODE _UNICODE
-    KL_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}
-    KL_VERSION_MINOR=${PROJECT_VERSION_MINOR}
-    KL_VERSION_PATCH=${PROJECT_VERSION_PATCH}
-    "KL_VERSION_STRING=\"${PROJECT_VERSION}\"")
+  # The .rc includes csrc/kl_version.h itself; the RC compiler needs the
+  # include path, which the C++ file gets from the library.
+  target_compile_definitions(klattsch_gui PRIVATE UNICODE _UNICODE)
+  target_include_directories(klattsch_gui PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/csrc)
   target_link_libraries(klattsch_gui PRIVATE comctl32 comdlg32 winmm shell32)
 
   # The static C runtime, so the exe runs on a Windows with no Visual C++

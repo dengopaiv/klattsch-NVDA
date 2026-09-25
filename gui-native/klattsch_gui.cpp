@@ -50,6 +50,7 @@ extern "C" {
 #include "kl_render.h"
 #include "kl_text.h"
 #include "kl_token.h"
+#include "kl_version.h"
 #include "kl_wav.h"
 }
 
@@ -335,7 +336,12 @@ enum {
 
 #define WM_APP_RENDERED (WM_APP + 1)
 
-static const wchar_t *WINDOW_TITLE = L"klattsch - sample generator";
+/* "Klattsch Native 0.5.0 beta - sample generator": the version a tester
+ * reports is in the title, where a screen reader reads it on focus. */
+#define KL_WIDEN2(s) L##s
+#define KL_WIDEN(s) KL_WIDEN2(s)
+static const wchar_t *WINDOW_TITLE =
+    L"Klattsch Native " KL_WIDEN(KL_VERSION_DISPLAY) L" - sample generator";
 static const wchar_t *DEFAULT_TEXT =
     L"Hello. This is klattsch, a formant synthesizer. Can you hear me?";
 static const wchar_t *LABEL_TEXT = L"&Text to speak:";
