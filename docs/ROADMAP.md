@@ -240,7 +240,7 @@ cheap now and expensive later.
       gets a control in phases 4 and 5. Shipping a slider for a parameter
       nobody has listened to is how a settings panel fills with dead controls.
 
-## Phase 4 — The GUI sample generator ○
+## Phase 4 — The GUI sample generator ◐
 
 [GENERATOR.md](GENERATOR.md). Native Win32, one x64 executable, linking the
 same static engine the add-on does.
@@ -250,6 +250,15 @@ what the engine has today — the 19 interpolated parameters, the directives,
 the bank, speak and save WAV — and leaves the frozen constants frozen. Making
 them parameters, and the audibility measurement that decides which get a
 control, come back with phase 3.
+
+**The first version is done**, 2026-09-25 —
+[20-generator.md](20-generator.md). `klattsch_gui.exe`: English text or
+phoneme source, the ten voice settings, the bank and the sample rate; speak,
+stop, convert to phonemes, save WAV. Its render path is byte-identical to the
+JavaScript reference over 24 cases, 10 of 10 mutations are caught, and a
+machine check of what a screen reader finds — 20 stops, all named, no
+keyboard trap — found and fixed Escape closing the window. The pass with NVDA
+running is a person's, and is next.
 
 Every parameter in sections 1–6 of that document — the 19 live ones, the ~30
 frozen constants promoted to real parameters, the phase 3 extensions, and
@@ -382,7 +391,7 @@ CMakeLists.txt  the product build: library, CLI, tests
 | 1 — Screen-reader requirements | ✅ done |
 | 2 — Rewrite (stages 0–6) | ✅ **stages 0–6 done**, all verified on four toolchains |
 | 3 — Extend + measure | postponed 2026-09-25 |
-| 4 — Generator | ○ not started |
+| 4 — Generator | ◐ first version done; NVDA pass open |
 | 5 — Add-on | ◐ front end done (steps 1–4 of 7) |
 
 Stage-level checklists live in each phase's document, and the step logs there
@@ -390,6 +399,9 @@ are the record of what was actually measured.
 
 ## The next three things
 
+0. **Listen, and use the generator with NVDA** — [20-generator.md](20-generator.md)
+   §20.6. The first time the synthesizer, the front end's stress and its
+   contour are heard at all; what it finds comes before anything below.
 1. **The C API for the add-on** — step 5 of [NVDA-ADDON.md](NVDA-ADDON.md):
    text in (through `kl_text_to_source`, then the tokenizer and compiler),
    audio out in chunks, cancel between chunks, settings. Chunked rendering

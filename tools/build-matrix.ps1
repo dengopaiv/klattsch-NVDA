@@ -50,7 +50,10 @@ $stages = @(
   @{ Stage = 6; Tool = "kl_wav_dump";     Verify = "verify-stage6.mjs"; Cli = $true },
   # The text front end (docs/19-frontend-text.md). Not a port stage, but the
   # same discipline: its verifier plus the accuracy count, per toolchain.
-  @{ Stage = "text"; Tool = "kl_text_dump"; Verify = "verify-text.mjs"; Accuracy = $true }
+  @{ Stage = "text"; Tool = "kl_text_dump"; Verify = "verify-text.mjs"; Accuracy = $true },
+  # The sample generator (docs/20-generator.md): built by MSVC and clang-cl
+  # only, so the gcc leg finds no executable and skips it.
+  @{ Stage = "gui"; Tool = "klattsch_gui"; Verify = "verify-gui.mjs"; Tool2 = "kl_text_dump" }
 )
 # The cross-compiler comparison walks stage 1's sections: they are the ones
 # that can legitimately differ between libms. Stage 2 is pure table data.
@@ -217,7 +220,7 @@ if ($wslOk) {
 
   # Stage 2 has no directory mode and needs none: it is pure table data, with
   # no arithmetic a second libm could answer differently.
-  foreach ($st in ($stages | Where-Object { $_.Stage -ne 2 -and $_.Stage -ne "text" })) {
+  foreach ($st in ($stages | Where-Object { $_.Stage -ne 2 -and $_.Stage -ne "text" -and $_.Stage -ne "gui" })) {
     Write-Host "--- build-wsl, stage $($st.Stage) ---"
     & node (Join-Path $repo "tools\$($st.Verify)") $dump | Select-Object -Last 4 | Write-Host
   }

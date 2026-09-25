@@ -112,6 +112,49 @@ if(MINGW)
   target_link_options(klattsch_cli PRIVATE -municode)
 endif()
 
+# --- the sample generator (Windows only) ------------------------------------
+
+# docs/GENERATOR.md: a native Win32 window, one x64 executable with nothing to
+# install beside it. C++ is used here and nowhere in the engine; the engine
+# stays C17. See docs/20-generator.md.
+#
+# MSVC and clang-cl only. MinGW's resource compiler, windres, runs the
+# preprocessor with the include directories unquoted, and this repository
+# lives under a path with a space in it ("speech synthesis"): it fails before
+# it reads the .rc. The GUI ships from MSVC, so the MinGW leg builds the
+# engine and the tools and leaves the window out.
+if(WIN32 AND MSVC)
+  enable_language(CXX)
+  enable_language(RC)
+  set(CMAKE_CXX_STANDARD 17)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
+  set(CMAKE_CXX_EXTENSIONS OFF)
+
+  add_executable(klattsch_gui WIN32
+    gui-native/klattsch_gui.cpp
+    gui-native/klattsch_gui.rc)
+  target_compile_definitions(klattsch_gui PRIVATE
+    UNICODE _UNICODE
+    KL_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}
+    KL_VERSION_MINOR=${PROJECT_VERSION_MINOR}
+    KL_VERSION_PATCH=${PROJECT_VERSION_PATCH}
+    "KL_VERSION_STRING=\"${PROJECT_VERSION}\"")
+  target_link_libraries(klattsch_gui PRIVATE comctl32 comdlg32 winmm shell32)
+
+  # The static C runtime, so the exe runs on a Windows with no Visual C++
+  # redistributable installed. The engine library the tools link keeps the
+  # default runtime -- it is what four toolchains verified -- so the GUI
+  # gets its own static-runtime build of the same sources.
+  get_target_property(KL_ENGINE_SOURCES klattsch SOURCES)
+  add_library(klattsch_mt STATIC ${KL_ENGINE_SOURCES})
+  target_include_directories(klattsch_mt PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/csrc)
+  set_target_properties(klattsch_mt klattsch_gui PROPERTIES
+    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+  target_link_libraries(klattsch_gui PRIVATE klattsch_mt)
+  # The manifest is in the .rc; stop the linker writing a second one.
+  target_link_options(klattsch_gui PRIVATE /MANIFEST:NO)
+endif()
+
 # --- tests ------------------------------------------------------------------
 
 include(CTest)
@@ -206,6 +249,17 @@ if(NODE_EXECUTABLE)
             $<TARGET_FILE:kl_text_dump> --check)
   set_tests_properties(text-accuracy PROPERTIES LABELS "validation;text"
                                                 SKIP_RETURN_CODE 77)
+
+  # The sample generator's engine path: its --selftest, the code its Speak and
+  # Save buttons run, byte-identical to the JavaScript reference over 24
+  # cases. Only where the generator is built (MSVC, clang-cl).
+  if(TARGET klattsch_gui)
+    add_test(NAME gui-render
+      COMMAND ${NODE_EXECUTABLE}
+              ${CMAKE_CURRENT_SOURCE_DIR}/tools/verify-gui.mjs
+              $<TARGET_FILE:klattsch_gui> $<TARGET_FILE:kl_text_dump>)
+    set_tests_properties(gui-render PROPERTIES LABELS "validation;gui")
+  endif()
 
   # The NFKC table is generated from Node's ICU, so it can go stale when Node
   # moves under it. Same guard as the banks, for the same reason.

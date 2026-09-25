@@ -22,9 +22,12 @@
 > the JavaScript CLI writes. The text front end the add-on needs is done
 > too: `csrc/kl_text.c` turns English text into klattsch phoneme source,
 > with stress and a sentence contour
-> ([`docs/19-frontend-text.md`](docs/19-frontend-text.md)). The NVDA add-on
-> and the GUI generator themselves are phases 5 and 4 and are not written
-> yet.
+> ([`docs/19-frontend-text.md`](docs/19-frontend-text.md)). And on Windows
+> there is a window to hear it in: `klattsch_gui.exe`, the first version of
+> the sample generator — type English or phoneme source, set the voice,
+> speak, save WAV — built for keyboard and screen-reader use
+> ([`docs/20-generator.md`](docs/20-generator.md)). The NVDA add-on is phase
+> 5 and is not written yet.
 >
 > The front end is BSD-3-Clause, not MIT: its letter-to-sound pass comes
 > from Votraxxion and carries the NRL rules, John Wasser's public-domain
