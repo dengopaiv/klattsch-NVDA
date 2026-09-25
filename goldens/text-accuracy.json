@@ -1,0 +1,26 @@
+{
+  "dictionary": "cmu-pronouncing-dictionary 3.0.0",
+  "vocabulary": "dictionary-en 4.0.0",
+  "counts": {
+    "all": {
+      "words": 124076,
+      "wordsCorrect": 38212,
+      "phoneRefTotal": 785933,
+      "phoneErrors": 159788,
+      "stressEligible": 93943,
+      "stressCorrect": 72588,
+      "stressFirstVowel": 64247,
+      "stressNone": 3
+    },
+    "vocabulary": {
+      "words": 26006,
+      "wordsCorrect": 9372,
+      "phoneRefTotal": 170755,
+      "phoneErrors": 28786,
+      "stressEligible": 19398,
+      "stressCorrect": 15985,
+      "stressFirstVowel": 11809,
+      "stressNone": 2
+    }
+  }
+}

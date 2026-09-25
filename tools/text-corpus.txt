@@ -1,0 +1,63 @@
+# The text front end's hand corpus: one input per line, read by
+# tools/verify-text.mjs and tools/capture-text-nrl.mjs. Lines starting with #
+# are comments and blank lines are skipped. Every line is here to reach a
+# particular path; the comment above each group says which.
+#
+# Keep it ASCII except where a line is about Unicode, and say so there.
+
+# Plain sentences, the three terminators, and none.
+Hello, world.
+The quick brown fox jumps over the lazy dog.
+Is this working?
+Stop right there!
+No terminator at all
+This is the first sentence. This is the second. Is this the third?
+
+# Clause punctuation: comma, semicolon, colon.
+Red, green, and blue.
+It rained; we stayed in.
+Note: the colon is a clause break.
+
+# Numbers: cardinals, scales, "and", 1100-1999 in hundreds, identifiers.
+0 1 7 13 19 20 21 99 100 101 110 999
+1000 1001 1099 1100 1984 1999 2000 2026 12345
+1,000 1,000,000 12,34 1,2,3
+1000000 1000000000 999999999999 1234567890123
+007 0123 42nd 1st 2nd 3rd 4th 11th 12th 13th 21st 22nd 100th
+3.14 0.5 1.2.3 version 10.0.19045
+
+# Money.
+$5 $1 $1,200 $4.20 $0.99 $0.01 $1.00 $1.5 $007
+
+# Abbreviations: the three Votraxxion expands, and the ones with a full stop.
+Dr Smith and Mr Brown met Mrs Green.
+Dr. Smith met Mrs. Jones, e.g. at noon. She left.
+Apples, pears, etc. Then more.
+Prof. Plum vs. Col. Mustard, i.e. the usual.
+
+# The exception dictionary.
+We heard the search for a bear to wear pears.
+
+# Apostrophes and possessives.
+It's the dog's bone; don't touch John's hat.
+
+# Stress: suffixes, prefixes, schwa, numbers.
+nation education ability abilities electric communication
+begin decide return photograph photography refugee musician
+classify organize necessary seventeen biology ecologist
+computer another accept attached unhappy impossible
+
+# Typographic punctuation, folded (UTF-8 below).
+“Quoted,” she said — and left… Then ’twas over.
+Café, naïve, résumé, façade, Zoë.
+
+# Things with no speech in them.
+,,,
+.
+...
+( ) [ ] { } < > / \ | ~ ` ^
+
+# Long words and runs.
+antidisestablishmentarianism
+supercalifragilisticexpialidocious
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

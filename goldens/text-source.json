@@ -1,0 +1,183 @@
+{
+ "note": "kl_text_dump --source over tools/text-corpus.txt, and --spell. Written by tools/verify-text.mjs --update; review the diff.",
+ "source": [
+  [
+   "Hello, world.",
+   "b b+9.6 HH EH' L OW(+9.6) , W b-12 ER'-24 L D ."
+  ],
+  [
+   "The quick brown fox jumps over the lazy dog.",
+   "b b+9.6 DH AH K W IH' K B R b-2 OW' N F b-2 AA' K S JH b-2 AH' M P S b-2 OW' V ER DH AH L b-2 EY' Z IY D b-2 AA'-24 G ."
+  ],
+  [
+   "Is this working?",
+   "b b+4.8 IH Z DH IH' S W b-4.8 ER' K IH+36 NG ."
+  ],
+  [
+   "Stop right there!",
+   "b b+18 S T AA' P R b-14.4 AY'-30 T DH EH R ."
+  ],
+  [
+   "No terminator at all",
+   "b b+9.6 N OW' T ER M b-6 IH' N AE T ER AE T b-6 AO'-24 L"
+  ],
+  [
+   "This is the first sentence. This is the second. Is this the third?",
+   "b b+9.6 DH IH' S IH Z DH AH F b-6 ER' S T S b-6 EH'-24 N T EH N S . b b+9.6 DH IH' S IH Z DH AH S b-12 EH'-24 K AA N D . b b+4.8 IH Z DH IH' S DH AH TH b-4.8 ER'+36 D ."
+  ],
+  [
+   "Red, green, and blue.",
+   "b b+9.6 R EH'(+9.6) D , G R b-6 IY'(+9.6) N , AE N D B L b-6 UW'-24 ."
+  ],
+  [
+   "It rained; we stayed in.",
+   "b b+9.6 IH T R EY'(+9.6) N D ; W IY S T b-12 EY'-24 IH T IH N ."
+  ],
+  [
+   "Note: the colon is a clause break.",
+   "b b+9.6 N OW'(+9.6) T ; DH AH K b-4 AA' L AH N IH Z AH K L b-4 AO' Z B R b-4 IY'-24 K ."
+  ],
+  [
+   "0 1 7 13 19 20 21 99 100 101 110 999",
+   "b b+9.6 Z IH' R OW W b-0.6 AH' N S b-0.6 EH' V AH N TH ER T b-0.6 IY' N N AY N T b-0.6 IY' N T W b-0.6 EH' N T IY T W b-0.6 EH' N T IY W b-0.6 AH' N N b-0.6 AY' N T IY N b-0.6 AY' N W b-0.6 AH' N HH b-0.6 AH' N D R EH D W b-0.6 AH' N HH b-0.6 AH' N D R EH D W b-0.6 AH' N W b-0.6 AH' N HH b-0.6 AH' N D R EH D T b-0.6 EH' N N b-0.6 AY' N HH b-0.6 AH' N D R EH D N b-0.6 AY' N T IY N b-0.6 AY'-24 N"
+  ],
+  [
+   "1000 1001 1099 1100 1984 1999 2000 2026 12345",
+   "b b+9.6 W AH' N TH b-0.4 AW' Z AE N D W b-0.4 AH' N TH b-0.4 AW' Z AE N D AA N D W b-0.4 AH' N W b-0.4 AH' N TH b-0.4 AW' Z AE N D AA N D N b-0.4 AY' N T IY N b-0.4 AY' N b-0.4 IY' L EH V AH N HH b-0.4 AH' N D R EH D N AY N T b-0.4 IY' N HH b-0.4 AH' N D R EH D b-0.4 EY' T IY F b-0.4 OW' R N AY N T b-0.4 IY' N HH b-0.4 AH' N D R EH D N b-0.4 AY' N T IY N b-0.4 AY' N T b-0.4 UW' TH b-0.4 AW' Z AE N D T b-0.4 UW' TH b-0.4 AW' Z AE N D AA N D T W b-0.4 EH' N T IY S b-0.4 IH' K S T W b-0.4 EH' L V TH b-0.4 AW' Z AE N D TH R b-0.4 IY' HH b-0.4 AH' N D R EH D F b-0.4 AO' R T IY F b-0.4 AY'-24 V"
+  ],
+  [
+   "1,000 1,000,000 12,34 1,2,3",
+   "b b+9.6 W AH' N TH b-1.3 AW' Z AE N D W b-1.3 AH' N M b-1.3 IH' L IY AH N T W b-1.3 EH'(+9.6) L V , TH b-1.3 ER' T IY F b-1.3 OW' R W b-1.3 AH'(+9.6) N , T b-1.3 UW'(+9.6) , TH R b-1.3 IY'-24"
+  ],
+  [
+   "1000000 1000000000 999999999999 1234567890123",
+   "b b+9.6 W AH' N M b-0.3 IH' L IY AH N W b-0.3 AH' N B b-0.3 IH' L IY AH N N b-0.3 AY' N HH b-0.3 AH' N D R EH D N b-0.3 AY' N T IY N b-0.3 AY' N B b-0.3 IH' L IY AH N N b-0.3 AY' N HH b-0.3 AH' N D R EH D N b-0.3 AY' N T IY N b-0.3 AY' N M b-0.3 IH' L IY AH N N b-0.3 AY' N HH b-0.3 AH' N D R EH D N b-0.3 AY' N T IY N b-0.3 AY' N TH b-0.3 AW' Z AE N D N b-0.3 AY' N HH b-0.3 AH' N D R EH D N b-0.3 AY' N T IY N b-0.3 AY' N W b-0.3 AH' N T b-0.3 UW' TH R b-0.3 IY' F b-0.3 OW' R F b-0.3 AY' V S b-0.3 IH' K S S b-0.3 EH' V AH N b-0.3 EY' T N b-0.3 AY' N Z b-0.3 IH' R OW W b-0.3 AH' N T b-0.3 UW' TH R b-0.3 IY'-24"
+  ],
+  [
+   "007 0123 42nd 1st 2nd 3rd 4th 11th 12th 13th 21st 22nd 100th",
+   "b b+9.6 Z IH' R OW Z b-0.6 IH' R OW S b-0.6 EH' V AH N Z b-0.6 IH' R OW W b-0.6 AH' N T b-0.6 UW' TH R b-0.6 IY' F b-0.6 AO' R T IY S b-0.6 EH' K AH N D F b-0.6 ER' S T S b-0.6 EH' K AH N D TH b-0.6 ER' D F b-0.6 OW' R TH b-0.6 IY' L EH V EH N TH T W b-0.6 EH' L V TH TH b-0.6 ER' T IY N TH T W b-0.6 EH' N T IY F b-0.6 ER' S T T W b-0.6 EH' N T IY S b-0.6 EH' K AH N D W b-0.6 AH' N HH b-0.6 AH'-24 N D R EH D TH"
+  ],
+  [
+   "3.14 0.5 1.2.3 version 10.0.19045",
+   "b b+9.6 TH R IY' P b-0.6 OY' N T W b-0.6 AH' N F b-0.6 OW' R Z b-0.6 IH' R OW P b-0.6 OY' N T F b-0.6 AY' V W b-0.6 AH' N P b-0.6 OY' N T T b-0.6 UW' P b-0.6 OY' N T TH R b-0.6 IY' V b-0.6 ER' SH AH N T b-0.6 EH' N P b-0.6 OY' N T Z b-0.6 IH' R OW P b-0.6 OY' N T W b-0.6 AH' N N b-0.6 AY' N Z b-0.6 IH' R OW F b-0.6 OW' R F b-0.6 AY'-24 V"
+  ],
+  [
+   "$5 $1 $1,200 $4.20 $0.99 $0.01 $1.00 $1.5 $007",
+   "b b+9.6 F AY' V D b-0.5 AA' L ER Z W b-0.5 AH' N D b-0.5 AA' L ER T W b-0.5 EH' L V HH b-0.5 AH' N D R EH D D b-0.5 AA' L ER Z F b-0.5 OW' R D b-0.5 AA' L ER Z AA N D T W b-0.5 EH' N T IY S b-0.5 EH' N T S N b-0.5 AY' N T IY N b-0.5 AY' N S b-0.5 EH' N T S W b-0.5 AH' N S b-0.5 EH' N T W b-0.5 AH' N D b-0.5 AA' L ER W b-0.5 AH' N P b-0.5 OY' N T F b-0.5 AY' V D b-0.5 AA' L ER Z Z b-0.5 IH' R OW Z b-0.5 IH' R OW S b-0.5 EH'-24 V AH N"
+  ],
+  [
+   "Dr Smith and Mr Brown met Mrs Green.",
+   "b b+9.6 D AA' K T ER S M b-2 IH' TH AE N D M b-2 IH' S T ER B R b-2 OW' N M b-2 EH' T M IH S b-2 AH' S G R b-2 IY'-24 N ."
+  ],
+  [
+   "Dr. Smith met Mrs. Jones, e.g. at noon. She left.",
+   "b b+9.6 D AA' K T ER S M b-2 IH' TH M b-2 EH' T M IH S b-2 AH' S JH b-2 OW'(+9.6) N Z , F AO R EH K S b-2 AE' M P AH L AE T N b-2 UW'-24 N . b b+9.6 SH IY L EH'-24 F T ."
+  ],
+  [
+   "Apples, pears, etc. Then more.",
+   "b b+9.6 AE' P P AH(+9.6) L Z , P b-4 IY'(+9.6) R Z , b-4 EH' T S b-4 IY'-24 T ER AH . b b+9.6 DH EH' N M b-12 AO'-24 R ."
+  ],
+  [
+   "Prof. Plum vs. Col. Mustard, i.e. the usual.",
+   "b b+9.6 P R OW' F EH S ER P L b-4 AH' M V b-4 ER' S AH S K b-4 AA'-24 L . b b+9.6 M AH' S T AA(+9.6) R D , DH AE T IH Z DH AH Y UW ZH b-12 UW'-24 AH L ."
+  ],
+  [
+   "We heard the search for a bear to wear pears.",
+   "b b+9.6 W IY HH ER' D DH AH S b-3 ER' CH F AO R AH B b-3 EH' R T UW W b-3 EH' R P b-3 IY'-24 R Z ."
+  ],
+  [
+   "It's the dog's bone; don't touch John's hat.",
+   "b b+9.6 IH T S DH AH D AA' G Z B b-2.4 OW'(+9.6) N ; D b-2.4 OW' N T T b-2.4 AW' CH JH b-2.4 AA' N Z HH b-2.4 AE'-24 T ."
+  ],
+  [
+   "nation education ability abilities electric communication",
+   "b b+9.6 N EY' SH AH N EH D UW K b-2.4 EY' SH AH N AE B b-2.4 IH' L IH T IY AE B b-2.4 IH' L IH T IY S IY L b-2.4 EH' K T R IH K K AA M M Y UW N IH K b-2.4 EY'-24 SH AH N"
+  ],
+  [
+   "begin decide return photograph photography refugee musician",
+   "b b+9.6 B IH G IH' N D IH S b-2 AY' D R IY T b-2 ER' N F b-2 AA' T AA G R AE F F AA T b-2 AA' G R AE F IY R IY F Y UW JH b-2 IY' M Y UW Z b-2 IH'-24 SH AE N"
+  ],
+  [
+   "classify organize necessary seventeen biology ecologist",
+   "b b+9.6 K L AE' S IH F IY b-2.4 AO' R G AE N AY Z N b-2.4 IY' S EH S AA R IY S IY V EH N T b-2.4 IY' N B IH b-2.4 AA' L AA JH IY EH K b-2.4 AA'-24 L AA JH IH S T"
+  ],
+  [
+   "computer another accept attached unhappy impossible",
+   "b b+9.6 K AA M P Y UW' T ER b-2.4 AE' N AH DH ER AE K S b-2.4 EH' P T AE T T b-2.4 AE' CH T AH N HH b-2.4 AE' P P IY IH M P b-2.4 AA'-24 S IH B AH L"
+  ],
+  [
+   "“Quoted,” she said — and left… Then ’twas over.",
+   "b b+9.6 K W OW' T IH(+9.6) D , SH IY S b-6 EH'(+9.6) D , AE N D L b-6 EH'-24 F T . b b+9.6 DH EH' N T W b-6 AA' Z b-6 OW'-24 V ER ."
+  ],
+  [
+   "Café, naïve, résumé, façade, Zoë.",
+   "b b+9.6 K EY'(+9.6) F , N b-3 EY'(+9.6) V , R IY Z b-3 UW'(+9.6) M , F b-3 AE' K EY(+9.6) D , Z b-3 OW'-24 ."
+  ],
+  [
+   ",,,",
+   ", , ,"
+  ],
+  [
+   ".",
+   "."
+  ],
+  [
+   "...",
+   ". . ."
+  ],
+  [
+   "( ) [ ] { } < > / \\ | ~ ` ^",
+   ""
+  ],
+  [
+   "antidisestablishmentarianism",
+   "b b+9.6 AE N T IH D IH Z EH S T AE B L IH SH M EH N T EH'-24 R IH AE N IH Z M"
+  ],
+  [
+   "supercalifragilisticexpialidocious",
+   "b b+9.6 S UW P ER K AE L IH F R AE JH IH L IH S T IH S EH K S P IH AE L IH D OW'-24 SH AH S"
+  ],
+  [
+   "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "b b+9.6 AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE AE'-24 AE AH"
+  ]
+ ],
+ "spell": [
+  [
+   "a",
+   "EY'"
+  ],
+  [
+   "Z",
+   "Z IY'"
+  ],
+  [
+   "!",
+   "EH' K S K L AE M EY SH AH N M AA' R K"
+  ],
+  [
+   "hello",
+   "EY' CH , IY' , EH' L , EH' L , OW'"
+  ],
+  [
+   "A1 b2",
+   "EY' , W AH' N , S P EY' S , B IY' , T UW'"
+  ],
+  [
+   "@#$",
+   "AE' T S AY' N , N UW' M B ER S AY' N , D AA' L ER S AY' N"
+  ],
+  [
+   "w",
+   "D AH' B L Y UW"
+  ],
+  [
+   "",
+   ""
+  ],
+  [
+   " ",
+   "S P EY' S"
+  ]
+ ]
+}
