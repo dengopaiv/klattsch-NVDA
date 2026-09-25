@@ -17,8 +17,8 @@ Two decisions of 2026-09-25 shaped it:
 
 **Exit test:** `tools/verify-gui.mjs` (ctest `gui-render`) — the real
 executable's render path byte-identical to the JavaScript reference over 24
-cases; `tools/gui-mutations.py` catching all 10 of its mutations; and
-`tools/check-gui-a11y.ps1` — 20 tab stops, every one named by its label, Tab
+cases (26 since the comma box); `tools/gui-mutations.py` catching all 11 of its mutations; and
+`tools/check-gui-a11y.ps1` — 21 tab stops (20 before the comma box), every one named by its label, Tab
 round the window with no trap, Escape not closing it. ✅ Passes on MSVC and
 clang-cl. The listening test with NVDA running is a person's, and is the next
 step (§20.6).
@@ -48,12 +48,13 @@ In tab order:
 | 3 | **Phoneme bank** (Alt+B) | the three compiled-in banks, by display name |
 | 4 | Sample rate | 8000 to 48000 Hz; 48000, the CLI's, by default |
 | 5–14 | Base pitch (Alt+P), Rate (Alt+R), formant scale, vibrato depth and rate, tremolo depth and rate, aspiration, spectral tilt, effort | spin boxes |
-| 15 | **Speak** (Alt+K; Enter anywhere but the text box) | renders on a worker thread, then plays |
-| 16 | **Stop** (Alt+O, and Escape) | |
-| 17 | **Convert to phonemes** (Alt+C) | replaces the text with the front end's source and turns phoneme mode on — the way to see and edit what it made of a sentence |
-| 18 | **Save WAV** (Alt+W) | with the spoken source in the file's ICMT chunk |
-| 19 | **Reset defaults** (Alt+D) | |
-| 20 | **Messages** (Alt+M) | read-only: length, sample rate, compiler warnings, and in text mode the phoneme source that was spoken |
+| 15 | Comma pause (ms) | a front-end setting, not a compiler option: text mode only; 200 by default (added after the first listening) |
+| 16 | **Speak** (Alt+K; Enter anywhere but the text box) | renders on a worker thread, then plays |
+| 17 | **Stop** (Alt+O, and Escape) | |
+| 18 | **Convert to phonemes** (Alt+C) | replaces the text with the front end's source and turns phoneme mode on — the way to see and edit what it made of a sentence |
+| 19 | **Save WAV** (Alt+W) | with the spoken source in the file's ICMT chunk |
+| 20 | **Reset defaults** (Alt+D) | |
+| 21 | **Messages** (Alt+M) | read-only: length, sample rate, compiler warnings, and in text mode the phoneme source that was spoken |
 
 The settings are spin boxes, which hold integers, so fractional settings are
 shown in a unit that makes them whole — scale, tremolo depth, aspiration,
@@ -224,3 +225,4 @@ What that finds is the next change to this chapter.
 | 2026-09-25 | `verify-gui.mjs`: 24 of 24 byte-identical. `gui-mutations.py`: 10 of 10. |
 | 2026-09-25 | Accessibility check: the SendKeys attempt (keystrokes to the wrong window), the UIA attempt (wrong API), then MSAA. Found Escape closing the window; fixed. |
 | 2026-09-25 | ctest 14/14 on MSVC; `gui-render` on clang-cl. |
+| 2026-09-25 | First listening (the author, with NVDA): good, the comma pause a bit short. Comma pause box added; 26 of 26 byte-identical, 11 of 11 mutations, 21 stops all named. |

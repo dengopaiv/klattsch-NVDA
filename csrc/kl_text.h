@@ -78,7 +78,16 @@ typedef struct {
      * with a bare `b`, which goes back to whatever base the compiler was
      * given.  0 means klattsch's default, 120. */
     double base_f0;
+
+    /* The pause for a comma, in ms, written as klattsch's `p` directive.
+     * The engine's own `,` token is 100 ms, a constant upstream froze; heard
+     * through the generator on 2026-09-25 it was judged a bit short, so the
+     * front end writes its own length instead and leaves the engine alone.
+     * 0 means the front end's default, KL_TEXT_COMMA_MS. */
+    int comma_ms;
 } kl_text_opts;
+
+#define KL_TEXT_COMMA_MS 200
 
 /* Text to klattsch source, with stress and a sentence contour.  UTF-8 in.
  * Writes at most `cap` bytes including the terminating NUL (when cap > 0),

@@ -112,7 +112,7 @@ try {
     if ([string]::IsNullOrWhiteSpace($s.Name)) { Fail "stop $n ($($s.Class) id $($s.Id)) has no name" }
   }
   if ($h -ne $text) { Fail "the tab order does not come back round to the text box" }
-  $expected = 1 + 1 + 2 + 10 + 5 + 1   # text, checkbox, 2 combos, 10 settings, 5 buttons, messages
+  $expected = 1 + 1 + 2 + 11 + 5 + 1   # text, checkbox, 2 combos, 11 settings, 5 buttons, messages
   if ($stops.Count -ne $expected) { Fail "$($stops.Count) tab stops, expected $expected" }
   $dupes = $stops | Group-Object Name | Where-Object Count -gt 1
   foreach ($d in $dupes) { Fail "two stops share the name '$($d.Name)'" }

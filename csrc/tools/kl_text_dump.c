@@ -11,6 +11,9 @@
  *   kl_text_dump --source --base HZ
  *                          the contour sized for a base pitch of HZ, as the
  *                          generator does (tools/verify-gui.mjs)
+ *   kl_text_dump --source --comma MS
+ *                          commas as a pause of MS ms (the generator's
+ *                          "Comma pause" box)
  *
  * One output line per input line, LF, in binary mode on every platform so the
  * bytes are the same wherever it runs. Input is UTF-8; a trailing CR is
@@ -43,10 +46,11 @@ int main(int argc, char **argv)
     int show_len = 0, i;
     kl_text_opts opts;
 
-    opts.base_f0 = 0.0;   /* the front end's default, 120 Hz */
+    opts.base_f0 = 0.0;   /* the front end's defaults: 120 Hz, */
+    opts.comma_ms = 0;    /* and KL_TEXT_COMMA_MS               */
     if (argc < 2) {
         fprintf(stderr, "usage: kl_text_dump --nrl|--word|--source|--spell"
-                        " [--cap N] [--base HZ]\n");
+                        " [--cap N] [--base HZ] [--comma MS]\n");
         return 2;
     }
     for (i = 2; i + 1 < argc; i += 2) {
@@ -56,6 +60,8 @@ int main(int argc, char **argv)
             show_len = 1;
         } else if (strcmp(argv[i], "--base") == 0) {
             opts.base_f0 = strtod(argv[i + 1], NULL);
+        } else if (strcmp(argv[i], "--comma") == 0) {
+            opts.comma_ms = atoi(argv[i + 1]);
         } else {
             fprintf(stderr, "unknown option: %s\n", argv[i]);
             return 2;

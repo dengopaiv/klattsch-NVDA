@@ -78,6 +78,11 @@ extern "C" {
  *
  * Accelerators only on the two settings reached for most; the others are one
  * Tab away, and ten accelerators in one window collide.
+ *
+ * The last row is not a compiler option but a front-end one: the length of
+ * a comma pause, which the front end writes as a `p` directive (kl_text.h).
+ * Its `opt` is KL_OPT_COUNT, meaning "not passed to the compiler". It only
+ * affects text mode; phoneme source says its own pauses.
  */
 struct ParamSpec {
     const wchar_t *label;
@@ -97,7 +102,9 @@ static const ParamSpec PARAMS[] = {
     { L"Aspiration (%):",            0,  100,   0, 0.01, KL_OPT_ASPIRATION },
     { L"Spectral tilt (%):",       -95,   95,   0, 0.01, KL_OPT_TILT },
     { L"Effort (%):",                0,  100,  50, 0.01, KL_OPT_EFFORT },
+    { L"Comma pause (ms):",         20, 1000, KL_TEXT_COMMA_MS, 1.0, KL_OPT_COUNT },
 };
+#define P_COMMA 10
 #define PARAM_COUNT ((int)(sizeof PARAMS / sizeof PARAMS[0]))
 
 static const int SAMPLE_RATES[] = { 8000, 11025, 16000, 22050, 44100, 48000 };
@@ -173,7 +180,9 @@ static std::string TextToSource(const std::string &text, const Voice &v)
 {
     std::unique_ptr<kl_text_ctx> ctx(new kl_text_ctx);
     kl_text_opts o;
+    memset(&o, 0, sizeof o);
     o.base_f0 = v.value[0] * PARAMS[0].unit;
+    o.comma_ms = v.value[P_COMMA];
     size_t need = kl_text_to_source(ctx.get(), text.c_str(), &o, NULL, 0);
     std::string out(need + 1, '\0');
     kl_text_to_source(ctx.get(), text.c_str(), &o, &out[0], out.size());
@@ -213,6 +222,8 @@ static Rendered RenderSource(const std::string &source, const Voice &v)
     kl_compile_opts opts;
     memset(&opts, 0, sizeof opts);
     for (int k = 0; k < PARAM_COUNT; k++) {
+        if (PARAMS[k].opt == KL_OPT_COUNT)
+            continue;   /* a front-end setting, already applied */
         opts.present |= 1u << PARAMS[k].opt;
         opts.value[PARAMS[k].opt] = v.value[k] * PARAMS[k].unit;
     }
@@ -627,7 +638,7 @@ static int CreateControls(void)
     }
     y += ROW + GAP;
 
-    /* Two columns of five, filled column by column so that the tab order
+    /* Two columns, filled column by column so that the tab order
      * reads down the first and then down the second. */
     {
         const int top = y, half = (PARAM_COUNT + 1) / 2;
@@ -747,10 +758,10 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
 /*
  *   klattsch_gui.exe --selftest OUT.WAV PHONEMEMODE BANK SAMPLERATE
- *                               P1 ... P10 TEXT
+ *                               P1 ... P11 TEXT
  *
  * PHONEMEMODE is 0 or 1 and means what the checkbox means; BANK is a bank
- * name; P1..P10 are the ten spin-box values in the order of PARAMS, in the
+ * name; P1..P11 are the eleven spin-box values in the order of PARAMS, in the
  * units the boxes show. Everything downstream is the code the buttons run --
  * Render(), TextToSource(), RenderSource() -- so a match in
  * tools/verify-gui.mjs is a statement about this executable, not about a copy

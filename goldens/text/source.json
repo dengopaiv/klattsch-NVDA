@@ -3,7 +3,7 @@
  "source": [
   [
    "Hello, world.",
-   "b b+9.6 HH EH' L OW(+9.6) , W b-12 ER'-24 L D ."
+   "b b+9.6 HH EH' L OW(+9.6) p200 W b-12 ER'-24 L D ."
   ],
   [
    "The quick brown fox jumps over the lazy dog.",
@@ -27,7 +27,7 @@
   ],
   [
    "Red, green, and blue.",
-   "b b+9.6 R EH'(+9.6) D , G R b-6 IY'(+9.6) N , AE N D B L b-6 UW'-24 ."
+   "b b+9.6 R EH'(+9.6) D p200 G R b-6 IY'(+9.6) N p200 AE N D B L b-6 UW'-24 ."
   ],
   [
    "It rained; we stayed in.",
@@ -47,7 +47,7 @@
   ],
   [
    "1,000 1,000,000 12,34 1,2,3",
-   "b b+9.6 W AH' N TH b-1.3 AW' Z AE N D W b-1.3 AH' N M b-1.3 IH' L IY AH N T W b-1.3 EH'(+9.6) L V , TH b-1.3 ER' T IY F b-1.3 OW' R W b-1.3 AH'(+9.6) N , T b-1.3 UW'(+9.6) , TH R b-1.3 IY'-24"
+   "b b+9.6 W AH' N TH b-1.3 AW' Z AE N D W b-1.3 AH' N M b-1.3 IH' L IY AH N T W b-1.3 EH'(+9.6) L V p200 TH b-1.3 ER' T IY F b-1.3 OW' R W b-1.3 AH'(+9.6) N p200 T b-1.3 UW'(+9.6) p200 TH R b-1.3 IY'-24"
   ],
   [
    "1000000 1000000000 999999999999 1234567890123",
@@ -71,15 +71,15 @@
   ],
   [
    "Dr. Smith met Mrs. Jones, e.g. at noon. She left.",
-   "b b+9.6 D AA' K T ER S M b-2 IH' TH M b-2 EH' T M IH S b-2 AH' S JH b-2 OW'(+9.6) N Z , F AO R EH K S b-2 AE' M P AH L AE T N b-2 UW'-24 N . b b+9.6 SH IY L EH'-24 F T ."
+   "b b+9.6 D AA' K T ER S M b-2 IH' TH M b-2 EH' T M IH S b-2 AH' S JH b-2 OW'(+9.6) N Z p200 F AO R EH K S b-2 AE' M P AH L AE T N b-2 UW'-24 N . b b+9.6 SH IY L EH'-24 F T ."
   ],
   [
    "Apples, pears, etc. Then more.",
-   "b b+9.6 AE' P P AH(+9.6) L Z , P b-4 IY'(+9.6) R Z , b-4 EH' T S b-4 IY'-24 T ER AH . b b+9.6 DH EH' N M b-12 AO'-24 R ."
+   "b b+9.6 AE' P P AH(+9.6) L Z p200 P b-4 IY'(+9.6) R Z p200 b-4 EH' T S b-4 IY'-24 T ER AH . b b+9.6 DH EH' N M b-12 AO'-24 R ."
   ],
   [
    "Prof. Plum vs. Col. Mustard, i.e. the usual.",
-   "b b+9.6 P R OW' F EH S ER P L b-4 AH' M V b-4 ER' S AH S K b-4 AA'-24 L . b b+9.6 M AH' S T AA(+9.6) R D , DH AE T IH Z DH AH Y UW ZH b-12 UW'-24 AH L ."
+   "b b+9.6 P R OW' F EH S ER P L b-4 AH' M V b-4 ER' S AH S K b-4 AA'-24 L . b b+9.6 M AH' S T AA(+9.6) R D p200 DH AE T IH Z DH AH Y UW ZH b-12 UW'-24 AH L ."
   ],
   [
    "We heard the search for a bear to wear pears.",
@@ -107,11 +107,11 @@
   ],
   [
    "“Quoted,” she said — and left… Then ’twas over.",
-   "b b+9.6 K W OW' T IH(+9.6) D , SH IY S b-6 EH'(+9.6) D , AE N D L b-6 EH'-24 F T . b b+9.6 DH EH' N T W b-6 AA' Z b-6 OW'-24 V ER ."
+   "b b+9.6 K W OW' T IH(+9.6) D p200 SH IY S b-6 EH'(+9.6) D p200 AE N D L b-6 EH'-24 F T . b b+9.6 DH EH' N T W b-6 AA' Z b-6 OW'-24 V ER ."
   ],
   [
    "Café, naïve, résumé, façade, Zoë.",
-   "b b+9.6 K EY'(+9.6) F , N b-3 EY'(+9.6) V , R IY Z b-3 UW'(+9.6) M , F b-3 AE' K EY(+9.6) D , Z b-3 OW'-24 ."
+   "b b+9.6 K EY'(+9.6) F p200 N b-3 EY'(+9.6) V p200 R IY Z b-3 UW'(+9.6) M p200 F b-3 AE' K EY(+9.6) D p200 Z b-3 OW'-24 ."
   ],
   [
    "The dog’s bone isn’t John’s.",
@@ -119,7 +119,7 @@
   ],
   [
    ",,,",
-   ", , ,"
+   "p200 p200 p200"
   ],
   [
    ".",
