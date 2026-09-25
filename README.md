@@ -19,8 +19,17 @@
 > --build build` produces `klattsch`, a C program that renders a phoneme
 > string to a WAV file — verified over the whole 729-case corpus at three
 > sample rates, on four toolchains, with every file byte-identical to the one
-> the JavaScript CLI writes. The NVDA add-on and the GUI generator are phases
-> 4 and 5 and are not written yet.
+> the JavaScript CLI writes. The text front end the add-on needs is done
+> too: `csrc/kl_text.c` turns English text into klattsch phoneme source,
+> with stress and a sentence contour
+> ([`docs/19-frontend-text.md`](docs/19-frontend-text.md)). The NVDA add-on
+> and the GUI generator themselves are phases 5 and 4 and are not written
+> yet.
+>
+> The front end is BSD-3-Clause, not MIT: its letter-to-sound pass comes
+> from Votraxxion and carries the NRL rules, John Wasser's public-domain
+> arrangement of them and Tamas Geczy's exception dictionary.
+> [`NOTICE.md`](NOTICE.md) names every piece.
 >
 > **This is a fork and it stays one.** klattsch is Tony Gies's work; altering it
 > fundamentally changes nothing about that. The MIT license and copyright below

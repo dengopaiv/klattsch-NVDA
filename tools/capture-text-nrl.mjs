@@ -8,7 +8,7 @@
 // Votraxxion's own ttv.c -- #included whole, so its static to_arpabet() is
 // reachable without editing a line of it -- runs it over the hand corpus and
 // over every plain word of the CMU dictionary, and writes
-// goldens/text-nrl.json:
+// goldens/text/nrl.json:
 //
 //   corpus      every hand-corpus line and Votraxxion's ARPABET for it, whole
 //   cmu         a SHA-256 over the ARPABET of all the dictionary's words, one
@@ -116,6 +116,6 @@ const golden = {
     sha256: createHash('sha256').update(cmuOut.join('\n') + '\n').digest('hex'),
   },
 };
-writeFileSync(join(root, 'goldens', 'text-nrl.json'), JSON.stringify(golden, null, 2) + '\n');
+writeFileSync(join(root, 'goldens', 'text', 'nrl.json'), JSON.stringify(golden, null, 2) + '\n');
 console.log(`captured ${corpus.length} corpus lines and ${cmu.words.length} words ` +
             `from Votraxxion ${commit.slice(0, 7)}`);

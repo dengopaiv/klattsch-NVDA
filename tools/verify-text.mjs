@@ -6,14 +6,14 @@
 // Three checks, each a diff or a digest, none a judgement:
 //
 //   1. The lift. Pass 1 of csrc/kl_text.c against Votraxxion's own ttv.c, as
-//      captured in goldens/text-nrl.json by tools/capture-text-nrl.mjs: every
+//      captured in goldens/text/nrl.json by tools/capture-text-nrl.mjs: every
 //      hand-corpus line exactly, and every plain word of the CMU dictionary by
 //      digest when the dictionary is installed. One difference is expected
 //      and named: this pass keeps ";" and ":" (as ";"), which Votraxxion
 //      drops, so ";" is removed from our side before comparing. Nothing else
 //      is.
 //   2. The output. The whole front end -- stress, contour, pauses, spelling --
-//      over the hand corpus against goldens/text-source.json. The front end
+//      over the hand corpus against goldens/text/source.json. The front end
 //      is deterministic, so this is exact; a change to it is re-captured with
 //      --update and the diff of that file is the review.
 //      A short output buffer is checked too: cut at a token boundary, the
@@ -39,6 +39,14 @@ const opt = (name) => {
   return i >= 0 ? args[i + 1] : undefined;
 };
 const update = args.includes('--update');
+
+// For tools/build-matrix.ps1: the inputs, one per line, so that a build with
+// no node beside it (WSL) can be run over exactly what this checks.
+if (dump === '--list-inputs') {
+  const cmu = await cmuWords(opt('--cmu'));
+  process.stdout.write([...corpusLines(), ...(cmu ? cmu.words : [])].join('\n') + '\n');
+  process.exit(0);
+}
 if (!dump) {
   console.error('usage: verify-text.mjs <kl_text_dump> [--cmu DIR] [--update]');
   process.exit(2);
@@ -61,13 +69,13 @@ const fail = (msg) => {
 
 // 1. The lift ---------------------------------------------------------------
 
-const nrl = JSON.parse(readFileSync(join(root, 'goldens', 'text-nrl.json'), 'utf8'));
+const nrl = JSON.parse(readFileSync(join(root, 'goldens', 'text', 'nrl.json'), 'utf8'));
 const corpus = corpusLines();
 const ours = (lines) => run('--nrl', lines).map((l) => l.replaceAll(';', ''));
 
 const goldenInputs = nrl.corpus.map(([input]) => input);
 if (goldenInputs.join('\n') !== corpus.join('\n')) {
-  fail('tools/text-corpus.txt differs from the corpus in goldens/text-nrl.json; ' +
+  fail('tools/text-corpus.txt differs from the corpus in goldens/text/nrl.json; ' +
        're-run tools/capture-text-nrl.mjs');
 } else {
   const got = ours(corpus);
@@ -99,7 +107,7 @@ if (!cmu) {
 const SPELL = ['a', 'Z', '!', 'hello', 'A1 b2', '@#$', 'w', '', ' '];
 const source = run('--source', corpus);
 const spelled = run('--spell', SPELL);
-const sourcePath = join(root, 'goldens', 'text-source.json');
+const sourcePath = join(root, 'goldens', 'text', 'source.json');
 
 if (update) {
   writeFileSync(sourcePath, JSON.stringify({
@@ -118,7 +126,7 @@ if (update) {
     });
   };
   if (golden.source.map(([i]) => i).join('\n') !== corpus.join('\n')) {
-    fail('tools/text-corpus.txt differs from goldens/text-source.json; re-run with --update');
+    fail('tools/text-corpus.txt differs from goldens/text/source.json; re-run with --update');
   } else {
     check('source', golden.source, source);
   }

@@ -28,7 +28,7 @@
  * Copyright (c) 2026 Päiv Dengo
  *
  * No allocation, like everything else on the speech path: every working
- * buffer lives in a kl_text_ctx the caller provides (about 130 KB -- static or
+ * buffer lives in a kl_text_ctx the caller provides (about 135 KB -- static or
  * heap in a driver, not a thread stack).  Nothing is static and mutable, so
  * two contexts can run on two threads.
  */

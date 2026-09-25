@@ -3,9 +3,9 @@
 #   pwsh tools/build-matrix.ps1            build all, run the stage verifiers
 #   pwsh tools/build-matrix.ps1 -Compare   also diff the compilers against each other
 #
-# Covers stages 1 to 6. The -Compare table walks stage 1's sections only: they
-# are the ones that can legitimately differ between libms, which is the whole
-# reason the WSL leg is here.
+# Covers stages 1 to 6 and the text front end. The -Compare table walks stage
+# 1's sections only: they are the ones that can legitimately differ between
+# libms, which is the whole reason the WSL leg is here.
 #
 # The stage 6 exit test requires MSVC, clang-cl and gcc to produce identical
 # files. That only works if all of them have been runnable all along, so this
@@ -47,7 +47,10 @@ $stages = @(
   @{ Stage = 4; Tool = "kl_token_dump";   Verify = "verify-stage4.mjs";
      Tool2 = "kl_norm_dump" },
   @{ Stage = 5; Tool = "kl_compile_dump"; Verify = "verify-stage5.mjs" },
-  @{ Stage = 6; Tool = "kl_wav_dump";     Verify = "verify-stage6.mjs"; Cli = $true }
+  @{ Stage = 6; Tool = "kl_wav_dump";     Verify = "verify-stage6.mjs"; Cli = $true },
+  # The text front end (docs/19-frontend-text.md). Not a port stage, but the
+  # same discipline: its verifier plus the accuracy count, per toolchain.
+  @{ Stage = "text"; Tool = "kl_text_dump"; Verify = "verify-text.mjs"; Accuracy = $true }
 )
 # The cross-compiler comparison walks stage 1's sections: they are the ones
 # that can legitimately differ between libms. Stage 2 is pure table data.
@@ -128,6 +131,9 @@ foreach ($b in @("build-msvc", "build-clang", "build-gcc")) {
         if (Test-Path $cliExe) { $vargs += @("--cli", $cliExe) }
       }
       & node (Join-Path $repo "tools\$($st.Verify)") @vargs | Select-Object -Last 3 | Write-Host
+      if ($st.Accuracy) {
+        & node (Join-Path $repo "tools\measure-text.mjs") $exe --check | Select-Object -Last 1 | Write-Host
+      }
     }
   }
 }
@@ -181,6 +187,11 @@ if ($wslOk) {
   $lines += "  mv '$wslDump'/run`$i/out.wav '$wslDump'/cli-`$i.wav"
   $lines += "  i=`$((i+1))"
   $lines += "done < '$wslDump'/cli-texts.txt"
+  # The text front end: every mode over the verifier's own inputs. Compared
+  # below with the Windows gcc build's output, which the verifier has passed.
+  $lines += "for m in nrl word source spell; do"
+  $lines += "  ./build-wsl/kl_text_dump --`$m < '$wslDump'/text-in.txt > '$wslDump'/text-`$m.txt"
+  $lines += "done"
 
   # The text list is produced by the verifier itself, so the two sides cannot
   # disagree about which texts they are comparing.
@@ -192,6 +203,11 @@ if ($wslOk) {
                           (($texts -join "`n") + "`n"),
                           (New-Object Text.UTF8Encoding $false))
 
+  # Through a file, not the pipeline: PowerShell would re-encode the UTF-8.
+  $textIn = Join-Path $dump "text-in.txt"
+  $listInputs = Join-Path (Join-Path $repo "tools") "verify-text.mjs"
+  cmd /c "node `"$listInputs`" --list-inputs > `"$textIn`""
+
   # Built in two statements on purpose: PowerShell binds the -replace operands
   # as further arguments to WriteAllText if the expression is written inline,
   # and the error it gives ("no overload ... argument count 3") names neither.
@@ -201,10 +217,26 @@ if ($wslOk) {
 
   # Stage 2 has no directory mode and needs none: it is pure table data, with
   # no arithmetic a second libm could answer differently.
-  foreach ($st in ($stages | Where-Object { $_.Stage -ne 2 })) {
+  foreach ($st in ($stages | Where-Object { $_.Stage -ne 2 -and $_.Stage -ne "text" })) {
     Write-Host "--- build-wsl, stage $($st.Stage) ---"
     & node (Join-Path $repo "tools\$($st.Verify)") $dump | Select-Object -Last 4 | Write-Host
   }
+
+  # The text front end has no directory mode. Its output is compared byte for
+  # byte with the Windows gcc build's instead, which verify-text.mjs passed
+  # above -- the same inputs, so equal bytes are the same verdict.
+  Write-Host "--- build-wsl, text ---"
+  $ref = Join-Path $repo "build-gcc\kl_text_dump.exe"
+  if (Test-Path $ref) {
+    foreach ($m in @("nrl", "word", "source", "spell")) {
+      $mine = Join-Path $dump "text-$m-win.txt"
+      cmd /c "`"$ref`" --$m < `"$(Join-Path $dump 'text-in.txt')`" > `"$mine`""
+      $a = (Get-FileHash $mine -Algorithm SHA256).Hash
+      $b = (Get-FileHash (Join-Path $dump "text-$m.txt") -Algorithm SHA256).Hash
+      if ($a -eq $b) { Write-Host "  --$m identical to WinLibs gcc" }
+      else { Write-Host "  --$m DIFFERS from WinLibs gcc" }
+    }
+  } else { Write-Host "  no build-gcc to compare with" }
 }
 
 # --- do the compilers agree with each other? --------------------------------

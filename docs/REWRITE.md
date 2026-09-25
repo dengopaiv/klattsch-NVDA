@@ -245,11 +245,13 @@ Status key: ✅ done and verified · ◐ partly done, not verified · ○ not st
 | 4 | **`kl_token.c`** + `kl_norm.c` | Every corpus token classified identically, exact, including the malformed ones; normalization exhaustive over all 1,112,064 code points | **medium** | low | ✅ |
 | 5 | **`kl_compile.c`** — the four shapes, directives, syllables, voices, banks, extras, warnings | Tier 1 on the whole corpus: event count, `atMs`, `transitionMs` and every target field exact as IEEE-754 doubles; warning strings identical | medium | **high** | ✅ |
 | 6 | **`kl_wav.c`** + `csrc/kl_render.c` + `bin/klattsch_cli.c` | The whole corpus rendered to WAV at all three sample rates, every file byte-identical to the JavaScript's, on four toolchains — and the CLI proved end to end to be that pipeline | small | **medium** | ✅ |
-| 7 | **Extensions**, each off by default | The stage-6 exit test still passes unchanged with every extension compiled in and defaulted off | medium | medium | ○ |
+| 7 | **Extensions**, each off by default | The stage-6 exit test still passes unchanged with every extension compiled in and defaulted off | medium | medium | postponed 2026-09-25 |
 | 8 | **Regression** — goldens in `ctest`, run in CI | A deliberately introduced one-sample error fails the build | small | low | ◐ |
 
 Stages 0–6 are the rewrite, and they are done. Stage 7 is the part that makes
-it worth having done.
+it worth having done — and is postponed, by the decision of 2026-09-25 to ship
+the GUI and the add-on on the engine exactly as verified; see
+[ROADMAP.md](ROADMAP.md), phase 3.
 
 > **Corrected 2026-09-24, in stage 6.** That row read *small, low risk* and
 > said the CLI would render the corpus. Both halves were wrong. The risk is

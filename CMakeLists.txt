@@ -198,7 +198,7 @@ if(NODE_EXECUTABLE)
   set_tests_properties(text-frontend PROPERTIES LABELS "validation;text")
 
   # Pronunciation and stress measured against the CMU dictionary. Every count
-  # must equal goldens/text-accuracy.json: a moved number is a changed rule,
+  # must equal goldens/text/accuracy.json: a moved number is a changed rule,
   # re-measured on purpose with --update. Skipped (77) without the dictionary.
   add_test(NAME text-accuracy
     COMMAND ${NODE_EXECUTABLE}

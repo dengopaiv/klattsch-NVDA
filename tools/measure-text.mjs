@@ -23,7 +23,7 @@
 // here to measure and is not shipped. --cmu points at a directory holding
 // node_modules/ if it is not installed in this repository.
 //
-// --check compares the counts with goldens/text-accuracy.json and fails on any
+// --check compares the counts with goldens/text/accuracy.json and fails on any
 // difference, in either direction: the front end is deterministic, so a moved
 // number means a changed rule, and a changed rule is re-measured on purpose
 // with --update, never absorbed silently.
@@ -42,7 +42,7 @@ const opt = (name) => {
   return i >= 0 ? args[i + 1] : undefined;
 };
 const mode = args.includes('--check') ? 'check' : args.includes('--update') ? 'update' : 'report';
-const goldenPath = join(root, 'goldens', 'text-accuracy.json');
+const goldenPath = join(root, 'goldens', 'text', 'accuracy.json');
 
 if (!dump) {
   console.error('usage: measure-text.mjs <kl_text_dump> [--cmu DIR] [--check|--update] [--misses]');
@@ -164,7 +164,7 @@ if (mode === 'update') {
   console.log(`wrote ${goldenPath}`);
 } else if (mode === 'check') {
   if (!existsSync(goldenPath)) {
-    console.error('no goldens/text-accuracy.json; run with --update');
+    console.error('no goldens/text/accuracy.json; run with --update');
     process.exit(1);
   }
   const golden = JSON.parse(readFileSync(goldenPath, 'utf8'));
@@ -185,5 +185,5 @@ if (mode === 'update') {
     }
   }
   if (bad) process.exit(1);
-  console.log('text accuracy: every count matches goldens/text-accuracy.json');
+  console.log('text accuracy: every count matches goldens/text/accuracy.json');
 }
