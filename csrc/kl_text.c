@@ -1176,16 +1176,27 @@ static void format_delta(char *buf, int t10)
     *buf = '\0';
 }
 
+/* A comma is written as `p<ms>` when `comma_ms` is set, and as the engine's
+ * own 100 ms `,` token when it is 0 (spelling, where a comma separates
+ * characters and the short pause is the point). */
 static void emit_items(const kl_text_ctx *x, sink *s, int with_pauses,
-                       int decline10)
+                       int decline10, int comma_ms)
 {
     int i;
     char tok[40], d[16];
     for (i = 0; i < x->item_count; i++) {
         const kl_text_item *it = &x->items[i];
         if (it->kind == KL_TEXT_ITEM_PAUSE) {
-            if (with_pauses)
+            if (!with_pauses)
+                continue;
+            if (it->sym[0] == ',' && comma_ms > 0) {
+                format_delta(d, comma_ms * 10);
+                tok[0] = 'p';
+                strcpy(tok + 1, d + 1);   /* "p200": the value, no sign */
+                sink_token(s, tok);
+            } else {
                 sink_token(s, it->sym);
+            }
             continue;
         }
         if (it->kind != KL_TEXT_ITEM_PHONE)
@@ -1368,7 +1379,7 @@ static sentence_type classify(char terminator)
 }
 
 static void speak_sentence(kl_text_ctx *x, const char *text, int len,
-                           double base, sink *s)
+                           double base, int comma_ms, sink *s)
 {
     int j, start10, decline10;
     char terminator = ' ', tok[24];
@@ -1396,7 +1407,7 @@ static void speak_sentence(kl_text_ctx *x, const char *text, int len,
             sink_token(s, tok);
         }
     }
-    emit_items(x, s, 1, decline10);
+    emit_items(x, s, 1, decline10, comma_ms);
 }
 
 /* Folding happens code point by code point into x->sent, and a sentence is
@@ -1409,6 +1420,7 @@ size_t kl_text_to_source(kl_text_ctx *x, const char *text,
     char *sent;
     size_t n = 0;
     double base = (opts && opts->base_f0 > 0.0) ? opts->base_f0 : 120.0;
+    int comma_ms = (opts && opts->comma_ms > 0) ? opts->comma_ms : KL_TEXT_COMMA_MS;
     const unsigned char *p, *end;
     sink s;
 
@@ -1446,12 +1458,12 @@ size_t kl_text_to_source(kl_text_ctx *x, const char *text,
                 boundary = 1;
         }
         if (boundary || n >= room) {
-            speak_sentence(x, sent, (int)n, base, &s);
+            speak_sentence(x, sent, (int)n, base, comma_ms, &s);
             n = 0;
         }
     }
     if (n > 0)
-        speak_sentence(x, sent, (int)n, base, &s);
+        speak_sentence(x, sent, (int)n, base, comma_ms, &s);
 
     sink_finish(&s);
     return s.len;
@@ -1467,7 +1479,7 @@ size_t kl_text_word(kl_text_ctx *x, const char *word, char *out, size_t cap)
         to_arpabet(x, word, (int)strlen(word));
         symbolize(x);
         assign_stress(x);
-        emit_items(x, &s, 0, 0);
+        emit_items(x, &s, 0, 0, 0);
     }
     sink_finish(&s);
     return s.len;
@@ -1542,7 +1554,7 @@ size_t kl_text_spell(kl_text_ctx *x, const char *text, char *out, size_t cap)
             a = b;
         }
     }
-    emit_items(x, &s, 1, 0);
+    emit_items(x, &s, 1, 0, 0);
     sink_finish(&s);
     return s.len;
 }

@@ -44,7 +44,11 @@ const PARAMS = [
   ['vibratoDepth', 0, 1], ['vibratoRate', 5, 1],
   ['tremoloDepth', 0, 0.01], ['tremoloRate', 5, 1],
   ['aspiration', 0, 0.01], ['tilt', 0, 0.01], ['effort', 50, 0.01],
+  // Not a compiler option: the front end's comma pause, in ms. It reaches
+  // the reference through `kl_text_dump --comma`, not through opts.
+  ['commaMs', 200, 1],
 ];
+const COMPILER = PARAMS.filter(([opt]) => opt !== 'commaMs');
 const DEFAULTS = PARAMS.map(([, d]) => d);
 const SOFTWARE = 'klattsch · https://tgies.github.io/klattsch';
 
@@ -60,10 +64,11 @@ const CASES = [
   ...PARAMS.map(([opt], i) => ({
     name: `${opt} off its default`, mode: 1,
     text: 'b AY' + "'" + ' S EH D , HH AH L OW .',
-    params: set(i, [180, 70, 85, 6, 7, 40, 9, 30, -45, 80][i]),
+    params: set(i, [180, 70, 85, 6, 7, 40, 9, 30, -45, 80, 350][i]),
   })),
+  { name: 'comma pause, text', mode: 0, text: 'One, two, three.', params: set(10, 350) },
   { name: 'every setting at once, text', mode: 0, text: 'Red, green, and blue!',
-    params: [95, 140, 120, 3, 4, 25, 6, 15, 30, 20] },
+    params: [95, 140, 120, 3, 4, 25, 6, 15, 30, 20, 60] },
   { name: 'text contour at a high base pitch', mode: 0, text: 'Are you sure?',
     params: set(0, 220) },
   { name: 'Japanese bank', mode: 1, bank: 'ja-mokhtari-2000', text: 'K O N N I CH I W A' },
@@ -78,7 +83,7 @@ const CASES = [
 
 function reference(source, params, bank, rate) {
   const opts = { bank };
-  PARAMS.forEach(([opt, , unit], k) => { opts[opt] = params[k] * unit; });
+  COMPILER.forEach(([opt, , unit], k) => { opts[opt] = params[k] * unit; });
   const { voices, totalMs } = compileString(source, opts);
   const buf = new Float32Array(Math.ceil(totalMs * rate / 1000));
   for (const v of voices) {
@@ -120,7 +125,8 @@ try {
 
     let source = c.text;
     if (c.mode === 0) {
-      const d = spawnSync(dump, ['--source', '--base', String(params[0] * PARAMS[0][2])],
+      const d = spawnSync(dump, ['--source', '--base', String(params[0] * PARAMS[0][2]),
+                                 '--comma', String(params[10])],
                           { input: c.text + '\n' });
       source = d.stdout.toString('utf8').split('\n')[0];
       if (comment(got) !== source) {
