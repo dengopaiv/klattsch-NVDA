@@ -250,6 +250,17 @@ if(NODE_EXECUTABLE)
   set_tests_properties(text-accuracy PROPERTIES LABELS "validation;text"
                                                 SKIP_RETURN_CODE 77)
 
+  # The sample generator's engine path: its --selftest, the code its Speak and
+  # Save buttons run, byte-identical to the JavaScript reference over 24
+  # cases. Only where the generator is built (MSVC, clang-cl).
+  if(TARGET klattsch_gui)
+    add_test(NAME gui-render
+      COMMAND ${NODE_EXECUTABLE}
+              ${CMAKE_CURRENT_SOURCE_DIR}/tools/verify-gui.mjs
+              $<TARGET_FILE:klattsch_gui> $<TARGET_FILE:kl_text_dump>)
+    set_tests_properties(gui-render PROPERTIES LABELS "validation;gui")
+  endif()
+
   # The NFKC table is generated from Node's ICU, so it can go stale when Node
   # moves under it. Same guard as the banks, for the same reason.
   add_test(NAME norm-c-current

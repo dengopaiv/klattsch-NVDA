@@ -160,6 +160,19 @@ build both programs against one engine.
 
 ## Order
 
+> **Reordered 2026-09-25.** The first version comes before the rest of this
+> list and before the NVDA add-on, so that the synthesizer can be listened
+> to without a command line, and it exposes only what the engine already
+> has. That moves section 6 — text in, phoneme source visible and editable —
+> from the end of the list to the start, and leaves the frozen constants for
+> when phase 3 returns. **Done 2026-09-25**:
+> [20-generator.md](20-generator.md). The list below is what remains, in the
+> order it was written.
+
+- [x] **0.** First version: text or phoneme source, the ten voice settings
+      the compiler takes, bank, sample rate, speak, stop, convert, save WAV;
+      accessibility checked by machine. **Done 2026-09-25.** The pass with
+      NVDA running, by a person, is open (step 6).
 - [ ] **1.** Engine steps 0–6 in [REWRITE.md](REWRITE.md) green, and the
       frozen constants of sections 1–4 promoted to real parameters with
       defaults proven to reproduce the goldens exactly.

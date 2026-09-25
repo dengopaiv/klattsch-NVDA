@@ -539,8 +539,14 @@ static void OnSave(void)
  * IsDialogMessage then hands it Tab, which it inserts as a character: focus
  * goes in and cannot get out. That is a keyboard trap, in a program whose
  * users are the people least able to reach for a mouse instead. So the edit
- * stands aside for a Tab keydown only, and the dialog manager moves focus.
- * (The same fix, and the same reasoning, as Votraxxion's gui-native.)
+ * stands aside for a Tab keydown, and the dialog manager moves focus. (The
+ * same fix, and the same reasoning, as Votraxxion's gui-native.)
+ *
+ * And for Escape. Given Escape, a multi-line edit posts WM_CLOSE to its
+ * parent -- documented EDIT behaviour -- and this window closed, taking the
+ * text with it, whenever Escape was pressed in either box. Found by
+ * tools/check-gui-a11y.ps1 on its first run. Standing aside lets
+ * IsDialogMessage turn Escape into IDCANCEL, which stops speech.
  */
 static WNDPROC g_editProc;
 
@@ -549,7 +555,8 @@ static LRESULT CALLBACK NoTabProc(HWND h, UINT msg, WPARAM wp, LPARAM lp)
     if (msg == WM_GETDLGCODE) {
         LRESULT code = CallWindowProcW(g_editProc, h, msg, wp, lp);
         const MSG *m = (const MSG *)lp;
-        if (m != NULL && m->message == WM_KEYDOWN && m->wParam == VK_TAB)
+        if (m != NULL && m->message == WM_KEYDOWN &&
+            (m->wParam == VK_TAB || m->wParam == VK_ESCAPE))
             code &= ~(LRESULT)(DLGC_WANTALLKEYS | DLGC_WANTTAB);
         return code;
     }
