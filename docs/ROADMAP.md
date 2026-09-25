@@ -43,10 +43,23 @@ so the reference implementation cannot disagree with its own source.
   Phase 1   Compare                -> kept privately          done
             Screen-reader needs    -> SCREEN-READER.md       done
   Phase 2   Rewrite in C           -> REWRITE.md stages 0-6  done
-  Phase 3   Extend the engine      -> REWRITE.md stage 7
+  Phase 3   Extend the engine      -> REWRITE.md stage 7     postponed
   Phase 4   GUI sample generator   -> GENERATOR.md
-  Phase 5   NVDA add-on            -> NVDA-ADDON.md
+  Phase 5   NVDA add-on            -> NVDA-ADDON.md          front end done
 ```
+
+> **Decided 2026-09-25: ship the synthesizer as it is, extend it later.**
+> Phase 3 is postponed, not dropped. The GUI and the add-on come first, with
+> the engine exactly as stages 0–6 verified it — which the goldens make
+> checkable rather than a promise. What that moves: chunked rendering, which
+> the add-on cannot do without, goes into phase 5's C API step; the
+> parameter audibility measurement waits with the frozen constants it is
+> about (see phase 4). The trigger for the postponement was the
+> synthesis-study notes on all-parallel formant synthesis (Holmes 1983),
+> which argue that klattsch's naive parallel bank needs shaping filters more
+> than it needs more formants — an upgrade to the synthesizer, and a larger
+> one than phase 3 as written. It is recorded under phase 3 below so that it
+> is not lost.
 
 Phases 2 and 3 are strictly sequential and everything else depends on them,
 because of the first house rule: **the synthesis comes first.** A synthesizer
@@ -179,11 +192,22 @@ anywhere. See [18-stage6-wav.md](18-stage6-wav.md).
       ours. `.github/workflows/check.yml` now runs it on push and pull
       request, and `ctest` runs it too as `banks-current`.
 
-## Phase 3 — Extend the engine ○
+## Phase 3 — Extend the engine — postponed 2026-09-25
 
 [REWRITE.md](REWRITE.md), stage 7. Each extension off by default, each landing
 with the goldens re-run to prove the default path is unchanged. An extension
 that alters the baseline is a bug, not a new voice.
+
+Postponed by decision on 2026-09-25 (see "The order, and why"). One input to
+take up when it resumes: Holmes (1983), *Formant synthesizers: cascade or
+parallel?*, *Speech Communication* 2(4), 251–273, argues that a parallel bank
+of plain band-passes — klattsch's — needs a differentiator after F2 and
+above, a phase-shaping filter on F1, and an explicit low-frequency level
+before it needs more formants. If that holds for klattsch, the order of the
+list below is wrong, and "three formants is the defining limit" in phase 1 is
+a claim to re-examine. Both are measurable on the C engine before any code:
+the level below F1 and the depth of the valleys between formants, against a
+cascade reference.
 
 - formant count 3–6 as a build dimension
 - `FNP`/`FNZ` nasal pole and zero, through the `[FNZ=450]` syntax upstream
@@ -221,6 +245,12 @@ cheap now and expensive later.
 [GENERATOR.md](GENERATOR.md). Native Win32, one x64 executable, linking the
 same static engine the add-on does.
 
+**Starts smaller, by the decision of 2026-09-25.** The first version exposes
+what the engine has today — the 19 interpolated parameters, the directives,
+the bank, speak and save WAV — and leaves the frozen constants frozen. Making
+them parameters, and the audibility measurement that decides which get a
+control, come back with phase 3.
+
 Every parameter in sections 1–6 of that document — the 19 live ones, the ~30
 frozen constants promoted to real parameters, the phase 3 extensions, and
 direct editing of the phoneme bank through an overlay that `extends` the base.
@@ -229,7 +259,7 @@ Which of them get a control is decided by the audibility measurement above.
 Accessibility is a build requirement. A tool for designing screen-reader voices
 that a screen-reader user cannot operate is not finished.
 
-## Phase 5 — The NVDA add-on ○
+## Phase 5 — The NVDA add-on ◐
 
 [NVDA-ADDON.md](NVDA-ADDON.md). One Python shim, one x64 native library,
 nothing else. 64-bit NVDA 2026.1 and later.
@@ -237,6 +267,14 @@ nothing else. 64-bit NVDA 2026.1 and later.
 The work that is not the engine: the front end lifted from `ttv.c`, a stress
 assignment pass, number and abbreviation normalization, and a sentence contour
 pass that emits ordinary klattsch source and so is testable without audio.
+
+**The front end is done**, 2026-09-25 — [19-frontend-text.md](19-frontend-text.md).
+`csrc/kl_text.c` turns text into klattsch source. Its letter-to-sound pass
+equals Votraxxion's on all 124,076 plain words of the CMU dictionary; its
+stress is right on 82.4 % of ordinary vocabulary against 60.9 % for "the first
+syllable"; 44 of 44 mutations are caught; four toolchains agree. It is
+BSD-3-Clause rather than MIT, which [NOTICE.md](../NOTICE.md) records and
+which the add-on's package has to carry.
 
 [SCREEN-READER.md](SCREEN-READER.md) §2 is the acceptance checklist and §8 its
 ordered steps. Index placement is a lookup rather than an estimate, because the
@@ -343,38 +381,36 @@ CMakeLists.txt  the product build: library, CLI, tests
 | 1 — Compare | ✅ done |
 | 1 — Screen-reader requirements | ✅ done |
 | 2 — Rewrite (stages 0–6) | ✅ **stages 0–6 done**, all verified on four toolchains |
-| 3 — Extend + measure | ○ not started |
+| 3 — Extend + measure | postponed 2026-09-25 |
 | 4 — Generator | ○ not started |
-| 5 — Add-on | ○ not started |
+| 5 — Add-on | ◐ front end done (steps 1–4 of 7) |
 
 Stage-level checklists live in each phase's document, and the step logs there
 are the record of what was actually measured.
 
 ## The next three things
 
-1. **Stage 7 — the extensions, each off by default.** Phase 2 is done, so
-   this is the part that makes having done it worth it: a cascade path, a
-   nasal pole and zero, more formants, and the parameters upstream froze as
-   constants. The exit test is already written and already passes — the
-   stage-6 comparison must still give 2,187 byte-identical files with every
-   extension compiled in and defaulted off, which is a much sharper
-   requirement than "the tests still pass".
+1. **The C API for the add-on** — step 5 of [NVDA-ADDON.md](NVDA-ADDON.md):
+   text in (through `kl_text_to_source`, then the tokenizer and compiler),
+   audio out in chunks, cancel between chunks, settings. Chunked rendering
+   was promoted to "the design" by the latency measurement in
+   [SCREEN-READER.md](SCREEN-READER.md) §3 and moved here from phase 3 by
+   the decision of 2026-09-25. It is exercised from a C test harness before
+   Python sees it, and its exit test is that chunked output equals whole
+   output sample for sample — `stage3-chunked` already proves that for the
+   synth, so this extends it to the whole path.
+2. **The shim and packaging** — steps 6 and 7, with
+   [SCREEN-READER.md](SCREEN-READER.md) §2 as the acceptance checklist, and
+   `NOTICE.md` in the package beside `LICENSE`.
+3. **Get the Windows toolchains into CI.** `tools/build-matrix.ps1` runs
+   every stage and the text front end on all four toolchains in one command,
+   but on one machine, when somebody remembers. Ubuntu gcc is still the only
+   leg anything automatic exercises. A hosted Windows runner is stage 8's
+   business, and this is the note that it has not been done.
 
-   The attribution note that used to sit here is now enforced rather than
-   remembered: `bin/klattsch.mjs:37` writes
-   `software: 'klattsch · https://tgies.github.io/klattsch'` into every WAV,
-   the C keeps it in one `#define`, and `tools/verify-stage6.mjs` fails if the
-   two stop matching or if the CLI stops using it.
-2. **Decide what normalization the product needs.** Stage 4 ships the NFKC
-   singleton table and leaves out canonical composition, with a measurement
-   bounding the cost: the only thing that can differ is the byte content of an
-   `unknown` token holding a combining mark. That is the right trade for a
-   phoneme grammar. It may not be once the text front end of phase 3 is
-   feeding it real prose — see [16-stage4-token.md](16-stage4-token.md) §16.1.
-3. **Get the Windows toolchains into CI.** `tools/build-matrix.ps1` now runs
-   every stage on all four toolchains in one command, which was the third item
-   here and is done. What is left is the harder half: it runs on one machine,
-   when somebody remembers. Ubuntu gcc is still the only leg anything
-   automatic exercises, so a break that only MSVC or only clang-cl would catch
-   still lands on `main` green. A hosted Windows runner is stage 8's business,
-   and this is the note that it has not been done.
+Two items that used to be here have moved. **Stage 7** is postponed (see
+"The order, and why"). **What normalization the product needs** was
+answered by the front end for its own input — it folds typographic
+punctuation and Latin-1 accents itself — and the tokenizer's NFKC question
+([16-stage4-token.md](16-stage4-token.md) §16.1) no longer sits on the path
+from text, because the front end writes ASCII.

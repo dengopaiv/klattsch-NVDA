@@ -1,0 +1,155 @@
+{
+  "note": "Votraxxion src/ttv.c to_arpabet() output. Written by tools/capture-text-nrl.mjs; checked by tools/verify-text.mjs.",
+  "votraxxion": "5353a6a94311162ab072b2f24e271098c3306473",
+  "corpus": [
+    [
+      "Hello, world.",
+      "hEHlOW, wERld."
+    ],
+    [
+      "The quick brown fox jumps over the lazy dog.",
+      "DHAX kwIHk brOWn fAAks jAHmps OWvER DHAX lEYzIY dAAg."
+    ],
+    [
+      "Is this working?",
+      "IHz DHIHs wERkIHNG."
+    ],
+    [
+      "Stop right there!",
+      "stAAp rAYt DHEHr."
+    ],
+    [
+      "No terminator at all",
+      "nOW tERmIHnAEtER AEt AOl"
+    ],
+    [
+      "This is the first sentence. This is the second. Is this the third?",
+      "DHIHs IHz DHAX fERst sEHntEHns. DHIHs IHz DHAX sEHkAAnd. IHz DHIHs DHAX THERd."
+    ],
+    [
+      "Red, green, and blue.",
+      "rEHd, grIYn, AEnd blUW."
+    ],
+    [
+      "It rained; we stayed in.",
+      "IHt rEYnd wIY stEYIHt IHn."
+    ],
+    [
+      "Note: the colon is a clause break.",
+      "nOWt DHAX kAAlAXn IHz AX klAOz brIYk."
+    ],
+    [
+      "0 1 7 13 19 20 21 99 100 101 110 999",
+      "zIHrOW  wAHn  sEHvAXn  THERtIYn  nAYntIYn  twEHntIY  twEHntIY wAHn  nAYntIY nAYn  wAHn hAHndrEHd  wAHn hAHndrEHd wAHn  wAHn hAHndrEHd tEHn  nAYn hAHndrEHd nAYntIY nAYn "
+    ],
+    [
+      "1000 1001 1099 1100 1984 1999 2000 2026 12345",
+      "wAHn THAWzAEnd  wAHn THAWzAEnd AAnd wAHn  wAHn THAWzAEnd AAnd nAYntIY nAYn  IYlEHvAXn hAHndrEHd  nAYntIYn hAHndrEHd EYtIY fOWr  nAYntIYn hAHndrEHd nAYntIY nAYn  tUW THAWzAEnd  tUW THAWzAEnd AAnd twEHntIY sIHks  twEHlv THAWzAEnd THrIY hAHndrEHd fAOrtIY fAYv "
+    ],
+    [
+      "1,000 1,000,000 12,34 1,2,3",
+      "wAHn THAWzAEnd  wAHn mIHlIYAXn  twEHlv ,THERtIY fOWr  wAHn ,tUW ,THrIY "
+    ],
+    [
+      "1000000 1000000000 999999999999 1234567890123",
+      "wAHn mIHlIYAXn  wAHn bIHlIYAXn  nAYn hAHndrEHd nAYntIY nAYn bIHlIYAXn nAYn hAHndrEHd nAYntIY nAYn mIHlIYAXn nAYn hAHndrEHd nAYntIY nAYn THAWzAEnd nAYn hAHndrEHd nAYntIY nAYn  wAHn tUW THrIY fOWr fAYv sIHks sEHvAXn EYt nAYn zIHrOW wAHn tUW THrIY "
+    ],
+    [
+      "007 0123 42nd 1st 2nd 3rd 4th 11th 12th 13th 21st 22nd 100th",
+      "zIHrOW zIHrOW sEHvAXn  zIHrOW wAHn tUW THrIY  fAOrtIY sEHkAHnd  fERst  sEHkAHnd  THERd  fOWrTH  IYlEHvEHnTH  twEHlvTH  THERtIYnTH  twEHntIY fERst  twEHntIY sEHkAHnd  wAHn hAHndrEHdTH "
+    ],
+    [
+      "3.14 0.5 1.2.3 version 10.0.19045",
+      "THrIY pOYnt wAHn fOWr  zIHrOW pOYnt fAYv  wAHn pOYnt tUW pOYnt THrIY  vERSHAXn tEHn pOYnt zIHrOW pOYnt wAHn nAYn zIHrOW fOWr fAYv "
+    ],
+    [
+      "$5 $1 $1,200 $4.20 $0.99 $0.01 $1.00 $1.5 $007",
+      "fAYv dAAlERz  wAHn dAAlER  twEHlv hAHndrEHd dAAlERz  fOWr dAAlERz AAnd twEHntIY sEHnts  nAYntIY nAYn sEHnts  wAHn sEHnt  wAHn dAAlER  wAHn pOYnt fAYv dAAlERz  zIHrOW zIHrOW sEHvAXn "
+    ],
+    [
+      "Dr Smith and Mr Brown met Mrs Green.",
+      "dAAktER smIHTH AEnd mIHstER brOWn mEHt mIHsAHs grIYn."
+    ],
+    [
+      "Dr. Smith met Mrs. Jones, e.g. at noon. She left.",
+      "dr. smIHTH mEHt mrz. jOWnz, IY.g. AEt nUWn. SHIY lEHft."
+    ],
+    [
+      "Apples, pears, etc. Then more.",
+      "AEppAXlz, pIYrz, EHtk. DHEHn mAOr."
+    ],
+    [
+      "Prof. Plum vs. Col. Mustard, i.e. the usual.",
+      "prAXv. plAHm vz. kAAl. mAHstAArd, AY.IY. DHAX yUWZHUWAXl."
+    ],
+    [
+      "We heard the search for a bear to wear pears.",
+      "wIY hERd DHAX sERCH fAOr AX bEHr tUW wEHr pIYrz."
+    ],
+    [
+      "It's the dog's bone; don't touch John's hat.",
+      "IHts DHAX dAAgz bOWn dOWnt tAWCH jAAnz hAEt."
+    ],
+    [
+      "nation education ability abilities electric communication",
+      "nEYSHAXn EHdUWkEYSHAXn AEbIHlIHtIY AEbIHlIHtIYs IYlEHktrIHk kAAmmyUWnIHkEYSHAXn"
+    ],
+    [
+      "begin decide return photograph photography refugee musician",
+      "bIHgIHn dIHsAYd rIYtERn fAAtAAgrAEf fAAtAAgrAEfIY rIYfyUWjIY myUWzIHSHAEn"
+    ],
+    [
+      "classify organize necessary seventeen biology ecologist",
+      "klAEsIHfIY AOrgAEnAYz nIYsEHsAArIY sIYvEHntIYn bIHAAlAAjIY EHkAAlAAjIHst"
+    ],
+    [
+      "computer another accept attached unhappy impossible",
+      "kAAmpyUWtER AEnAHDHER AEksEHpt AEttAECHt AHnhAEppIY IHmpAAsIHbAXl"
+    ],
+    [
+      "“Quoted,” she said — and left… Then ’twas over.",
+      "kwOWtIHd, SHIY sEHd  AEnd lEHft DHEHn twAAz OWvER."
+    ],
+    [
+      "Café, naïve, résumé, façade, Zoë.",
+      "kAEf, nAXvIY, rsAHm, fAXEYd, zOW."
+    ],
+    [
+      "The dog’s bone isn’t John’s.",
+      "DHAX dAAgs bOWn IHsnt jAAns."
+    ],
+    [
+      ",,,",
+      ",,,"
+    ],
+    [
+      ".",
+      "."
+    ],
+    [
+      "...",
+      "..."
+    ],
+    [
+      "( ) [ ] { } < > / \\ | ~ ` ^",
+      "             "
+    ],
+    [
+      "antidisestablishmentarianism",
+      "AEntIHdIHzEHstAEblIHSHmEHntEHrIHAEnIHzm"
+    ],
+    [
+      "supercalifragilisticexpialidocious",
+      "sUWpERkAElIHfrAEjIHlIHstIHsEHkspIHAElIHdOWSHAXs"
+    ],
+    [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "AEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAX"
+    ]
+  ],
+  "cmu": {
+    "dictionary": "cmu-pronouncing-dictionary 3.0.0",
+    "words": 124076,
+    "sha256": "54baab796cc61576927f651aa280f524e48e6bbab930b715d2db634c59699037"
+  }
+}

@@ -22,6 +22,10 @@ src/engine/banks/bundled.js text eol=lf
 # point of these, so they must arrive exactly as they were captured.
 goldens/** text eol=lf
 
+# The text front end's hand corpus: its lines are stored verbatim in
+# goldens/text-*.json, so it must read the same bytes on every checkout.
+tools/text-corpus.txt text eol=lf
+
 # C sources and the build, pinned so three compilers on two operating systems
 # are reading identical bytes.
 *.c    text eol=lf

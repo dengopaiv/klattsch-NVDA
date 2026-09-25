@@ -61,6 +61,8 @@ add_library(klattsch STATIC
   csrc/kl_wav.c
   csrc/kl_render.c
   csrc/kl_fmt.c
+  csrc/kl_text.c            # the text front end; see docs/19-frontend-text.md
+  csrc/kl_text_rules.c
 )
 target_include_directories(klattsch PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/csrc)
 
@@ -93,6 +95,9 @@ target_link_libraries(kl_compile_dump PRIVATE klattsch)
 
 add_executable(kl_wav_dump csrc/tools/kl_wav_dump.c)
 target_link_libraries(kl_wav_dump PRIVATE klattsch)
+
+add_executable(kl_text_dump csrc/tools/kl_text_dump.c)
+target_link_libraries(kl_text_dump PRIVATE klattsch)
 
 # --- the program -----------------------------------------------------------
 
@@ -180,6 +185,27 @@ if(NODE_EXECUTABLE)
             ${CMAKE_CURRENT_SOURCE_DIR}/tools/verify-stage6.mjs
             $<TARGET_FILE:kl_wav_dump> --cli $<TARGET_FILE:klattsch_cli>)
   set_tests_properties(stage6-wav PROPERTIES LABELS "validation;stage6")
+
+  # The text front end: the lift against Votraxxion's own output, the whole
+  # front end against its captured output, and every line of that output
+  # through the JavaScript compiler. The dictionary half of the lift is
+  # checked only when cmu-pronouncing-dictionary is installed; see
+  # docs/19-frontend-text.md.
+  add_test(NAME text-frontend
+    COMMAND ${NODE_EXECUTABLE}
+            ${CMAKE_CURRENT_SOURCE_DIR}/tools/verify-text.mjs
+            $<TARGET_FILE:kl_text_dump>)
+  set_tests_properties(text-frontend PROPERTIES LABELS "validation;text")
+
+  # Pronunciation and stress measured against the CMU dictionary. Every count
+  # must equal goldens/text/accuracy.json: a moved number is a changed rule,
+  # re-measured on purpose with --update. Skipped (77) without the dictionary.
+  add_test(NAME text-accuracy
+    COMMAND ${NODE_EXECUTABLE}
+            ${CMAKE_CURRENT_SOURCE_DIR}/tools/measure-text.mjs
+            $<TARGET_FILE:kl_text_dump> --check)
+  set_tests_properties(text-accuracy PROPERTIES LABELS "validation;text"
+                                                SKIP_RETURN_CODE 77)
 
   # The NFKC table is generated from Node's ICU, so it can go stale when Node
   # moves under it. Same guard as the banks, for the same reason.

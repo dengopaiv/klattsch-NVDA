@@ -49,6 +49,30 @@ What has to be built on top of the lift:
   rising by writing pitch deltas onto the last stressed vowel, which means it
   produces an ordinary klattsch source string and is testable without audio.
 
+> **Done 2026-09-25**, in [19-frontend-text.md](19-frontend-text.md):
+> `csrc/kl_text.c`, text in, klattsch source out. Three things above turned
+> out differently when measured, and are corrected here rather than edited
+> away:
+>
+> - **"Primary stress on the first full vowel"** was the first-cut plan.
+>   Measured against the CMU dictionary on ordinary vocabulary, "the first
+>   vowel" is right for **60.9 %** of words of two or more syllables. Suffix,
+>   prefix and default rules, each measured before it was kept, reach
+>   **82.4 %**.
+> - **"The punctuation names a screen reader says aloud"** are not the
+>   synthesizer's job. NVDA's symbol processing replaces symbols according
+>   to the user's punctuation level before the text arrives; a synthesizer
+>   that named them too would name some twice, or name the ones the user
+>   asked not to hear. The front end names none.
+> - **The contour** writes more than the last stressed vowel: a reset and
+>   start level per sentence, a declination across it, a sticky fall on the
+>   nucleus so the tail stays low, and a continuation rise before a comma.
+>   Its sizes are stand-ins, not measurements, and are marked as such.
+>
+> The lift itself was checked, not assumed: the letter-to-sound pass gives
+> Votraxxion's own output, byte for byte, on a 36-line hand corpus and on all
+> 124,076 plain words of the CMU dictionary.
+
 A compiled-in CMU dictionary is deliberately *not* in the first version.
 It is 130,000 words, it is the difference between good and correct pronunciation,
 and it is a size and licensing decision that should be made on measurements
@@ -146,13 +170,19 @@ unsigned executable.
 
 ## Order
 
-- [ ] **1.** Engine steps 0–6 in [REWRITE.md](REWRITE.md) green. Nothing here
+- [x] **1.** Engine steps 0–6 in [REWRITE.md](REWRITE.md) green. Nothing here
       starts before the C engine renders correct WAV files from the CLI.
-- [ ] **2.** Front end: lift `ttv.c` stage 1, drop stage 2, add stress
+      **Done 2026-09-24** ([18-stage6-wav.md](18-stage6-wav.md)).
+- [x] **2.** Front end: lift `ttv.c` stage 1, drop stage 2, add stress
       assignment. Verified against a word list far larger than any test corpus,
-      by diffing ARPABET streams — no audio needed.
-- [ ] **3.** Normalization: numbers, abbreviations, punctuation names.
-- [ ] **4.** Contour pass: sentence-final falling and rising.
+      by diffing ARPABET streams — no audio needed. **Done 2026-09-25**: the
+      lift equals Votraxxion on all 124,076 CMU words; stress 82.4 % on
+      vocabulary. [19-frontend-text.md](19-frontend-text.md).
+- [x] **3.** Normalization: numbers, abbreviations, punctuation names.
+      **Done 2026-09-25**, with punctuation names left to NVDA — see the
+      correction above.
+- [x] **4.** Contour pass: sentence-final falling and rising. **Done
+      2026-09-25**; its sizes are stand-ins to be fitted later.
 - [ ] **5.** C API for the add-on: text in, audio out, cancel, settings.
       Exercised from a C test harness before Python sees it.
 - [ ] **6.** The shim, against 64-bit NVDA 2026.1 and later, with

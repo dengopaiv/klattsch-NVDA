@@ -60,6 +60,15 @@ jobs:
           cmake -B build -DCMAKE_BUILD_TYPE=Release
           cmake --build build
 
+      # The text front end is measured against two word lists that are
+      # never checked in: the CMU dictionary (the optional dependency
+      # upstream's pronounce.js already names) and the Hunspell en_US list.
+      # Pinned to the versions goldens/text/*.json were captured from; a
+      # different version fails the check by name rather than by count.
+      # --no-save: package.json is upstream's and stays as it is.
+      - name: install the text front end's measurement inputs
+        run: npm install --no-save --no-package-lock cmu-pronouncing-dictionary@3.0.0 dictionary-en@4.0.0
+
       - name: stage exit tests
         run: ctest --test-dir build --output-on-failure
 
@@ -101,3 +110,9 @@ jobs:
       # bounding the rate rather than dropping mutations.
       - name: the encoder comparison can fail
         run: python3 tools/stage6-mutations.py build --rate 48000
+
+      # The text front end's checks passed on their first run too. Five of
+      # its stress mutations are caught only by the dictionary measurement,
+      # which is why the dictionary is installed above rather than skipped.
+      - name: the text front end's checks can fail
+        run: python3 tools/text-mutations.py build
