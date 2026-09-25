@@ -15,3 +15,7 @@ build-*/
 
 # Python bytecode from the mutation runners
 __pycache__/
+
+# Packages for testers (packaging/make-dist.py). A beta goes to testers,
+# not into the public repository.
+dist/

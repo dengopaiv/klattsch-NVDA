@@ -303,6 +303,22 @@ needs it: CMake's `project(VERSION)`, the add-on manifest, the GUI's
 `VERSIONINFO`, the release script. Three places that "move together" is three
 places that can drift.
 
+**Done 2026-09-25**, for the first beta: `csrc/kl_version.h` holds **0.5.0
+beta**, the version of Klattsch Native as a product. CMake reads it into
+`project(VERSION)`; the generator's `VERSIONINFO` and window title include
+the header; `packaging/make-dist.py` reads it, checks that its spellings
+agree, and refuses to pack an executable whose own `VERSIONINFO` says
+anything else. It is deliberately not upstream's number: `package.json`'s
+0.8.0 is Tony Gies's JavaScript package, frozen as the reference. The add-on
+manifest joins when there is an add-on.
+
+**Betas go to testers, not to releases.** `packaging/make-dist.py` writes
+`dist/klattsch-native-<version>-beta-x64.7z` and its SHA-256: the generator,
+a readme for testers, `LICENSE` and `NOTICE.md`. It verifies the very
+executable it packs (`tools/verify-gui.mjs`) and records the commit in the
+readme. `dist/` is ignored by git, as in Votraxxion; nothing built is
+checked in, and no GitHub release is made for a beta.
+
 **Built by more than one compiler, on more than one OS.** Four here: MSVC,
 clang-cl and WinLibs gcc on Windows (all UCRT), and Debian gcc under WSL on
 glibc. Only the last is an independent libm, so it is the one that tests the
