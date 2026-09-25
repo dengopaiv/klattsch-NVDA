@@ -280,6 +280,15 @@ base:
   so a higher voice gets the same contour in proportion rather than the same
   number of hertz.
 
+**Pauses.** A comma is written as `p200`, klattsch's own pause directive,
+rather than as the engine's `,` token. That token is 100 ms, one of the
+constants upstream froze, and the first listening through the generator on
+2026-09-25 judged it a bit short. Writing a pause of the front end's own
+length changes nothing in the engine; the length is `kl_text_opts.comma_ms`
+(default `KL_TEXT_COMMA_MS`, 200) and the generator has a box for it.
+Semicolons and full stops keep the engine's 200 and 300 ms, and spelling
+keeps `,` between characters, where a short gap is the point.
+
 **These numbers are stand-ins, not measurements**, and are marked so in the
 source. They were chosen to be clearly audible on klattsch's default 120 Hz
 voice and to stay inside an octave. The published models are in the
@@ -470,3 +479,4 @@ pass, which is why the suite refuses to run without it and why CI installs it.
 | 2026-09-25 | Mutation suite: 43 of 45 as expected, then a corpus line for the curly apostrophe and the equivalent mutant marked — 45 of 45. |
 | 2026-09-25 | Four toolchains. The first run exposed the text goldens breaking `goldens.mjs --check`; moved to `goldens/text/`. |
 | 2026-09-25 | CI installs the two measurement packages and runs the mutation suite. |
+| 2026-09-25 | First listening, through the generator: "the comma pause is probably a bit short, but other than that, it's good." Commas now `p200`; source golden re-captured (only commas changed); one mutation added (46 caught). |
