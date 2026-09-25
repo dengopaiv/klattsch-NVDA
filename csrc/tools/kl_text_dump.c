@@ -8,6 +8,9 @@
  *                          the same into an N-byte buffer, printed as
  *                          "<returned length> <what fit>", so the verifier
  *                          can check how a short buffer is cut
+ *   kl_text_dump --source --base HZ
+ *                          the contour sized for a base pitch of HZ, as the
+ *                          generator does (tools/verify-gui.mjs)
  *
  * One output line per input line, LF, in binary mode on every platform so the
  * bytes are the same wherever it runs. Input is UTF-8; a trailing CR is
@@ -37,12 +40,29 @@ int main(int argc, char **argv)
     static char out[LINE_MAX_BYTES * 8];
     enum { NRL, WORD, SOURCE, SPELL } mode;
     size_t cap = sizeof out;
+    int show_len = 0, i;
+    kl_text_opts opts;
 
-    if (argc == 4 && strcmp(argv[2], "--cap") == 0) {
-        cap = (size_t)strtoul(argv[3], NULL, 10);
-        if (cap > sizeof out) cap = sizeof out;
-    } else if (argc != 2) {
-        fprintf(stderr, "usage: kl_text_dump --nrl|--word|--source|--spell [--cap N]\n");
+    opts.base_f0 = 0.0;   /* the front end's default, 120 Hz */
+    if (argc < 2) {
+        fprintf(stderr, "usage: kl_text_dump --nrl|--word|--source|--spell"
+                        " [--cap N] [--base HZ]\n");
+        return 2;
+    }
+    for (i = 2; i + 1 < argc; i += 2) {
+        if (strcmp(argv[i], "--cap") == 0) {
+            cap = (size_t)strtoul(argv[i + 1], NULL, 10);
+            if (cap > sizeof out) cap = sizeof out;
+            show_len = 1;
+        } else if (strcmp(argv[i], "--base") == 0) {
+            opts.base_f0 = strtod(argv[i + 1], NULL);
+        } else {
+            fprintf(stderr, "unknown option: %s\n", argv[i]);
+            return 2;
+        }
+    }
+    if (i != argc) {
+        fprintf(stderr, "option without a value: %s\n", argv[i]);
         return 2;
     }
     if (strcmp(argv[1], "--nrl") == 0) mode = NRL;
@@ -67,10 +87,10 @@ int main(int argc, char **argv)
         switch (mode) {
         case NRL:    len = kl_text_nrl(&ctx, line, out, cap); break;
         case WORD:   len = kl_text_word(&ctx, line, out, cap); break;
-        case SOURCE: len = kl_text_to_source(&ctx, line, NULL, out, cap); break;
+        case SOURCE: len = kl_text_to_source(&ctx, line, &opts, out, cap); break;
         case SPELL:  len = kl_text_spell(&ctx, line, out, cap); break;
         }
-        if (argc == 4)
+        if (show_len)
             fprintf(stdout, "%lu ", (unsigned long)len);
         if (cap > 0)
             fputs(out, stdout);

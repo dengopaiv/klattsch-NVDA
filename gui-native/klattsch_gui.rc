@@ -1,0 +1,38 @@
+// klattsch_gui.rc -- resources for the sample generator: the manifest that
+// asks for Common Controls 6, and the version block.
+//
+// klattsch is Tony Gies's work (MIT); the text front end linked in is
+// BSD-3-Clause. See LICENSE and NOTICE.md.
+
+#include <windows.h>
+
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "klattsch_gui.manifest"
+
+// KL_VERSION_* come from CMake's project(VERSION), the one version number.
+VS_VERSION_INFO VERSIONINFO
+  FILEVERSION     KL_VERSION_MAJOR,KL_VERSION_MINOR,KL_VERSION_PATCH,0
+  PRODUCTVERSION  KL_VERSION_MAJOR,KL_VERSION_MINOR,KL_VERSION_PATCH,0
+  FILEFLAGSMASK   0x3fL
+  FILEFLAGS       0x0L
+  FILEOS          VOS_NT_WINDOWS32
+  FILETYPE        VFT_APP
+  FILESUBTYPE     VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "FileDescription", "klattsch - sample generator"
+            VALUE "FileVersion",     KL_VERSION_STRING
+            VALUE "InternalName",    "klattsch_gui"
+            VALUE "LegalCopyright",  "klattsch (c) 2026 Tony Gies, MIT. Text front end BSD-3-Clause, see NOTICE.md."
+            VALUE "OriginalFilename","klattsch_gui.exe"
+            VALUE "ProductName",     "klattsch"
+            VALUE "ProductVersion",  KL_VERSION_STRING
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
