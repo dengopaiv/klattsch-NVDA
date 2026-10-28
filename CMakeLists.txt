@@ -326,3 +326,14 @@ else()
   message(WARNING "node not found: the stage verifiers compare against the "
                   "JavaScript reference and will not be registered")
 endif()
+
+# Step 6 of docs/NVDA-ADDON.md: the NVDA driver against stand-ins for NVDA's
+# modules and the real library -- the shared one, so this is the file the
+# add-on ships (or, on Linux, its .so twin). Python only; no NVDA needed.
+find_package(Python3 COMPONENTS Interpreter)
+if(Python3_Interpreter_FOUND)
+  add_test(NAME driver-stubs
+    COMMAND ${Python3_EXECUTABLE} -I ${CMAKE_CURRENT_SOURCE_DIR}/tools/test-driver.py
+            $<TARGET_FILE:klattschNative>)
+  set_tests_properties(driver-stubs PROPERTIES LABELS "validation;driver" TIMEOUT 300)
+endif()
