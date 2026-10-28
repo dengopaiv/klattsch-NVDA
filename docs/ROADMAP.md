@@ -229,7 +229,8 @@ cheap now and expensive later.
       rendering a paragraph whole costs **1.02 s before the first sample**,
       against **1.9 ms** chunked — a factor of ~500, available in any language.
       Full table in [SCREEN-READER.md](SCREEN-READER.md) §3.
-- [ ] **Chunked rendering** in the C API, with cancel between chunks. Promoted
+- [x] **Chunked rendering** in the C API, with cancel between chunks.
+      **Done 2026-10-28** in phase 5's step 5, [21-stage-api.md](21-stage-api.md). Promoted
       by that measurement from "better" to **the design**: a whole-utterance
       loop in C would buy ~10× and leave a ~100 ms stall, which chunking in
       JavaScript already beats. The DSP needs no change — `kl_synth` renders
@@ -426,7 +427,10 @@ are the record of what was actually measured.
 0. **Listen, and use the generator with NVDA** — [20-generator.md](20-generator.md)
    §20.6. The first time the synthesizer, the front end's stress and its
    contour are heard at all; what it finds comes before anything below.
-1. **The C API for the add-on** — step 5 of [NVDA-ADDON.md](NVDA-ADDON.md):
+1. ✅ **Done 2026-10-28** ([21-stage-api.md](21-stage-api.md)): the chunked
+   stream equals `kl_render_mix` bit for bit on four toolchains, and the
+   first 20 ms of a 186-second paragraph is ready after 1.15 ms.
+   **The C API for the add-on** — step 5 of [NVDA-ADDON.md](NVDA-ADDON.md):
    text in (through `kl_text_to_source`, then the tokenizer and compiler),
    audio out in chunks, cancel between chunks, settings. Chunked rendering
    was promoted to "the design" by the latency measurement in
