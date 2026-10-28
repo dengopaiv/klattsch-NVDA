@@ -73,9 +73,9 @@ starts. Dropping work by clearing a queue is not enough.
 **Requirement.** Every utterance carries a generation id. `cancel()` bumps the
 counter; any work item or audio chunk carrying an older generation is
 discarded when it is reached. Control items — rate, pitch, voice, volume —
-carry no generation, because a settings change must survive a cancel. This is
-the design already in use in `votraxxion` and it should be copied rather than
-re-derived.
+carry no generation, because a settings change must survive a cancel. The
+driver's own design for this is in [NVDA-ADDON.md](NVDA-ADDON.md), "The
+driver".
 
 ### 2.4 Character mode and breaks need real implementations
 
@@ -208,6 +208,11 @@ users never touch.
 The starting proposal for the first list, to be confirmed by measurement:
 rate, pitch, volume, inflection, breathiness (`aspiration`), effort, head size
 (`scale`), and the phoneme bank.
+
+> **The phoneme bank came off that list on 2026-10-28.** The front end writes
+> ARPABET for `klatt1980-en` only, and English text through a Japanese bank is
+> silence. See [NVDA-ADDON.md](NVDA-ADDON.md), "Two decisions behind that
+> table".
 
 ## 6. Voices are presets, and the two programs share the format
 

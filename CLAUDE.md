@@ -37,9 +37,14 @@ Four pieces of work, in order, each finishable before the next begins:
 - **A rewrite that "sounds the same" is a rewrite nobody can trust.** There is
   a numeric acceptance criterion in [docs/REWRITE.md](docs/REWRITE.md), and
   goldens captured from the JS before the first line of C is written.
-- **No runtime dependencies in the shipped artifacts.** The pattern to follow is
-  `votraxxion`: one native library, one Python shim, nothing else. Not 40 MB
-  of vendored wheels.
+- **No runtime dependencies in the shipped artifacts.** One native library,
+  one Python driver, nothing else. Not 40 MB of vendored wheels.
+- **The add-on is this project's own.** Its driver is planned and written from
+  klattsch's pieces, NVDA's documented interface and
+  [docs/SCREEN-READER.md](docs/SCREEN-READER.md), not adapted from another
+  synthesizer's add-on, so its provenance is only what
+  [NOTICE.md](NOTICE.md) already names. The plan is
+  [docs/NVDA-ADDON.md](docs/NVDA-ADDON.md).
 - **64-bit only, everywhere.** No x86 library, no 32-bit executable, no
   architecture switch. NVDA add-ons target 64-bit NVDA 2026.1 and later. House
   rule §4 of `..\CLAUDE.md`.
