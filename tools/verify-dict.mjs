@@ -96,6 +96,8 @@ has('a possessive is its own entry', "John's hat.", 'JH');
 has("a possessive plural is found", "The bosses' cars.", 'B AO');
 has('a closing quote is tried off', "He said 'yes' and 'no'.", 'Y EH');
 same('digits go to the number reader, not the dictionary', '3rd 21st 1984 $5');
+// ABC and X are both CMU entries; glued to digits they must stay with the rules.
+same('letters glued to digits stay with the rules', 'abc123 x86 mp3');
 same('a word the dictionary lacks goes to the rules', 'Zyxquorbi vlemp.');
 console.log('front end: the dictionary is used as decided');
 

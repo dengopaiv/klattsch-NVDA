@@ -91,7 +91,9 @@ insufficient in real use.
 
 > **2026-10-28:** the measurements say they do (36 % of ordinary words exactly
 > right). How four other engines in this tree built theirs, and what that means
-> here, is a proposal in [DICTIONARY.md](DICTIONARY.md).
+> here, is in [DICTIONARY.md](DICTIONARY.md). **Done the same day**: the whole
+> CMU dictionary is compiled in, in front of the rules, as decided then —
+> [23-dictionary.md](23-dictionary.md).
 
 ## Layout
 
