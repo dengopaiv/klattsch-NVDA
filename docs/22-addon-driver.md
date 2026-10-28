@@ -11,11 +11,12 @@ own, written from NVDA 2026.1's source and the requirements of
 - **Without NVDA** (step 6): `tools/test-driver.py`, ctest `driver-stubs` —
   ✅ every check passes against the MSVC DLL and the WSL gcc `.so`,
   2026-10-28.
-- **With NVDA running, by a person** (step 6): the checklist of §22.6 — ○
-  not yet run.
-- **The package installs into NVDA and its versions agree** (step 7): ◐ the
-  package is built and every pre-pack check passes (§22.5); installing it is
-  part of §22.6.
+- **With NVDA running, by a person** (step 6): ✅ 2026-10-28, reported as a
+  whole: "The addon works. I've tested it." See §22.6 for what that does and
+  does not record.
+- **The package installs into NVDA and its versions agree** (step 7): ✅
+  installed and working in the same test; versions checked by the packager
+  (§22.5).
 
 ---
 
@@ -199,3 +200,14 @@ here.
 
 When 1–7 pass, the package is rebuilt without `--pretest` for testers, with
 `--tested-on` naming the NVDA version used.
+
+**Result, 2026-10-28.** The pretest package
+(`klattschNative-0.5.0-beta-pretest.nvda-addon`, SHA-256 `15586e20…030b7a`)
+was installed and used in NVDA 2026.3, the installed build being 2026.3 RC1.
+The tester's report, in full: *"The addon works. I've tested it."* The
+report was for the add-on as a whole, so the lines above are not marked one
+by one. Nothing was reported failing, and no change to the slider curves
+(line 8) was asked for. **The stand-in curves therefore stay as they are**,
+still marked as stand-ins in the driver and in NVDA-ADDON.md, until someone
+reports a curve that needs to change. The package was then rebuilt without
+`--pretest`, with `--tested-on 2026.3.0` (§22.7).
