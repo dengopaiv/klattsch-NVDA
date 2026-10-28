@@ -137,6 +137,11 @@ otherwise.
 Every entry point sets the flag itself, so a caller's uninitialised context
 cannot turn it on or off by accident.
 
+**Who can switch it off (0.6).** The generator has a checkbox for it
+([20-generator.md](20-generator.md) §20.8), for anyone who needs the
+pronunciations of 0.5. The NVDA add-on has no such setting and always uses
+the dictionary. Both are the author's decisions, 2026-10-28.
+
 ## 23.4 What it changed
 
 Over the hand corpus, 22 of 36 lines changed. Some of what was wrong and is
