@@ -270,7 +270,7 @@ that a screen-reader user cannot operate is not finished.
 
 ## Phase 5 — The NVDA add-on ◐
 
-[NVDA-ADDON.md](NVDA-ADDON.md). One Python shim, one x64 native library,
+[NVDA-ADDON.md](NVDA-ADDON.md). One Python driver, one x64 native library,
 nothing else. 64-bit NVDA 2026.1 and later.
 
 The work that is not the engine: the front end lifted from `ttv.c`, a stress
@@ -286,7 +286,14 @@ BSD-3-Clause rather than MIT, which [NOTICE.md](../NOTICE.md) records and
 which the add-on's package has to carry.
 
 [SCREEN-READER.md](SCREEN-READER.md) §2 is the acceptance checklist and §8 its
-ordered steps. Index placement is a lookup rather than an estimate, because the
+ordered steps. **What remains is broken down in [NVDA-ADDON.md](NVDA-ADDON.md),
+"Order"** (2026-10-28): a chunked C API with indexes and cancel, the
+driver, the package, then voices from presets. The add-on is planned from
+klattsch alone; its driver is this project's own and is not adapted from
+another synthesizer's. Reading the code for that plan also
+corrected two settings rows (volume is not `gain`, and inflection cannot scale
+the frozen stress lift), and took the bank list and the sub-16 kHz rates out of
+the add-on. Index placement is a lookup rather than an estimate, because the
 compiler's `phrases` array already carries `tStartMs`/`tEndMs` per token — a
 place klattsch is better equipped than its neighbours.
 
@@ -316,8 +323,9 @@ manifest joins when there is an add-on.
 `dist/klattsch-native-<version>-beta-x64.7z` and its SHA-256: the generator,
 a readme for testers, `LICENSE` and `NOTICE.md`. It verifies the very
 executable it packs (`tools/verify-gui.mjs`) and records the commit in the
-readme. `dist/` is ignored by git, as in Votraxxion; nothing built is
-checked in, and no GitHub release is made for a beta.
+readme. `dist/` is ignored by git; nothing built is checked in, and no
+GitHub release is made for a beta. The add-on is packed the same way, by
+`packaging/make-addon.py`, sharing these checks.
 
 **Built by more than one compiler, on more than one OS.** Four here: MSVC,
 clang-cl and WinLibs gcc on Windows (all UCRT), and Debian gcc under WSL on
@@ -392,8 +400,8 @@ bin/            klattsch.mjs (JS CLI) and klattsch_cli.c (C CLI)
 tools/          generators, per-stage verifiers and mutation suites
 goldens/        captured from the JS, checked in, LF-pinned
 gui-native/     the sample generator
-nvda-addon/     manifest, shim, package.py
-packaging/      release scripts and checksums
+nvda-addon/     manifest template, the driver, the add-on's readme
+packaging/      make-dist.py (generator beta), make-addon.py (the add-on)
 docs/           these documents, and a numbered chapter per port stage
 CMakeLists.txt  the product build: library, CLI, tests
 ```
@@ -427,9 +435,12 @@ are the record of what was actually measured.
    Python sees it, and its exit test is that chunked output equals whole
    output sample for sample — `stage3-chunked` already proves that for the
    synth, so this extends it to the whole path.
-2. **The shim and packaging** — steps 6 and 7, with
-   [SCREEN-READER.md](SCREEN-READER.md) §2 as the acceptance checklist, and
-   `NOTICE.md` in the package beside `LICENSE`.
+2. **The driver and packaging** — steps 6 and 7 of
+   [NVDA-ADDON.md](NVDA-ADDON.md). The driver is this project's own, with
+   [SCREEN-READER.md](SCREEN-READER.md) §2 as the acceptance checklist and a
+   stub-NVDA test that runs in CI; `packaging/make-addon.py` puts
+   `NOTICE.md` in the package beside `LICENSE`. Voices from presets follow
+   as step 8, once the generator's preset loader exists in C.
 3. **Get the Windows toolchains into CI.** `tools/build-matrix.ps1` runs
    every stage and the text front end on all four toolchains in one command,
    but on one machine, when somebody remembers. Ubuntu gcc is still the only

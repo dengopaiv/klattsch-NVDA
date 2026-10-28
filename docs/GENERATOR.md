@@ -108,7 +108,7 @@ editable; the per-voice sections of `[voice=N]`.
 
 ## What it is built in
 
-Native Win32, C or C++, the same shape as `votraxxion/gui-native/` — one x64
+Native Win32, C or C++ — one x64
 `.exe`, no runtime to install, and it links the same static engine the add-on
 does. 64-bit only, like everything else here. The GUI is the one place C++
 earns its keep, and being a separate binary it can use it freely without
@@ -117,8 +117,9 @@ touching the C library.
 **Accessibility is a build requirement, not a feature.** A tool for designing
 screen-reader voices that a screen-reader user cannot operate is not finished.
 Standard Win32 controls with correct labels, tab order and keyboard access to
-every parameter; no owner-drawn slider that MSAA cannot see. `votraxxion`'s GUI
-is the reference for what passes.
+every parameter; no owner-drawn slider that MSAA cannot see. What passes is measured here, not
+borrowed: `tools/check-gui-a11y.ps1` by machine, then a person with NVDA
+running ([20-generator.md](20-generator.md) §20.6).
 
 ## Layout
 
