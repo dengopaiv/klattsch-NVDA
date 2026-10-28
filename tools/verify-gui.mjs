@@ -79,6 +79,12 @@ const CASES = [
   { name: 'two voices', mode: 1, text: 'bC3 AA r400 AA [voice=1] bC4 IY r400 IY' },
   { name: 'a warning', mode: 1, text: 'HH AH QQ L OW' },
   { name: 'text outside ASCII', mode: 0, text: '“Café,” she said — naïve.' },
+  // The dictionary checkbox (docs/23-dictionary.md): the same text with it
+  // given on and off. Each is held to the front end at that setting, and the
+  // two must differ -- these words are ones the rules and CMU disagree on --
+  // so the checkbox is shown to reach the front end in this executable.
+  { name: 'dictionary on, given', mode: 0, dict: 1, text: 'Hello. Seventy dialog windows.' },
+  { name: 'dictionary off', mode: 0, dict: 0, text: 'Hello. Seventy dialog windows.' },
 ];
 
 function reference(source, params, bank, rate) {
@@ -107,6 +113,7 @@ function comment(wav) {
 
 const work = mkdtempSync(join(tmpdir(), 'kl-gui-'));
 let failures = 0;
+const icmt = {};
 try {
   CASES.forEach((c, n) => {
     const params = c.params || DEFAULTS;
@@ -114,8 +121,9 @@ try {
     const rate = c.rate || 48000;
     const out = join(work, `case${n}.wav`);
 
+    const dictArg = c.dict === undefined ? [] : [String(c.dict)];
     const r = spawnSync(gui, ['--selftest', out, String(c.mode), bank, String(rate),
-                              ...params.map(String), c.text]);
+                              ...params.map(String), ...dictArg, c.text]);
     if (r.status !== 0) {
       console.error(`FAIL ${c.name}: --selftest exited ${r.status}`);
       failures++;
@@ -126,9 +134,11 @@ try {
     let source = c.text;
     if (c.mode === 0) {
       const d = spawnSync(dump, ['--source', '--base', String(params[0] * PARAMS[0][2]),
-                                 '--comma', String(params[10])],
+                                 '--comma', String(params[10]),
+                                 '--dict', c.dict === 0 ? 'off' : 'on'],
                           { input: c.text + '\n' });
       source = d.stdout.toString('utf8').split('\n')[0];
+      icmt[c.name] = source;
       if (comment(got) !== source) {
         console.error(`FAIL ${c.name}: the WAV's ICMT is not the front end's source\n` +
                       `  ICMT   ${comment(got)}\n  source ${source}`);
@@ -148,6 +158,13 @@ try {
   });
 } finally {
   rmSync(work, { recursive: true, force: true });
+}
+
+if (icmt['dictionary on, given'] === icmt['dictionary off']) {
+  console.error('FAIL the dictionary checkbox changes nothing: on and off spoke the same source');
+  failures++;
+} else {
+  console.log('  ok  the dictionary checkbox changes what is spoken');
 }
 
 if (failures) {

@@ -13,8 +13,13 @@ English text front end in front of it. This beta is the sample generator: one
 window where you type English (or phonemes), set the voice, and listen or save
 a WAV file.
 
-The NVDA add-on is not in this beta. It comes later, built on the same
-engine, so what you hear here is what the add-on will speak with.
+The NVDA add-on is a separate package of the same version, built on the
+same engine: what you hear here is what the add-on speaks with.
+
+New in 0.6: English words are looked up in the CMU Pronouncing Dictionary
+(about 134,000 words and names) before the letter-to-sound rules, so far
+fewer words come out wrong. A checkbox turns it off, if you need the
+pronunciations of 0.5.
 
 Nothing to install. Unpack the folder anywhere and run klattsch_gui.exe.
 Windows 10 or 11, 64-bit.
@@ -28,6 +33,9 @@ readers. Tab moves through the window in this order:
 
   Text to speak (Alt+T)      type English here, or phonemes in phoneme mode
   Phoneme mode (Alt+H)       tick it if the box holds klattsch phonemes
+  Use the CMU pronouncing dictionary (Alt+U)
+                             on by default; off gives the letter-to-sound
+                             rules alone, as in 0.5
   Phoneme bank (Alt+B)       English (Klatt 1980), or one of two Japanese
   Sample rate                48000 Hz unless you want to hear it lower
   Base pitch (Alt+P)         the voice's pitch in Hz; 120 by default
@@ -52,9 +60,11 @@ What to tell us
 
 Anything is useful. In particular:
 
-- Words it says wrongly. Please send the word or the sentence. (Its English
-  pronunciation comes from letter-to-sound rules, not a dictionary, so it
-  will get some words wrong; the list of which ones is what we need.)
+- Words it says wrongly. Please send the word or the sentence, and say
+  whether the dictionary box was ticked. (Words the dictionary does not know
+  go to letter-to-sound rules, which get some wrong; and a word spelled the
+  same but said two ways, like "read", always gets the dictionary's first
+  pronunciation.)
 - Stress on the wrong syllable, or a sentence whose tune sounds wrong
   (questions, lists, long sentences).
 - Anything in the window your screen reader reads badly, or that you cannot
@@ -74,6 +84,8 @@ a fork of it; LICENSE is his licence and travels with every copy.
 The English text front end is BSD-3-Clause and carries the NRL
 letter-to-sound rules (Naval Research Laboratory, 1976), John A. Wasser's
 public-domain arrangement of them, and Tamas Geczy's exception list.
+The pronouncing dictionary is the CMU Pronouncing Dictionary, copyright
+1993-2015 Carnegie Mellon University, under its own BSD-style licence.
 NOTICE.md names every piece and gives the full terms.
 
 Source and documentation: github.com/dengopaiv/klattsch-NVDA
