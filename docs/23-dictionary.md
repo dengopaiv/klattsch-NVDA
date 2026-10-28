@@ -239,3 +239,24 @@ Expected to survive, and did:
   use of it, `verify-dict`, the goldens, the matrix stage.
 - This chapter, `dict-mutations.py` and its CI step, the CMU notice in
   NOTICE.md and the add-on's readme, and `abc123 x86 mp3` in the hand cases.
+
+## 23.9 The 0.6 test packages
+
+Built from `main` at `e02fd22`, 2026-10-28, after the version moved to
+0.6.0 beta (`csrc/kl_version.h`):
+
+| Package | Bytes | SHA-256 |
+|---|---|---|
+| `dist/klattsch-native-0.6.0-beta-x64.7z` (the generator) | 930,748 | `068cf5bc…a93b3b00` |
+| `dist/klattschNative-0.6.0-beta-pretest.nvda-addon` | 1,172,691 | `2ab3d8c3…44cc45df` |
+
+Each was built only after its checks passed on the very file packed:
+- **The generator:** `verify-gui.mjs`, 28 of 28, including the dictionary
+  on and off.
+- **The add-on:** `kl_api_test stream` and `api`, and `test-driver.py`.
+
+The add-on is a `--pretest` build. 0.6 has not yet been heard in NVDA, and
+its file name and readme say so. Once it has, it is rebuilt without
+`--pretest`, as 0.5 was (22.7). The dictionary grows the add-on from 159 KB
+to 1.17 MB packed, and the generator from 137 KB to 931 KB. The 0.5.0
+packages were removed from `dist/`.
