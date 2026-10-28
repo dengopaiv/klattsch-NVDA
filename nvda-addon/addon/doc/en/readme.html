@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Klattsch Native</title>
+</head>
+<body>
+<main>
+<h1>Klattsch Native</h1>
+
+<p>Version {VERSION}. {STATUS}</p>
+
+<p>A formant speech synthesizer for NVDA. It is klattsch, Tony Gies's
+parallel-formant synthesizer, rewritten in C, with an English text front end
+in front of it. Everything it does is in one native library, so it needs no
+Python packages and no data files.</p>
+
+<p>It needs 64-bit NVDA, 2026.1 or later. It speaks English only.</p>
+
+<h2>Choosing it</h2>
+<p>Press NVDA+Control+S to choose a synthesizer, and pick Klattsch Native.
+Its settings are then in NVDA's Voice settings (NVDA+Control+V).</p>
+
+<h2>Settings</h2>
+<p>NVDA's usual settings, plus the voice's own. The ones marked "ring" are
+also in the synth settings ring (NVDA+Control+arrows).</p>
+<dl>
+<dt>Rate (ring), Rate boost (ring)</dt>
+<dd>How fast it speaks. Faster means shorter sounds, never a higher voice.
+Rate boost doubles the speed again.</dd>
+<dt>Pitch (ring)</dt>
+<dd>The voice's base pitch: an octave below 120 Hz at 0, an octave above at
+100.</dd>
+<dt>Inflection (ring)</dt>
+<dd>How much the pitch moves over a sentence. 0 is a monotone; 100 is twice
+the normal movement.</dd>
+<dt>Volume (ring)</dt>
+<dd>Loudness.</dd>
+<dt>Breathiness (ring)</dt>
+<dd>Noise mixed into the voice. 0 is none.</dd>
+<dt>Effort (ring)</dt>
+<dd>The shape of each pulse of the voice: lax and soft below 50, tense and
+bright above.</dd>
+<dt>Head size (ring)</dt>
+<dd>Every resonance of the voice scaled together. Above 50 sounds like a
+smaller head, below 50 a larger one.</dd>
+<dt>Spectral tilt</dt>
+<dd>Darker below 50, brighter above.</dd>
+<dt>Vibrato depth, Vibrato speed</dt>
+<dd>A wavering pitch. Depth 0 is none.</dd>
+<dt>Sample rate</dt>
+<dd>22,050, 44,100 or 48,000 Hz. 22,050 is the default and is enough; lower
+rates are not offered, because below about 12 kHz the s sound collapses
+into sh.</dd>
+</dl>
+
+<h2>What to expect</h2>
+<ul>
+<li>The voice is deliberately simple: three formants, as klattsch was
+designed. It is clear rather than natural.</li>
+<li>Pronunciation comes from letter-to-sound rules, not a dictionary, so
+some words come out wrong. Stress is right for about four words in five.</li>
+<li>The settings' ranges, and the sentence melody, are first versions. They
+will change after listening.</li>
+<li>When NVDA places a reading position in the middle of a sentence, the
+sentence melody starts again from there.</li>
+</ul>
+
+<h2>Who made it</h2>
+<ul>
+<li><strong>klattsch</strong>, the synthesizer, its phoneme language and
+its phoneme banks: Tony Gies. MIT licence, copyright 2026 Tony Gies. The C
+engine in this add-on is a translation of his JavaScript.</li>
+<li><strong>The English phoneme bank</strong>: from D. H. Klatt, "Software
+for a cascade/parallel formant synthesizer", JASA 67(3), 1980.</li>
+<li><strong>The letter-to-sound rules</strong>: Elovitz, Johnson, McHugh
+and Shore, NRL Report 7948, Naval Research Laboratory, 1976; arranged in C
+by John A. Wasser (1985, public domain).</li>
+<li><strong>The exception dictionary and three letter names</strong>: Tamas
+Geczy, from his votraxsc01 NVDA add-on. BSD-3-Clause.</li>
+<li><strong>The C rewrite, the text front end's stress, melody and number
+reading, and this add-on</strong>: Päiv Dengo. The front end is
+BSD-3-Clause; the rest is MIT.</li>
+</ul>
+<p>The full licence texts are in LICENSE.txt and NOTICE.md in the add-on's
+folder. Source: <a href="https://github.com/dengopaiv/klattsch-NVDA">github.com/dengopaiv/klattsch-NVDA</a>.</p>
+
+<p>Built from commit {COMMIT}.</p>
+</main>
+</body>
+</html>
