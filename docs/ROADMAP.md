@@ -439,7 +439,9 @@ are the record of what was actually measured.
    Python sees it, and its exit test is that chunked output equals whole
    output sample for sample — `stage3-chunked` already proves that for the
    synth, so this extends it to the whole path.
-2. **The driver and packaging** — steps 6 and 7 of
+2. ✅ **Done 2026-10-28** ([22-addon-driver.md](22-addon-driver.md)): the
+   add-on installed and worked in NVDA 2026.3.
+   **The driver and packaging** — steps 6 and 7 of
    [NVDA-ADDON.md](NVDA-ADDON.md). The driver is this project's own, with
    [SCREEN-READER.md](SCREEN-READER.md) §2 as the acceptance checklist and a
    stub-NVDA test that runs in CI; `packaging/make-addon.py` puts

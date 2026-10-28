@@ -103,8 +103,10 @@ nvda-addon/
   addon/
     synthDrivers/
       klattsch.py                  the driver
-      klattschNative.dll           copied in by the packager, not checked in
-    doc/en/readme.html             what it is, who made it, the settings
+      (klattschNative.dll)         never in the tree: the packager writes it
+                                   straight into the package
+    doc/en/readme.html             what it is, who made it, the settings;
+                                   a template the packager stamps
 tools/test-driver.py               the driver under stub NVDA modules
 packaging/make-addon.py            builds the .nvda-addon into dist/
 ```
@@ -415,7 +417,10 @@ when its exit test passes.
       time to first chunk and its real-time ratio, measured and recorded —
       SCREEN-READER.md §8 A has these for the JavaScript only. Then the fixed
       output gain of 5b, measured.
-- [ ] **6.** The driver — chapter 22, branch `addon-driver`. First, the
+- [x] **6.** The driver — chapter 22, branch `addon-driver`. **Done
+      2026-10-28** ([22-addon-driver.md](22-addon-driver.md)): tested without
+      NVDA on both libraries, then installed and used in NVDA 2026.3 and
+      reported working. First, the
       NVDA 2026.1 interface read from its source and written down. Then two
       exit tests. **Without NVDA:** `tools/test-driver.py` loads the driver
       under stub `synthDriverHandler`, `nvwave` and `speech.commands` modules
@@ -429,7 +434,11 @@ when its exit test passes.
       under load, the settings ring, spelling, capitals, every setting from
       the keyboard — the §8 E list of SCREEN-READER.md. The slider curves
       above are fitted in the same sitting.
-- [ ] **7.** `packaging/make-addon.py` — chapter 23, branch `addon-package`.
+- [x] **7.** `packaging/make-addon.py` — in chapter 22 (§22.5) rather than a
+      chapter 23, and on the same branch: the hands-on test needs the
+      package, so the two are finished together. **Done 2026-10-28**: the
+      pretest package installed and worked; the tester package is rebuilt
+      without `--pretest` (§22.7).
       **Exit test:** the package installs into a clean NVDA 2026.1 x64; the
       version NVDA shows, the manifest's, the DLL's and the header's are the
       same; the add-on speaks; the SHA-256 matches.

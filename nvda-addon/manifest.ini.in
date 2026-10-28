@@ -1,0 +1,9 @@
+name = klattschNative
+summary = "Klattsch Native"
+description = """A formant speech synthesizer for NVDA: Tony Gies's klattsch, rewritten in C, with an English text front end. One native library; no Python dependencies and no data files. 64-bit NVDA only."""
+author = "dengopaiv"
+url = https://github.com/dengopaiv/klattsch-NVDA
+version = {VERSION}
+docFileName = readme.html
+minimumNVDAVersion = 2026.1.0
+lastTestedNVDAVersion = {LAST_TESTED}

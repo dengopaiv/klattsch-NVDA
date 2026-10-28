@@ -152,12 +152,19 @@ reached. A gain of 1.1 would match the median exactly, and would make the
 clamp reachable for any utterance peaking above 0.91. The median is not
 worth that.
 
-The other four corpus lines render no audio at all: `,,,`, `.`, `...` and
-`( ) [ ] { } < > / \ | ~ ` ^`. The front end writes nothing for a sentence
-with no letters, and its goldens pin that. With nothing to hear and no pause
-to wait for, `kl_api_end` returns 0 and rendering yields only the indexes. It
-does not render the compiler's 250 ms of fade and trail-off, so an index on
-its own costs no silence.
+The other four corpus lines have no peak to measure, because none of them
+makes a sound. Three of them do render audio, all of it silence: the front
+end writes `,,,` as `p200 p200 p200`, `.` as `.` and `...` as `. . .`, which
+are pauses of 600, 300 and 900 ms, each followed by the trail-off. Only
+`` ( ) [ ] { } < > / \ | ~ ` ^ `` comes out as nothing. With nothing to hear and
+no pause to wait for, `kl_api_end` returns 0 and rendering yields only the
+indexes. It does not render the compiler's 250 ms of fade and trail-off, so
+an index on its own costs no silence.
+
+*Corrected 2026-10-28.* This paragraph first said that all four lines render
+no audio. `level` skips a line whose peak is 0, and that was read as "renders
+nothing". The driver test of step 6 fed `...` and got 1.05 s of silence, and
+`kl_text_dump --source` on the four lines showed why.
 
 ## 21.5 The mutation suite, and the two things it corrected
 

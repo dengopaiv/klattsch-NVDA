@@ -55,6 +55,13 @@ driver on which NVDA is left waiting.
 This is the single most common way an otherwise working synth driver is
 unusable.
 
+> **Refined 2026-10-28 from NVDA 2026.1's source**
+> ([22-addon-driver.md](22-addon-driver.md) §22.2). This holds for a failed or
+> empty utterance, and the driver does it. It does not apply to a cancelled
+> one: NVDA's speech manager resets before it calls the synth's `cancel()`, and
+> ignores an index that arrives afterwards. So the driver drops a cancelled
+> utterance's indexes, as NVDA's own drivers do.
+
 ### 2.2 The audio thread must keep feeding even when idle
 
 NVDA's `WavePlayer` checks its chunk-finished callbacks only when it is fed.
@@ -64,6 +71,13 @@ A driver that feeds audio and then goes quiet stops firing
 **Requirement.** The thread that owns the wave player flushes periodically
 whether or not there is new audio. This is not a performance detail; without it
 say-all stalls.
+
+> **Refined 2026-10-28 from NVDA 2026.1's source**
+> ([22-addon-driver.md](22-addon-driver.md) §22.2). That was true of the
+> older player. The 2026.1 `WavePlayer` is WASAPI only, and calls each chunk's
+> `onDone` from the audio side when the chunk has played, fed or not. What the
+> driver needs instead is `idle()`, then `synthDoneSpeaking`, once nothing more
+> is queued.
 
 ### 2.3 Cancellation is a generation counter, and control survives it
 

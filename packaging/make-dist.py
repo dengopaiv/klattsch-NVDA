@@ -29,35 +29,26 @@ NOTICE.md. Both licences require their notices to travel with a binary --
 MIT for the engine, BSD-3-Clause for the text front end.
 """
 
-import hashlib
-import re
 import shutil
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-DIST = ROOT / "dist"
+# The version and clean-tree checks are shared with make-addon.py.
+from kl_release import DIST, ROOT, require_clean, write_sha256
+from kl_release import fail as _fail
+from kl_release import version as _version
+
 SEVEN_ZIP = [r"C:\Program Files\7-Zip\7z.exe", "7z", "7za"]
 
 
 def fail(msg):
-    print(f"make-dist: {msg}", file=sys.stderr)
-    sys.exit(1)
+    _fail("make-dist", msg)
 
 
 def version():
-    h = (ROOT / "csrc" / "kl_version.h").read_text(encoding="utf-8")
-    num = {k: re.search(rf"#define KL_VERSION_{k} (\d+)", h).group(1)
-           for k in ("MAJOR", "MINOR", "PATCH")}
-    string = re.search(r'#define KL_VERSION_STRING "([^"]+)"', h).group(1)
-    stage = re.search(r'#define KL_VERSION_STAGE "([^"]+)"', h).group(1)
-    display = re.search(r'#define KL_VERSION_DISPLAY "([^"]+)"', h).group(1)
-    dotted = f"{num['MAJOR']}.{num['MINOR']}.{num['PATCH']}"
-    if string != dotted or display != f"{string} {stage}":
-        fail(f"csrc/kl_version.h disagrees with itself: {dotted} / {string!r} / {display!r}")
-    return string, stage
+    return _version("make-dist")
 
 
 def exe_version(exe):
@@ -77,11 +68,6 @@ def exe_version(exe):
     return data[j:end].decode("utf-16-le")
 
 
-def git(*args):
-    return subprocess.run(["git", *args], cwd=ROOT, capture_output=True,
-                          text=True).stdout.strip()
-
-
 def main():
     build = ROOT / "build-msvc"
     if "--build" in sys.argv:
@@ -95,9 +81,7 @@ def main():
     if exe_version(exe) != ver:
         fail(f"{exe.name} says version {exe_version(exe)!r}, csrc/kl_version.h says "
              f"{ver!r}: rebuild")
-    if git("status", "--porcelain", "--untracked-files=no"):
-        fail("the working tree has uncommitted changes; package from a commit")
-    commit = git("rev-parse", "--short", "HEAD")
+    commit = require_clean("make-dist")
 
     print("verifying the executable being packed...")
     r = subprocess.run(["node", "tools/verify-gui.mjs", str(exe), str(dump)],
@@ -132,8 +116,7 @@ def main():
         if r.returncode != 0:
             fail("7-Zip failed:\n" + r.stdout + r.stderr)
 
-    digest = hashlib.sha256(out.read_bytes()).hexdigest()
-    (DIST / f"{name}.7z.sha256").write_text(f"{digest}  {out.name}\n", encoding="ascii")
+    digest = write_sha256(out)
     print(f"wrote {out.relative_to(ROOT)}  ({out.stat().st_size:,} bytes)")
     print(f"sha256 {digest}")
     print(f"from commit {commit}")
