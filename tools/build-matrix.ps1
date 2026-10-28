@@ -242,6 +242,43 @@ if ($wslOk) {
   } else { Write-Host "  no build-gcc to compare with" }
 }
 
+# --- the streaming API (docs/21-stage-api.md) -------------------------------
+
+# C only, so it runs on every leg as it is -- WSL included, where there is no
+# node: kl_api_test holds the API to the whole-utterance path of the same
+# build, which the verifiers above have just held to the JavaScript.
+Write-Host "`nStreaming API`n"
+foreach ($b in @("build-msvc", "build-clang", "build-gcc")) {
+  $exe = Join-Path $repo "$b\kl_api_test.exe"
+  if (Test-Path $exe) {
+    Write-Host "--- $b, api ---"
+    foreach ($run in @(@("stream", "goldens\cases-compile.bin"), @("api", "tools\text-corpus.txt"))) {
+      $out = & $exe $run[0] (Join-Path $repo $run[1]) 2>&1
+      $code = $LASTEXITCODE
+      Write-Host ("  " + ($out | Select-Object -Last 1))
+      if ($code -ne 0) { Write-Host "  $($run[0]) FAILED (exit $code)" }
+    }
+  }
+}
+if ($wslOk) {
+  Write-Host "--- build-wsl, api ---"
+  $wslRepo = "/mnt/" + ($repo -replace '^([A-Za-z]):', { $_.Groups[1].Value.ToLower() } -replace '\\', '/')
+  # Through a script file, for the reason given at the dump script above.
+  $apiDir = Join-Path $env:TEMP "klattsch-wsl-dump"
+  New-Item -ItemType Directory -Force -Path $apiDir | Out-Null
+  $apiSh = Join-Path $apiDir "api.sh"
+  $wslApiSh = "/mnt/" + ($apiSh -replace '^([A-Za-z]):', { $_.Groups[1].Value.ToLower() } -replace '\\', '/')
+  $body = @(
+    "cd '$wslRepo'",
+    "./build-wsl/kl_api_test stream goldens/cases-compile.bin 2>&1 | tail -1",
+    "echo `"  stream exit `${PIPESTATUS[0]}`"",
+    "./build-wsl/kl_api_test api tools/text-corpus.txt 2>&1 | tail -1",
+    "echo `"  api exit `${PIPESTATUS[0]}`""
+  ) -join "`n"
+  [IO.File]::WriteAllText($apiSh, $body + "`n")
+  wsl -d $WslDistro -- bash $wslApiSh | ForEach-Object { Write-Host "  $_" }
+}
+
 # --- do the compilers agree with each other? --------------------------------
 
 if ($Compare) {

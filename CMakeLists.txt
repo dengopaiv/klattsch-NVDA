@@ -76,8 +76,11 @@ add_library(klattsch STATIC
   csrc/kl_fmt.c
   csrc/kl_text.c            # the text front end; see docs/19-frontend-text.md
   csrc/kl_text_rules.c
+  csrc/kl_stream.c          # the chunked mix and the streaming API, for the
+  csrc/kl_api.c             # NVDA add-on; see docs/21-stage-api.md
 )
 target_include_directories(klattsch PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/csrc)
+get_target_property(KL_ENGINE_SOURCES klattsch SOURCES)
 
 # libm, where it is a separate library.
 include(CheckLibraryExists)
@@ -112,6 +115,9 @@ target_link_libraries(kl_wav_dump PRIVATE klattsch)
 add_executable(kl_text_dump csrc/tools/kl_text_dump.c)
 target_link_libraries(kl_text_dump PRIVATE klattsch)
 
+add_executable(kl_api_test csrc/tools/kl_api_test.c)
+target_link_libraries(kl_api_test PRIVATE klattsch)
+
 # --- the program -----------------------------------------------------------
 
 # The first artifact here that is a program rather than a test. It writes
@@ -123,6 +129,28 @@ if(MINGW)
   # wmain needs the Unicode entry point; without this MinGW links the ANSI
   # one and the argument strings arrive in the system codepage.
   target_link_options(klattsch_cli PRIVATE -municode)
+endif()
+
+# --- the add-on's library --------------------------------------------------
+
+# docs/NVDA-ADDON.md: one native library, which is everything the NVDA driver
+# calls -- the engine, the front end and the streaming API of
+# csrc/klattsch_api.h, and nothing else exported. Built from the same sources
+# as the static library, as its own target because a shared library needs
+# position-independent code and, on Windows, the static C runtime: the add-on
+# must not need a Visual C++ redistributable. No `lib` prefix, so the name is
+# klattschNative on every platform; the Linux build is what CI tests the
+# driver against.
+add_library(klattschNative SHARED ${KL_ENGINE_SOURCES})
+target_include_directories(klattschNative PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/csrc)
+target_compile_definitions(klattschNative PRIVATE KL_API_SHARED_BUILD)
+set_target_properties(klattschNative PROPERTIES
+  PREFIX ""
+  C_VISIBILITY_PRESET hidden
+  POSITION_INDEPENDENT_CODE ON
+  MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+if(HAVE_LIB_M)
+  target_link_libraries(klattschNative PRIVATE m)
 endif()
 
 # --- the sample generator (Windows only) ------------------------------------
@@ -156,7 +184,6 @@ if(WIN32 AND MSVC)
   # redistributable installed. The engine library the tools link keeps the
   # default runtime -- it is what four toolchains verified -- so the GUI
   # gets its own static-runtime build of the same sources.
-  get_target_property(KL_ENGINE_SOURCES klattsch SOURCES)
   add_library(klattsch_mt STATIC ${KL_ENGINE_SOURCES})
   target_include_directories(klattsch_mt PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/csrc)
   set_target_properties(klattsch_mt klattsch_gui PROPERTIES
@@ -271,6 +298,18 @@ if(NODE_EXECUTABLE)
               $<TARGET_FILE:klattsch_gui> $<TARGET_FILE:kl_text_dump>)
     set_tests_properties(gui-render PROPERTIES LABELS "validation;gui")
   endif()
+
+  # Step 5 of docs/NVDA-ADDON.md: the streaming API against the path it
+  # replaces. The chunked mix bit for bit over the whole corpus at five
+  # rate/chunk pairs, then the API end to end on the text corpus: streams,
+  # indexes, cancel, silence, level. C only; node is not needed, but the
+  # goldens it reads are node's, so it sits with the other verifiers.
+  add_test(NAME api-stream
+    COMMAND kl_api_test stream ${CMAKE_CURRENT_SOURCE_DIR}/goldens/cases-compile.bin)
+  set_tests_properties(api-stream PROPERTIES LABELS "validation;api")
+  add_test(NAME api-behaviour
+    COMMAND kl_api_test api ${CMAKE_CURRENT_SOURCE_DIR}/tools/text-corpus.txt)
+  set_tests_properties(api-behaviour PROPERTIES LABELS "validation;api")
 
   # The NFKC table is generated from Node's ICU, so it can go stale when Node
   # moves under it. Same guard as the banks, for the same reason.
