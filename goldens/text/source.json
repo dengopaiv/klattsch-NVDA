@@ -1,5 +1,5 @@
 {
- "note": "kl_text_dump --source over tools/text-corpus.txt, and --spell. Written by tools/verify-text.mjs --update; review the diff.",
+ "note": "kl_text_dump --source --dict off over tools/text-corpus.txt, and --spell. Written by tools/verify-text.mjs --update; review the diff.",
  "source": [
   [
    "Hello, world.",

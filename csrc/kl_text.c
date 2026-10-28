@@ -16,6 +16,7 @@
 
 #include <string.h>
 
+#include "kl_dict.h"
 #include "kl_text_rules.h"
 
 /* ---------------------------------------------------------------- classes --
@@ -491,13 +492,99 @@ static void replace_all(kl_text_ctx *x, const char *from, const char *to)
  * then the respellings for words the rules get wrong.  Order matters -- " DR "
  * becomes " DOCTOR " first, so the expansion is then subject to the ordinary
  * rules. */
+static int in_dictionary(const char *padded)
+{
+    size_t n = strlen(padded), nc;
+    while (n && padded[n - 1] == ' ')
+        n--;
+    while (n && *padded == ' ') {
+        padded++;
+        n--;
+    }
+    return kl_dict_find(padded, n, &nc) != NULL;
+}
+
+/* The respellings exist to rescue the rules, so with the dictionary on, a
+ * word it knows -- all 17 are in CMU -- keeps its spelling and is looked up. */
 static void apply_exceptions(kl_text_ctx *x)
 {
     size_t i;
     for (i = 0; i < KL_LTS_ABBREVIATION_COUNT; i++)
         replace_all(x, KL_LTS_ABBREVIATIONS[i][0], KL_LTS_ABBREVIATIONS[i][1]);
-    for (i = 0; i < KL_LTS_EXCEPTION_COUNT; i++)
+    for (i = 0; i < KL_LTS_EXCEPTION_COUNT; i++) {
+        if (x->use_dict && in_dictionary(KL_LTS_EXCEPTIONS[i][0]))
+            continue;
         replace_all(x, KL_LTS_EXCEPTIONS[i][0], KL_LTS_EXCEPTIONS[i][1]);
+    }
+}
+
+/* One dictionary phone, written the way the rules write it, so that pass 2
+ * reads both alike: two-letter symbols in upper case, single consonants in
+ * lower case, h and j for HH and JH. CMU's schwa, AH0, is written AX, which
+ * pass 2 turns back into AH flagged as reduced -- exactly what the rules'
+ * schwa becomes. A vowel with primary stress is followed by '1', which no
+ * rule ever writes (none of their outputs holds a digit), and pass 2 turns
+ * it into F_LEX on that vowel. Secondary stress is dropped: klattsch has one
+ * stress per word. */
+static void put_dict_phone(kl_text_ctx *x, const char *s)
+{
+    size_t l = strlen(s);
+    if (l == 3) {
+        if (s[0] == 'A' && s[1] == 'H' && s[2] == '0') {
+            arpa_puts(x, "AX");
+        } else {
+            arpa_putc(x, s[0]);
+            arpa_putc(x, s[1]);
+        }
+        if (s[2] == '1')
+            arpa_putc(x, '1');
+    } else if (strcmp(s, "HH") == 0) {
+        arpa_putc(x, 'h');
+    } else if (strcmp(s, "JH") == 0) {
+        arpa_putc(x, 'j');
+    } else if (l == 1) {
+        arpa_putc(x, (char)(s[0] - 'A' + 'a'));
+    } else {
+        arpa_puts(x, s);   /* CH DH NG SH TH ZH */
+    }
+}
+
+/* The word starting at `pos`, if the dictionary has it: letters and
+ * apostrophes, at a word start and not glued to digits (those belong to the
+ * number reader). A word ending in apostrophes is tried whole, then without
+ * them, so 'quoted' finds "quoted" while "bosses'" finds itself. Returns the
+ * position after the word, or 0 to let the rules have it. */
+static int dict_word(kl_text_ctx *x, int pos, int n)
+{
+    char prev = x->text[pos - 1];
+    const char *codes = NULL;
+    size_t nc = 0, i;
+    int e = pos;
+
+    /* Mid-word -- after a letter, a digit, or an apostrophe that follows a
+     * letter (the S of JOHN'S) -- is not a word start. An apostrophe after a
+     * space is an opening quote, and the word after it is looked up. */
+    if (is_upper(prev) || is_digit(prev) ||
+        (prev == '\'' && pos >= 2 && is_upper(x->text[pos - 2])))
+        return 0;
+    while (e < n - 1 && (is_upper(x->text[e]) || x->text[e] == '\''))
+        e++;
+    if (e < n - 1 && is_digit(x->text[e]))
+        return 0;
+    while (e > pos) {
+        codes = kl_dict_find(x->text + pos, (size_t)(e - pos), &nc);
+        if (codes || x->text[e - 1] != '\'')
+            break;
+        e--;
+    }
+    if (!codes)
+        return 0;
+    for (i = 0; i < nc; i++) {
+        int sym = kl_dict_code_index(codes[i]);
+        if (sym >= 0)
+            put_dict_phone(x, kl_dict_symbols[sym]);
+    }
+    return e;
 }
 
 /* Load the working buffer: a leading space, the upper-cased text, a trailing
@@ -545,6 +632,13 @@ static void to_arpabet(kl_text_ctx *x, const char *text, int len)
         if (c == '$' && pos + 1 < n && is_digit(x->text[pos + 1])) {
             pos = read_money(x, pos, n);
             continue;
+        }
+        if (x->use_dict && is_upper(c)) {
+            int e = dict_word(x, pos, n);
+            if (e) {
+                pos = e;
+                continue;
+            }
         }
 
         group = is_upper(c) ? &KL_LTS_NRL_RULES[1 + (c - 'A')]
@@ -597,6 +691,7 @@ enum {
 #define F_STICKY   8      /* delta10 is a sticky pitch change   */
 #define F_TRANS   16      /* delta10 is a transient pitch move  */
 #define F_DECLINE 32      /* a `b-` declination step goes first */
+#define F_LEX     64      /* the dictionary's primary stress    */
 
 static const char *const PAIRS[] = {
     "AA", "AE", "AH", "AO", "AW", "AX", "AY", "CH", "DH", "EH", "ER", "EY",
@@ -666,6 +761,12 @@ static void symbolize(kl_text_ctx *x)
             sym[0] = c;
             sym[1] = '\0';
             add_item(x, KL_TEXT_ITEM_PAUSE, sym, src);
+            i++;
+            continue;
+        }
+        if (c == '1') {   /* the dictionary's primary stress, on the vowel before */
+            if (x->item_count > 0 && (x->items[x->item_count - 1].flags & F_VOWEL))
+                x->items[x->item_count - 1].flags |= F_LEX;
             i++;
             continue;
         }
@@ -998,6 +1099,33 @@ static int word_at(const kl_text_ctx *x, int src, int *start)
     return e - s;
 }
 
+/* A word the dictionary supplied carries CMU's primary stress, and that is
+ * where the stress goes -- unless it is a function word. CMU gives those
+ * their stress in isolation ("of" AH1 V, "to" T UW1), and here a stress
+ * lengthens the vowel, lifts it, and places the contour's nucleus; in running
+ * speech they take none, as they do from the rules. Returns the item, -1 for
+ * no stress, or NO_LEXICAL_STRESS when the dictionary gave none and the
+ * spelling rules should decide. */
+#define NO_LEXICAL_STRESS (-2)
+
+static int lexical_stress(const kl_text_ctx *x, int a, int b, const char *w, int wl)
+{
+    int i;
+    /* The last primary, when CMU gives more than one -- 1,518 entries, 1.2 %:
+     * the -teen numbers (S EH1 V AH0 N T IY1 N), letters read out (EY1 S IY1
+     * for "ac"), compounds. klattsch has one stress per word, and in
+     * isolation English puts these on the last: seven-TEEN, ay-CEE. A
+     * judgement, not a measurement; docs/23-dictionary.md. */
+    for (i = b - 1; i >= a; i--) {
+        if (x->items[i].flags & F_LEX) {
+            if (w && word_is(w, wl, FUNCTION_WORDS, COUNT(FUNCTION_WORDS)))
+                return -1;
+            return i;
+        }
+    }
+    return NO_LEXICAL_STRESS;
+}
+
 static void assign_stress(kl_text_ctx *x)
 {
     int a = 0;
@@ -1010,8 +1138,11 @@ static void assign_stress(kl_text_ctx *x)
         while (b < x->item_count && x->items[b].kind == KL_TEXT_ITEM_PHONE)
             b++;
         wl = word_at(x, x->items[a].src, &ws);
-        t = choose_stress(x, a, b, wl ? x->text + ws : NULL, wl, ws);
-        t = unreduce(x, a, b, t);
+        t = lexical_stress(x, a, b, wl ? x->text + ws : NULL, wl);
+        if (t == NO_LEXICAL_STRESS) {
+            t = choose_stress(x, a, b, wl ? x->text + ws : NULL, wl, ws);
+            t = unreduce(x, a, b, t);
+        }
         if (t >= 0)
             x->items[t].flags |= F_STRESS;
         a = b;
@@ -1437,6 +1568,7 @@ size_t kl_text_to_source(kl_text_ctx *x, const char *text,
         sink_finish(&s);
         return 0;
     }
+    x->use_dict = !(opts && opts->no_dictionary);
     sent = x->sent;
     p = (const unsigned char *)text;
     end = p + strlen(text);
@@ -1482,6 +1614,7 @@ size_t kl_text_word(kl_text_ctx *x, const char *word, char *out, size_t cap)
     s.out = out;
     s.cap = cap;
     if (x && word) {
+        x->use_dict = 0;   /* rules only: see kl_text.h */
         to_arpabet(x, word, (int)strlen(word));
         symbolize(x);
         assign_stress(x);
@@ -1498,6 +1631,7 @@ size_t kl_text_nrl(kl_text_ctx *x, const char *text, char *out, size_t cap)
         if (out && cap) out[0] = '\0';
         return 0;
     }
+    x->use_dict = 0;       /* the rules' own output, for the lift's comparison */
     to_arpabet(x, text, (int)strlen(text));
     n = (size_t)x->arpa_len;
     if (out && cap) {
@@ -1526,6 +1660,7 @@ size_t kl_text_spell(kl_text_ctx *x, const char *text, char *out, size_t cap)
         sink_finish(&s);
         return 0;
     }
+    x->use_dict = 0;
     x->arpa_len = 0;
     x->arpa_full = 0;
     x->cur_src = -1;

@@ -286,6 +286,13 @@ syllable"; 44 of 44 mutations are caught; four toolchains agree. It is
 BSD-3-Clause rather than MIT, which [NOTICE.md](../NOTICE.md) records and
 which the add-on's package has to carry.
 
+**The dictionary is in**, 2026-10-28 — [23-dictionary.md](23-dictionary.md).
+The whole CMU Pronouncing Dictionary (135,166 entries) is compiled into the
+library and looked up before the rules, after the number reader. Function
+words keep no stress whatever CMU says. Off, the front end is byte for byte
+what it was. The table equals the file on four toolchains, and 18 of 20
+mutations are caught, the other 2 surviving for stated reasons.
+
 [SCREEN-READER.md](SCREEN-READER.md) §2 is the acceptance checklist and §8 its
 ordered steps. **What remains is broken down in [NVDA-ADDON.md](NVDA-ADDON.md),
 "Order"** (2026-10-28): a chunked C API with indexes and cancel, the

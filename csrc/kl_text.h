@@ -10,7 +10,11 @@
  *
  *   1. Letter to sound: the NRL rules (kl_text_rules.c) with Votraxxion's
  *      matcher and number reader, lifted unchanged.  English spelling to
- *      ARPABET, numbers, money and the three abbreviations included.
+ *      ARPABET, numbers, money and the three abbreviations included.  Since
+ *      2026-10-28 each word is first looked up in the compiled-in CMU
+ *      Pronouncing Dictionary (kl_dict.h), which supplies its phones and its
+ *      primary stress; the rules handle only the words it lacks.  Numbers are
+ *      read before any lookup.  docs/23-dictionary.md.
  *   2. Symbols: the rules' mixed-case ARPABET split into symbols and mapped
  *      onto the klatt1980-en bank, which has no AX and no WH.
  *   3. Stress: one primary stress per content word, from spelling cues.
@@ -69,6 +73,7 @@ typedef struct {
     int          cur_src;
     kl_text_item items[KL_TEXT_ITEMS];
     int          item_count;
+    int          use_dict;    /* set by every entry point; callers need not */
 } kl_text_ctx;
 
 /* Zero the whole struct before setting any field (memset, or `= {0}`): every
@@ -99,6 +104,12 @@ typedef struct {
      * 0.  Added 2026-10-28 for the NVDA add-on (docs/NVDA-ADDON.md). */
     double inflection;
     int    set_inflection;
+
+    /* Nonzero turns the dictionary off: every word goes to the rules, and the
+     * output is byte for byte the front end of before the dictionary, which
+     * goldens/text/source.json still pins.  Zero, the default, looks words up
+     * first.  Added 2026-10-28 (docs/23-dictionary.md). */
+    int    no_dictionary;
 } kl_text_opts;
 
 #define KL_TEXT_COMMA_MS 200
@@ -117,7 +128,9 @@ size_t kl_text_to_source(kl_text_ctx *x, const char *text,
 size_t kl_text_spell(kl_text_ctx *x, const char *text, char *out, size_t cap);
 
 /* One word to its phonemes with stress and nothing else -- no contour, no
- * pauses.  What the stress measurement in tools/measure-text.mjs reads. */
+ * pauses.  What the stress measurement in tools/measure-text.mjs reads.
+ * Rules only, never the dictionary: measured against CMU, a word the
+ * dictionary supplied would score 100 % by construction. */
 size_t kl_text_word(kl_text_ctx *x, const char *word, char *out, size_t cap);
 
 /* Pass 1 alone: the rules' raw ARPABET for `text`, exactly as the matcher

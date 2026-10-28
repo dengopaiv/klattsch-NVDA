@@ -1,6 +1,12 @@
 # A pronouncing dictionary for the front end — proposal
 
-Not started. This is what a dictionary would be for klattsch, worked out on
+> **Built 2026-10-28**, the same day, as [23-dictionary.md](23-dictionary.md):
+> the whole dictionary, not only what the rules get wrong (the user's
+> decision: "store the entire thing, so it would be there, if necessary").
+> The proposal below is kept as it was written; where the build departed
+> from it, chapter 23 says so.
+
+This is what a dictionary would be for klattsch, worked out on
 2026-10-28 from how four other engines in this tree implement theirs. The
 decisions it leaves open are at the end.
 

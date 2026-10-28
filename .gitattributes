@@ -45,3 +45,7 @@ CMakeLists.txt text eol=lf
 *.nvda-addon binary
 *.gif  binary
 *.mp3  binary
+
+# The CMU Pronouncing Dictionary as fetched (cmusphinx/cmudict at 7479086):
+# kept byte for byte, so its hash is checkable against upstream.
+data/cmudict/** -text

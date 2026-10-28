@@ -13,9 +13,12 @@
 //      drops, so ";" is removed from our side before comparing. Nothing else
 //      is.
 //   2. The output. The whole front end -- stress, contour, pauses, spelling --
-//      over the hand corpus against goldens/text/source.json. The front end
-//      is deterministic, so this is exact; a change to it is re-captured with
-//      --update and the diff of that file is the review.
+//      over the hand corpus, twice: with the dictionary off against
+//      goldens/text/source.json, which predates the dictionary and so proves
+//      that path unchanged byte for byte, and with it on (the default)
+//      against goldens/text/source-dict.json. The front end is deterministic,
+//      so this is exact; a change to it is re-captured with --update and the
+//      diff of those files is the review.
 //      A short output buffer is checked too: cut at a token boundary, the
 //      longest whole-token prefix that fits, and the full length returned.
 //   3. The output is klattsch. Every source line is tokenized and compiled by
@@ -55,8 +58,8 @@ if (!dump) {
 const { tokenize, compile } = await import(
   pathToFileURL(join(root, 'src', 'engine', 'sequencer.js')).href);
 
-function run(mode, lines) {
-  const r = spawnSync(dump, [mode], { input: lines.join('\n') + '\n', maxBuffer: 1 << 30 });
+function run(mode, lines, extra = []) {
+  const r = spawnSync(dump, [mode, ...extra], { input: lines.join('\n') + '\n', maxBuffer: 1 << 30 });
   if (r.status !== 0) throw new Error(`kl_text_dump ${mode} failed: ${r.stderr}`);
   return r.stdout.toString('utf8').split('\n').slice(0, lines.length);
 }
@@ -105,18 +108,25 @@ if (!cmu) {
 // 2. The output ---------------------------------------------------------------
 
 const SPELL = ['a', 'Z', '!', 'hello', 'A1 b2', '@#$', 'w', '', ' '];
-const source = run('--source', corpus);
+const source = run('--source', corpus, ['--dict', 'off']);
+const sourceDict = run('--source', corpus);
 const spelled = run('--spell', SPELL);
 const sourcePath = join(root, 'goldens', 'text', 'source.json');
+const dictPath = join(root, 'goldens', 'text', 'source-dict.json');
 
 if (update) {
   writeFileSync(sourcePath, JSON.stringify({
-    note: 'kl_text_dump --source over tools/text-corpus.txt, and --spell. ' +
+    note: 'kl_text_dump --source --dict off over tools/text-corpus.txt, and --spell. ' +
           'Written by tools/verify-text.mjs --update; review the diff.',
     source: corpus.map((input, i) => [input, source[i]]),
     spell: SPELL.map((input, i) => [input, spelled[i]]),
   }, null, 1) + '\n');
-  console.log(`wrote ${sourcePath}`);
+  writeFileSync(dictPath, JSON.stringify({
+    note: 'kl_text_dump --source (the dictionary on, the default) over ' +
+          'tools/text-corpus.txt. Written by tools/verify-text.mjs --update; review the diff.',
+    source: corpus.map((input, i) => [input, sourceDict[i]]),
+  }, null, 1) + '\n');
+  console.log(`wrote ${sourcePath} and ${dictPath}`);
 } else {
   const golden = JSON.parse(readFileSync(sourcePath, 'utf8'));
   const check = (what, pairs, got) => {
@@ -128,10 +138,17 @@ if (update) {
   if (golden.source.map(([i]) => i).join('\n') !== corpus.join('\n')) {
     fail('tools/text-corpus.txt differs from goldens/text/source.json; re-run with --update');
   } else {
-    check('source', golden.source, source);
+    check('source, dictionary off', golden.source, source);
   }
   check('spell', golden.spell, spelled);
-  console.log(`output: ${corpus.length} source lines and ${SPELL.length} spellings compared`);
+  const goldenDict = JSON.parse(readFileSync(dictPath, 'utf8'));
+  if (goldenDict.source.map(([i]) => i).join('\n') !== corpus.join('\n')) {
+    fail('tools/text-corpus.txt differs from goldens/text/source-dict.json; re-run with --update');
+  } else {
+    check('source, dictionary on', goldenDict.source, sourceDict);
+  }
+  console.log(`output: ${corpus.length} source lines with the dictionary off and on, ` +
+              `${SPELL.length} spellings compared`);
 }
 
 // A short buffer: the caller learns the full length, and what was written is
@@ -143,7 +160,7 @@ if (update) {
                         { input: corpus.join('\n') + '\n', maxBuffer: 1 << 30 });
     const lines = r.stdout.toString('utf8').split('\n').slice(0, corpus.length);
     lines.forEach((line, i) => {
-      const full = source[i];
+      const full = sourceDict[i];   // --cap runs with the default: the dictionary on
       const sp = line.indexOf(' ');
       const len = Number(sp < 0 ? line : line.slice(0, sp));
       const got = sp < 0 ? '' : line.slice(sp + 1);
@@ -168,6 +185,7 @@ if (update) {
 
 let compiled = 0;
 for (const [input, src] of [...corpus.map((c, i) => [c, source[i]]),
+                            ...corpus.map((c, i) => [c, sourceDict[i]]),
                             ...SPELL.map((c, i) => [c, spelled[i]])]) {
   const parsed = tokenize(src);
   const unknown = parsed.tokens.filter((t) => t.type === 'unknown');

@@ -122,3 +122,9 @@ jobs:
       # survive, and the suite says why for each; see docs/21-stage-api.md.
       - name: the streaming API's checks can fail
         run: python3 tools/api-mutations.py build
+
+      # The dictionary's checks: tools/verify-dict.mjs and the two text goldens.
+      # Two of its 20 mutations are expected to survive, and the suite says why;
+      # see docs/23-dictionary.md.
+      - name: the dictionary checks can fail
+        run: python3 tools/dict-mutations.py build

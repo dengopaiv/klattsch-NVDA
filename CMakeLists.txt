@@ -60,6 +60,22 @@ else()
   add_compile_options(-Wall -Wextra -Wpedantic -Wshadow -Wconversion)
 endif()
 
+# --- the dictionary table ---------------------------------------------------
+
+# docs/23-dictionary.md: the whole CMU Pronouncing Dictionary, compiled in.
+# Its table is generated here, at build time, from the checked-in
+# data/cmudict/cmudict.dict by a C program, so that a 2 MB generated file
+# never enters the repository and building needs nothing but a C compiler.
+add_executable(kl_dict_gen csrc/tools/kl_dict_gen.c csrc/kl_dict_symbols.c)
+target_include_directories(kl_dict_gen PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/csrc)
+set(KL_DICT_DATA ${CMAKE_CURRENT_BINARY_DIR}/kl_dict_data.c)
+add_custom_command(
+  OUTPUT ${KL_DICT_DATA}
+  COMMAND kl_dict_gen ${CMAKE_CURRENT_SOURCE_DIR}/data/cmudict/cmudict.dict ${KL_DICT_DATA}
+  DEPENDS kl_dict_gen ${CMAKE_CURRENT_SOURCE_DIR}/data/cmudict/cmudict.dict
+  COMMENT "Generating the dictionary table from data/cmudict/cmudict.dict"
+  VERBATIM)
+
 # --- the library ------------------------------------------------------------
 
 add_library(klattsch STATIC
@@ -78,6 +94,9 @@ add_library(klattsch STATIC
   csrc/kl_text_rules.c
   csrc/kl_stream.c          # the chunked mix and the streaming API, for the
   csrc/kl_api.c             # NVDA add-on; see docs/21-stage-api.md
+  csrc/kl_dict.c            # the compiled-in CMU dictionary; see
+  csrc/kl_dict_symbols.c    # docs/23-dictionary.md
+  ${KL_DICT_DATA}           # generated above
 )
 target_include_directories(klattsch PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/csrc)
 get_target_property(KL_ENGINE_SOURCES klattsch SOURCES)
@@ -277,6 +296,15 @@ if(NODE_EXECUTABLE)
             ${CMAKE_CURRENT_SOURCE_DIR}/tools/verify-text.mjs
             $<TARGET_FILE:kl_text_dump>)
   set_tests_properties(text-frontend PROPERTIES LABELS "validation;text")
+
+  # The compiled-in dictionary (docs/23-dictionary.md): every one of the
+  # 135,166 entries of data/cmudict/cmudict.dict looked up through the built
+  # tool and compared with the file, and the front end's use of it.
+  add_test(NAME dict-table
+    COMMAND ${NODE_EXECUTABLE}
+            ${CMAKE_CURRENT_SOURCE_DIR}/tools/verify-dict.mjs
+            $<TARGET_FILE:kl_text_dump>)
+  set_tests_properties(dict-table PROPERTIES LABELS "validation;text;dict")
 
   # Pronunciation and stress measured against the CMU dictionary. Every count
   # must equal goldens/text/accuracy.json: a moved number is a changed rule,
