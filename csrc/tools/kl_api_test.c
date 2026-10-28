@@ -493,7 +493,71 @@ static int api_index_places(kl_api *h)
               "places: index 2 at %zu, total %ld", d.at[2], total);
         drained_free(&d);
     }
-    printf("api: index places -- 0, 9702 (by hand), the end; unmoved by a homoglyph\n");
+    /* A place that is not a whole sample: one phoneme is 110 ms, which is
+     * 2425.5 samples, and the index fires at the first whole sample at or
+     * after it -- ceil, as every sample count in this port is. */
+    {
+        drained d;
+        kl_api_begin(h);
+        kl_api_source(h, "AH");
+        kl_api_index(h, 1);
+        kl_api_source(h, "AH");
+        kl_api_end(h);
+        drain(h, 300, -1, &d);
+        CHECK(d.n_ids == 1 && d.at[0] == 2426, "index at 110 ms came out at %zu, not 2426",
+              d.n_ids ? d.at[0] : 0);
+        drained_free(&d);
+    }
+    printf("api: index places -- 0, 9702 and 2426 (by hand), the end; unmoved by a homoglyph\n");
+    return 0;
+}
+
+/* Pieces cannot reach into each other: a `#` comment ends with its piece,
+ * and a break of 0 is no break at all -- `p0` would dip the next 30 ms. */
+static int api_joins(kl_api *h)
+{
+    drained a, b;
+    kl_api_begin(h);
+    kl_api_source(h, "HH AH # a comment to the end of the piece");
+    kl_api_source(h, "L OW");
+    kl_api_end(h);
+    CHECK(kl_api_sounding(h) == 4, "a comment swallowed the next piece: %ld sounding",
+          kl_api_sounding(h));
+
+    kl_api_begin(h);
+    kl_api_source(h, "HH AH");
+    kl_api_source(h, "L OW");
+    kl_api_end(h);
+    drain(h, 4096, -1, &a);
+    kl_api_begin(h);
+    kl_api_source(h, "HH AH");
+    kl_api_break(h, 0);
+    kl_api_source(h, "L OW");
+    kl_api_end(h);
+    drain(h, 4096, -1, &b);
+    CHECK(a.n == b.n && memcmp(a.f, b.f, a.n * sizeof *a.f) == 0, "a break of 0 changed the audio");
+    drained_free(&a);
+    drained_free(&b);
+    printf("api: a comment ends with its piece; a break of 0 changes nothing\n");
+    return 0;
+}
+
+/* Inflection reaches the front end: 0 writes no pitch movement at all, 2
+ * doubles the start level ("Hello, world." at 120 Hz: +9.6 Hz, so +19.2). */
+static int api_inflection(kl_text_ctx *x)
+{
+    kl_text_opts o = api_text_opts();
+    char *s;
+    o.inflection = 0.0;
+    s = to_source(x, "Hello, world. Is it?", &o);
+    CHECK(strchr(s, '+') == NULL && strchr(s, '-') == NULL,
+          "inflection 0 still moves pitch: %s", s);
+    free(s);
+    o.inflection = 2.0;
+    s = to_source(x, "Hello, world.", &o);
+    CHECK(strstr(s, "b+19.2 ") != NULL, "inflection 2 did not double the start: %s", s);
+    free(s);
+    printf("api: inflection 0 is flat, 2 is twice the contour\n");
     return 0;
 }
 
@@ -634,8 +698,9 @@ static int run_api(const char *path)
     x = calloc(1, sizeof *x);
     if (!h || !x) { fprintf(stderr, "out of memory\n"); return 2; }
 
-    if (!api_settings(h) && !api_lines(h, x, lines, n) && !api_index_only(h) &&
-        !api_index_places(h) && !api_pieces(h, lines, n))
+    if (!api_settings(h) && !api_lines(h, x, lines, n) && !api_inflection(x) &&
+        !api_index_only(h) && !api_index_places(h) && !api_joins(h) &&
+        !api_pieces(h, lines, n))
         api_level(h, lines[0]);
 
     kl_api_destroy(h);
