@@ -345,8 +345,12 @@ int kl_api_break(kl_api *h, int ms)
 {
     char tok[16];
     if (!h || h->state != ST_BUILDING) return KL_API_BAD_STATE;
-    /* `p0` is not nothing -- the compiler still emits a silence event, which
-     * dips the next 30 ms -- so a break of 0 is skipped. */
+    /* A break of 0 is skipped rather than written as `p0`. That is tidiness,
+     * not necessity: `p0` emits a silence event, but always at the same
+     * sample as the next event -- a phoneme's, or at the latest the final
+     * fade -- whose targets cover every amplitude, so it never sounds.
+     * Believed otherwise until tools/api-mutations.py wrote `p0` and the
+     * audio did not change; docs/21-stage-api.md §21.5. */
     if (ms <= 0) return KL_API_OK;
     snprintf(tok, sizeof tok, "p%d", ms);
     return append(h, tok, strlen(tok));

@@ -466,11 +466,17 @@ static int api_index_only(kl_api *h)
 /* Where indexes fall, worked out by hand. Unstressed phonemes at the default
  * rate take 110 ms each, so the fourth ends at 440 ms: sample
  * ceil(440 * 22050 / 1000) = 9702. An index after the last piece fires at
- * the end of the audio, an index before the first at 0. A homoglyph
- * (Cyrillic O, two bytes, one unit after normalization) must not move them. */
+ * the end of the audio, an index before the first at 0. Homoglyphs must not
+ * move them: Cyrillic Н, А and О are two bytes each and one unit after
+ * normalization, so the second piece is 15 bytes and 10 units. Five, not
+ * one: counted in bytes, a single extra byte still lands in the separator
+ * before the next piece and moves nothing -- tools/api-mutations.py found
+ * that the one-homoglyph version of this test could not fail. */
 static int api_index_places(kl_api *h)
 {
-    static const char *const FIRST[] = { "HH AH L OW", "HH AH L \xD0\x9EW" };
+    static const char *const FIRST[] = {
+        "HH AH L OW",
+        "\xD0\x9D\xD0\x9D \xD0\x90\xD0\x9D L \xD0\x9EW" };
     size_t k;
     for (k = 0; k < 2; k++) {
         drained d;
@@ -512,8 +518,9 @@ static int api_index_places(kl_api *h)
     return 0;
 }
 
-/* Pieces cannot reach into each other: a `#` comment ends with its piece,
- * and a break of 0 is no break at all -- `p0` would dip the next 30 ms. */
+/* Pieces cannot reach into each other: a `#` comment ends with its piece.
+ * And a break of 0 changes nothing. kl_api_break skips it, but `p0` would be
+ * inaudible too, as tools/api-mutations.py showed -- see kl_api_break. */
 static int api_joins(kl_api *h)
 {
     drained a, b;
