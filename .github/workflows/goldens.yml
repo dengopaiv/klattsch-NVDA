@@ -116,3 +116,9 @@ jobs:
       # which is why the dictionary is installed above rather than skipped.
       - name: the text front end's checks can fail
         run: python3 tools/text-mutations.py build
+
+      # The streaming API's checks (ctest api-stream, api-behaviour) passed on
+      # their first run as well. Four of its 22 mutations are expected to
+      # survive, and the suite says why for each; see docs/21-stage-api.md.
+      - name: the streaming API's checks can fail
+        run: python3 tools/api-mutations.py build

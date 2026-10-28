@@ -46,6 +46,11 @@ int main(int argc, char **argv)
     int show_len = 0, i;
     kl_text_opts opts;
 
+    /* Zeroed whole, as kl_text.h asks: a field added later -- inflection was
+     * -- is read from whatever is here. Setting the two fields this tool knew
+     * about, and nothing else, made the clang-cl build's contour vanish on
+     * 2026-10-28 (docs/21-stage-api.md §21.6). */
+    memset(&opts, 0, sizeof opts);
     opts.base_f0 = 0.0;   /* the front end's defaults: 120 Hz, */
     opts.comma_ms = 0;    /* and KL_TEXT_COMMA_MS               */
     if (argc < 2) {

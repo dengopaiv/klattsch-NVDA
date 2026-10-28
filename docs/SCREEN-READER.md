@@ -243,10 +243,13 @@ making voices and becomes a toy.
 
 This slots into [ROADMAP.md](ROADMAP.md) without changing its phases.
 
-- [ ] **A.** Measure compile time and render speed (§3). Two numbers, into the
+- [x] **A.** Measure compile time and render speed (§3). JavaScript
+      2026-09-23 (§3); C through the API 2026-10-28,
+      [21-stage-api.md](21-stage-api.md) §21.7. Two numbers, into the
       golden harness. Do this as soon as the C engine renders — it decides
       whether chunked rendering is mandatory.
-- [ ] **B.** Chunked rendering in the C API (§3), with cancel between chunks.
+- [x] **B.** Chunked rendering in the C API (§3), with cancel between chunks.
+      Done 2026-10-28, [21-stage-api.md](21-stage-api.md).
 - [ ] **C.** The parameter audibility measurement (§5), producing the three
       lists and a document.
 - [ ] **D.** The driver, against §2 as a checklist — every index fires once,

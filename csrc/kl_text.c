@@ -1424,6 +1424,12 @@ size_t kl_text_to_source(kl_text_ctx *x, const char *text,
     const unsigned char *p, *end;
     sink s;
 
+    /* Every contour size is a fraction of `base` and nothing else reads it,
+     * so inflection is one multiply here. At 1 it is exact, and the output
+     * is byte for byte what it was without the option. */
+    if (opts && opts->set_inflection)
+        base *= opts->inflection > 0.0 ? opts->inflection : 0.0;
+
     memset(&s, 0, sizeof s);
     s.out = out;
     s.cap = cap;

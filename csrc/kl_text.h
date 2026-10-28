@@ -71,6 +71,9 @@ typedef struct {
     int          item_count;
 } kl_text_ctx;
 
+/* Zero the whole struct before setting any field (memset, or `= {0}`): every
+ * field's zero means "the default", and a field added later is read from
+ * whatever the caller left there. */
 typedef struct {
     /* The voice's base F0 in Hz.  Only the size of the contour depends on
      * it -- a rise is a fraction of the voice's pitch, not a fixed number of
@@ -85,6 +88,17 @@ typedef struct {
      * front end writes its own length instead and leaves the engine alone.
      * 0 means the front end's default, KL_TEXT_COMMA_MS. */
     int comma_ms;
+
+    /* A scale on every size in the contour -- the start level, the
+     * declination, the nucleus fall, the question rise and the continuation
+     * rise -- which is what NVDA calls inflection.  1 is the contour as
+     * written; 0 is flat, leaving only the `b` resets; 2 is twice as wide.
+     * The engine's own 8 Hz stress lift is not part of the contour and is not
+     * scaled.  Read only when `set_inflection` is nonzero, so that a zeroed
+     * kl_text_opts keeps the contour as it is; a negative value is taken as
+     * 0.  Added 2026-10-28 for the NVDA add-on (docs/NVDA-ADDON.md). */
+    double inflection;
+    int    set_inflection;
 } kl_text_opts;
 
 #define KL_TEXT_COMMA_MS 200

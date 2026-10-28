@@ -185,9 +185,12 @@ structures and no callbacks. Nothing in the library calls back into Python.
   `text-frontend` test proves.
 - **5f. Storage and bounds.** Allocated by `kl_api_create`. The per-utterance
   buffers are sized by `kl_token_need` and `kl_compile_need` and only grow, so
-  a warm handle allocates nothing on the speech path. Text longer than
-  `KL_TEXT_MAX` is split at sentence ends before the front end sees it, so the
-  front end's truncation guard never decides what is spoken. `kl_api_end`
+  a warm handle allocates nothing on the speech path. ~~Text longer than
+  `KL_TEXT_MAX` is split at sentence ends before the front end sees it.~~
+  *Corrected 2026-10-28:* `kl_text_to_source` already hands each sentence on
+  at its terminator and continues a run with none past the buffer rather
+  than dropping it, so nothing was added ([21-stage-api.md](21-stage-api.md)
+  §21.8). `kl_api_end`
   reports 0 when the utterance has no sound. The driver decides whether that
   is legitimate (index-only, punctuation-only) or a fault.
 - **5g. The library itself.** `KL_API` export macro. A CMake `SHARED` target,
@@ -394,7 +397,10 @@ when its exit test passes.
       correction above.
 - [x] **4.** Contour pass: sentence-final falling and rising. **Done
       2026-09-25**; its sizes are stand-ins to be fitted later.
-- [ ] **5.** The C API — chapter 21, branch `stage-api`.
+- [x] **5.** The C API — chapter 21, branch `stage-api`. **Done
+      2026-10-28**, [21-stage-api.md](21-stage-api.md): all five parts pass
+      on four toolchains; the output gain was measured as 1.0; 22 mutations,
+      18 caught and 4 surviving for stated reasons.
       **Exit test**, in `ctest` and in `tools/build-matrix.ps1` on all four
       toolchains: (1) the chunked stream equals `kl_render_mix`'s float output
       for every corpus case at three chunk sizes, before the level of 5b is
