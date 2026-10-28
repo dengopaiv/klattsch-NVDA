@@ -211,3 +211,19 @@ by one. Nothing was reported failing, and no change to the slider curves
 still marked as stand-ins in the driver and in NVDA-ADDON.md, until someone
 reports a curve that needs to change. The package was then rebuilt without
 `--pretest`, with `--tested-on 2026.3.0` (§22.7).
+
+## 22.7 The tester package
+
+Rebuilt from `main` after the merge, 2026-10-28, commit `135a8d2`:
+
+```
+python packaging/make-addon.py --tested-on 2026.3.0
+```
+
+`dist/klattschNative-0.5.0-beta.nvda-addon`, 159,273 bytes, SHA-256
+`301aba07b1f84ac6a3c0471442e1dc091927c125f18dfdc942600ce3a7a31ee3`.
+`lastTestedNVDAVersion = 2026.3.0`. Every pre-pack check passed again on the
+files packed (`kl_api_test stream` and `api`, `tools/test-driver.py`). The
+engine, driver and library sources are those of the pretest package. Only
+the readme's status line and the file name differ, so the hands-on result
+carries over. The pretest file was removed from `dist/`.
