@@ -89,6 +89,10 @@ rather than in advance. The rules-only front end ships first; the dictionary is
 an exception layer added later, in front of the rules, if the rules prove
 insufficient in real use.
 
+> **2026-10-28:** the measurements say they do (36 % of ordinary words exactly
+> right). How four other engines in this tree built theirs, and what that means
+> here, is a proposal in [DICTIONARY.md](DICTIONARY.md).
+
 ## Layout
 
 ```
