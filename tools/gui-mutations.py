@@ -58,6 +58,16 @@ MUTATIONS = [
     ("the self-test reads the settings one argument early",
      "        v.value[k] = _wtoi(argv[6 + k]);",
      "        v.value[k] = _wtoi(argv[5 + k]);"),
+    # The dictionary checkbox (0.6; docs/23-dictionary.md).
+    ("the dictionary checkbox does not reach the front end",
+     "    o.no_dictionary = v.dictionary ? 0 : 1;\n",
+     ""),
+    ("the dictionary is off by default",
+     "    v.dictionary = true;\n    return v;",
+     "    v.dictionary = false;\n    return v;"),
+    ("the self-test ignores its dictionary argument",
+     "        v.dictionary = _wtoi(argv[6 + PARAM_COUNT]) != 0;",
+     "        (void)0;"),
 ]
 
 

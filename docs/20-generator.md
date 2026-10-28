@@ -45,6 +45,7 @@ In tab order:
 |---|---|---|
 | 1 | **Text to speak** (Alt+T) | multi-line; English text, or phoneme source in phoneme mode |
 | 2 | **Phoneme mode** (Alt+H) | the box holds klattsch source rather than text |
+| 2a | **Use the CMU pronouncing dictionary** (Alt+U) | on by default; off is the letter-to-sound rules alone. Since 0.6, §20.8 |
 | 3 | **Phoneme bank** (Alt+B) | the three compiled-in banks, by display name |
 | 4 | Sample rate | 8000 to 48000 Hz; 48000, the CLI's, by default |
 | 5–14 | Base pitch (Alt+P), Rate (Alt+R), formant scale, vibrato depth and rate, tremolo depth and rate, aspiration, spectral tilt, effort | spin boxes |
@@ -226,3 +227,45 @@ What that finds is the next change to this chapter.
 | 2026-09-25 | Accessibility check: the SendKeys attempt (keystrokes to the wrong window), the UIA attempt (wrong API), then MSAA. Found Escape closing the window; fixed. |
 | 2026-09-25 | ctest 14/14 on MSVC; `gui-render` on clang-cl. |
 | 2026-09-25 | First listening (the author, with NVDA): good, the comma pause a bit short. Comma pause box added; 26 of 26 byte-identical, 11 of 11 mutations, 21 stops all named. |
+| 2026-10-28 | 0.6.0 beta: the dictionary checkbox (§20.8). 28 of 28 byte-identical, 14 of 14 mutations, 22 stops all named, on MSVC and clang-cl. |
+
+---
+
+## 20.8 The dictionary switch (0.6)
+
+Since 0.6 the front end looks words up in the compiled-in CMU Pronouncing
+Dictionary before the rules ([23-dictionary.md](23-dictionary.md)). The
+generator can switch that off, for anyone who needs the pronunciations of
+0.5: a checkbox, **Use the CMU pronouncing dictionary (off: letter-to-sound
+rules only)**, Alt+U, after phoneme mode. Asked for by the author
+2026-10-28, for the generator and not for the add-on.
+
+- **What it does.** Off sets `kl_text_opts.no_dictionary` in
+  `TextToSource`. The dictionary stays in the binary either way; the
+  checkbox only chooses whether it is consulted. Off, the front end's
+  output is byte for byte that of 0.5, which `goldens/text/source.json`
+  pins (`verify-text.mjs`).
+- **Where it lives.** It is a setting of the voice, like the bank: on in
+  `DefaultVoice`, so Reset defaults turns it back on. It affects text only.
+  Phoneme source is spoken as written either way.
+- **IDs.** Its control ID is the last of the enum, so no existing control's
+  ID moved. `check-gui-a11y.ps1` addresses the messages box by ID.
+- **Self-test.** `--selftest` takes an optional `DICTIONARY` argument before
+  the text, 0 or 1. Left out, it is on, so the 0.5 form of the call still
+  means what it meant.
+
+**Measured, 2026-10-28:**
+- **`verify-gui.mjs`:** 28 of 28 byte-identical to the JavaScript reference
+  on MSVC and clang-cl. Two new cases speak "Hello. Seventy dialog windows."
+  with the dictionary given on and given off. Each is held to the front end
+  at that setting through the WAV's ICMT, and the two must differ, so the
+  switch is shown to reach the front end in this executable.
+- **`check-gui-a11y.ps1`** (Windows PowerShell 5.1, as the script says): 22
+  tab stops, all named. The checkbox is stop 3, a check box, named by its
+  full label. Tab goes round with no trap, and Escape keeps the window.
+- **`gui-mutations.py`:** 14 of 14 caught, including three new ones: the
+  checkbox not reaching the front end, the dictionary off by default, and
+  the self-test ignoring its argument.
+
+What a machine cannot check is what NVDA says for it, and whether 0.5's
+pronunciations are wanted in practice. That is the next listening.

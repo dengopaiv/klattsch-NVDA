@@ -116,6 +116,7 @@ struct Voice {
     int    bank;                 /* index into kl_banks */
     int    sampleRate;
     int    value[PARAM_COUNT];   /* control values, in control units */
+    bool   dictionary;           /* text goes through the CMU dictionary first */
 };
 
 static Voice DefaultVoice(void)
@@ -129,6 +130,7 @@ static Voice DefaultVoice(void)
     v.sampleRate = SAMPLE_RATES[DEFAULT_RATE_INDEX];
     for (int k = 0; k < PARAM_COUNT; k++)
         v.value[k] = PARAMS[k].def;
+    v.dictionary = true;
     return v;
 }
 
@@ -176,7 +178,10 @@ static std::wstring ToWide(const std::string &s)
 }
 
 /* English text to klattsch source, through csrc/kl_text.c. The contour is
- * sized from the base pitch the voice will be compiled with. */
+ * sized from the base pitch the voice will be compiled with. With the
+ * dictionary off, the front end is the rules alone -- the pronunciations of
+ * 0.5, byte for byte (docs/23-dictionary.md). The dictionary stays in the
+ * binary either way; this only chooses whether it is consulted. */
 static std::string TextToSource(const std::string &text, const Voice &v)
 {
     std::unique_ptr<kl_text_ctx> ctx(new kl_text_ctx);
@@ -184,6 +189,7 @@ static std::string TextToSource(const std::string &text, const Voice &v)
     memset(&o, 0, sizeof o);
     o.base_f0 = v.value[0] * PARAMS[0].unit;
     o.comma_ms = v.value[P_COMMA];
+    o.no_dictionary = v.dictionary ? 0 : 1;
     size_t need = kl_text_to_source(ctx.get(), text.c_str(), &o, NULL, 0);
     std::string out(need + 1, '\0');
     kl_text_to_source(ctx.get(), text.c_str(), &o, &out[0], out.size());
@@ -331,12 +337,13 @@ enum {
     IDC_BANKLABEL, IDC_BANK, IDC_RATELABEL, IDC_SAMPLERATE,
     IDC_SPEAK, IDC_STOP, IDC_CONVERT, IDC_SAVE, IDC_DEFAULTS,
     IDC_MSGLABEL, IDC_MESSAGES,
+    IDC_DICTIONARY,   /* last, so no existing control's ID moves */
     IDC_PARAM_LABEL = 200, IDC_PARAM_EDIT = 300, IDC_PARAM_SPIN = 400,
 };
 
 #define WM_APP_RENDERED (WM_APP + 1)
 
-/* "Klattsch Native 0.5.0 beta - sample generator": the version a tester
+/* "Klattsch Native 0.6.0 beta - sample generator": the version a tester
  * reports is in the title, where a screen reader reads it on focus. */
 #define KL_WIDEN2(s) L##s
 #define KL_WIDEN(s) KL_WIDEN2(s)
@@ -348,7 +355,7 @@ static const wchar_t *LABEL_TEXT = L"&Text to speak:";
 static const wchar_t *LABEL_SOURCE = L"&Text to speak (klattsch phoneme source):";
 
 static HINSTANCE g_inst;
-static HWND g_main, g_textLabel, g_text, g_phonemeMode, g_bank, g_sampleRate;
+static HWND g_main, g_textLabel, g_text, g_phonemeMode, g_dictionary, g_bank, g_sampleRate;
 static HWND g_edit[PARAM_COUNT], g_spin[PARAM_COUNT];
 static HWND g_speak, g_messages;
 static HFONT g_font;
@@ -402,6 +409,7 @@ static Voice VoiceFromUI(void)
     v.sampleRate = SAMPLE_RATES[s < 0 ? DEFAULT_RATE_INDEX : (int)s];
     for (int k = 0; k < PARAM_COUNT; k++)
         v.value[k] = (int)SendMessageW(g_spin[k], UDM_GETPOS32, 0, 0);
+    v.dictionary = IsChecked(g_dictionary);
     return v;
 }
 
@@ -413,6 +421,7 @@ static void ApplyVoice(const Voice &v)
             SendMessageW(g_sampleRate, CB_SETCURSEL, (WPARAM)i, 0);
     for (int k = 0; k < PARAM_COUNT; k++)
         SendMessageW(g_spin[k], UDM_SETPOS32, 0, v.value[k]);
+    SendMessageW(g_dictionary, BM_SETCHECK, v.dictionary ? BST_CHECKED : BST_UNCHECKED, 0);
 }
 
 /* Messages go into a read-only edit rather than a message box, so they can
@@ -623,6 +632,15 @@ static int CreateControls(void)
                          BS_AUTOCHECKBOX | WS_TABSTOP, 0, M, y, W, LBL, IDC_PHONEMEMODE);
     y += LBL + GAP;
 
+    /* On by default. Off gives the rules' own pronunciations, as before the
+     * dictionary, for anyone who needs them. A setting of the voice, so
+     * Reset defaults turns it back on. Text mode only: phoneme source is
+     * spoken as written either way. */
+    g_dictionary = Make(L"BUTTON",
+                        L"&Use the CMU pronouncing dictionary (off: letter-to-sound rules only)",
+                        BS_AUTOCHECKBOX | WS_TABSTOP, 0, M, y, W, LBL, IDC_DICTIONARY);
+    y += LBL + GAP;
+
     Make(L"STATIC", L"Phoneme &bank:", SS_RIGHT, 0, M, y + 4, labW, LBL, IDC_BANKLABEL);
     g_bank = Make(L"COMBOBOX", NULL, WS_TABSTOP | WS_VSCROLL | CBS_DROPDOWNLIST, 0,
                   M + labW + GAP, y, 260, 200, IDC_BANK);
@@ -764,18 +782,20 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
 /*
  *   klattsch_gui.exe --selftest OUT.WAV PHONEMEMODE BANK SAMPLERATE
- *                               P1 ... P11 TEXT
+ *                               P1 ... P11 [DICTIONARY] TEXT
  *
  * PHONEMEMODE is 0 or 1 and means what the checkbox means; BANK is a bank
  * name; P1..P11 are the eleven spin-box values in the order of PARAMS, in the
- * units the boxes show. Everything downstream is the code the buttons run --
- * Render(), TextToSource(), RenderSource() -- so a match in
+ * units the boxes show; DICTIONARY, when given, is 0 or 1 and means what the
+ * dictionary checkbox means -- left out, it is on, the default, so the call
+ * of 0.5 still means what it meant. Everything downstream is the code the
+ * buttons run -- Render(), TextToSource(), RenderSource() -- so a match in
  * tools/verify-gui.mjs is a statement about this executable, not about a copy
  * of its logic. Returns 0 on success.
  */
 static int RunSelfTest(int argc, wchar_t **argv)
 {
-    if (argc != 7 + PARAM_COUNT)
+    if (argc != 7 + PARAM_COUNT && argc != 8 + PARAM_COUNT)
         return 2;
     Voice v = DefaultVoice();
     std::string bank = ToUtf8(argv[4]);
@@ -791,7 +811,9 @@ static int RunSelfTest(int argc, wchar_t **argv)
     v.sampleRate = _wtoi(argv[5]);
     for (int k = 0; k < PARAM_COUNT; k++)
         v.value[k] = _wtoi(argv[6 + k]);
-    Rendered r = Render(argv[6 + PARAM_COUNT], _wtoi(argv[3]) != 0, v);
+    if (argc == 8 + PARAM_COUNT)
+        v.dictionary = _wtoi(argv[6 + PARAM_COUNT]) != 0;
+    Rendered r = Render(argv[argc - 1], _wtoi(argv[3]) != 0, v);
     if (!r.ok)
         return 4;
     return WriteWholeFile(argv[2], r.wav) ? 0 : 5;
