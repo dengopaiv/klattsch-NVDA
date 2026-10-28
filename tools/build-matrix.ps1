@@ -51,6 +51,9 @@ $stages = @(
   # The text front end (docs/19-frontend-text.md). Not a port stage, but the
   # same discipline: its verifier plus the accuracy count, per toolchain.
   @{ Stage = "text"; Tool = "kl_text_dump"; Verify = "verify-text.mjs"; Accuracy = $true },
+  # The compiled-in dictionary (docs/23-dictionary.md): every entry of the
+  # table against data/cmudict/cmudict.dict, through this toolchain's build.
+  @{ Stage = "dict"; Tool = "kl_text_dump"; Verify = "verify-dict.mjs" },
   # The sample generator (docs/20-generator.md): built by MSVC and clang-cl
   # only, so the gcc leg finds no executable and skips it.
   @{ Stage = "gui"; Tool = "klattsch_gui"; Verify = "verify-gui.mjs"; Tool2 = "kl_text_dump" }
@@ -220,7 +223,7 @@ if ($wslOk) {
 
   # Stage 2 has no directory mode and needs none: it is pure table data, with
   # no arithmetic a second libm could answer differently.
-  foreach ($st in ($stages | Where-Object { $_.Stage -ne 2 -and $_.Stage -ne "text" -and $_.Stage -ne "gui" })) {
+  foreach ($st in ($stages | Where-Object { $_.Stage -ne 2 -and $_.Stage -ne "text" -and $_.Stage -ne "gui" -and $_.Stage -ne "dict" })) {
     Write-Host "--- build-wsl, stage $($st.Stage) ---"
     & node (Join-Path $repo "tools\$($st.Verify)") $dump | Select-Object -Last 4 | Write-Host
   }

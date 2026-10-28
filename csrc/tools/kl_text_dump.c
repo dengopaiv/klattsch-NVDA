@@ -32,6 +32,7 @@
 #include <fcntl.h>
 #endif
 
+#include "kl_dict.h"
 #include "kl_text.h"
 
 #define LINE_MAX_BYTES 65536
@@ -41,7 +42,7 @@ int main(int argc, char **argv)
     static kl_text_ctx ctx;
     static char line[LINE_MAX_BYTES];
     static char out[LINE_MAX_BYTES * 8];
-    enum { NRL, WORD, SOURCE, SPELL } mode;
+    enum { NRL, WORD, SOURCE, SPELL, LOOKUP } mode;
     size_t cap = sizeof out;
     int show_len = 0, i;
     kl_text_opts opts;
@@ -54,8 +55,8 @@ int main(int argc, char **argv)
     opts.base_f0 = 0.0;   /* the front end's defaults: 120 Hz, */
     opts.comma_ms = 0;    /* and KL_TEXT_COMMA_MS               */
     if (argc < 2) {
-        fprintf(stderr, "usage: kl_text_dump --nrl|--word|--source|--spell"
-                        " [--cap N] [--base HZ] [--comma MS]\n");
+        fprintf(stderr, "usage: kl_text_dump --nrl|--word|--source|--spell|--lookup"
+                        " [--cap N] [--base HZ] [--comma MS] [--dict on|off]\n");
         return 2;
     }
     for (i = 2; i + 1 < argc; i += 2) {
@@ -67,6 +68,10 @@ int main(int argc, char **argv)
             opts.base_f0 = strtod(argv[i + 1], NULL);
         } else if (strcmp(argv[i], "--comma") == 0) {
             opts.comma_ms = atoi(argv[i + 1]);
+        } else if (strcmp(argv[i], "--dict") == 0) {
+            /* On by default; off is the front end of before the dictionary,
+             * which goldens/text/source.json pins. */
+            opts.no_dictionary = strcmp(argv[i + 1], "off") == 0;
         } else {
             fprintf(stderr, "unknown option: %s\n", argv[i]);
             return 2;
@@ -80,6 +85,7 @@ int main(int argc, char **argv)
     else if (strcmp(argv[1], "--word") == 0) mode = WORD;
     else if (strcmp(argv[1], "--source") == 0) mode = SOURCE;
     else if (strcmp(argv[1], "--spell") == 0) mode = SPELL;
+    else if (strcmp(argv[1], "--lookup") == 0) mode = LOOKUP;
     else {
         fprintf(stderr, "unknown mode: %s\n", argv[1]);
         return 2;
@@ -100,6 +106,26 @@ int main(int argc, char **argv)
         case WORD:   len = kl_text_word(&ctx, line, out, cap); break;
         case SOURCE: len = kl_text_to_source(&ctx, line, &opts, out, cap); break;
         case SPELL:  len = kl_text_spell(&ctx, line, out, cap); break;
+        case LOOKUP: {
+            /* The table's entry for this key, exactly as given (upper case),
+             * as CMU's phones joined by spaces, or "-" when there is none.
+             * tools/verify-dict.mjs holds every entry to the source file. */
+            size_t nc = 0, k;
+            const char *codes = kl_dict_find(line, n, &nc);
+            if (!codes) {
+                strcpy(out, "-");
+            } else {
+                out[0] = '\0';
+                for (k = 0; k < nc; k++) {
+                    int sym = kl_dict_code_index(codes[k]);
+                    if (k)
+                        strcat(out, " ");
+                    strcat(out, sym >= 0 ? kl_dict_symbols[sym] : "?");
+                }
+            }
+            len = strlen(out);
+            break;
+        }
         }
         if (show_len)
             fprintf(stdout, "%lu ", (unsigned long)len);
